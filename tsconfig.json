@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "module": "AMD",
+    "outDir": "dist",
+    "sourceMap": true,
+    "strict": true,
+    "target": "es2017",
+    "baseUrl": "lib",
+    "moduleResolution": "node"
+  },
+  "compileOnSave": true,
+  "include": [
+    "src/**/*",
+    "lib/**/*"
+  ],
+}

@@ -13,6 +13,7 @@ export class SpriteComponent extends Component {
     frameTime = -1; // Don't animate yet
     timeLeft = 0;
     repeat = false;
+    flip = false;
 
     sheet: number[] = [];
     sprite: number = 0;
@@ -115,6 +116,10 @@ export class SpriteComponent extends Component {
         var sx = (index % this.sheetWidth) * this.spriteWidth;
         var sy = Math.floor(index / this.sheetWidth) * this.spriteHeight;
 
+        if (this.flip) {
+            context.translate(this.spriteWidth, 0);
+            context.scale(-1, 1);
+        }
         context.drawImage(this.image, sx, sy, this.spriteWidth, this.spriteHeight, x, y, w, h);
         context.restore();
     }

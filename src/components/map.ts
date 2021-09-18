@@ -1,4 +1,4 @@
-import { Component } from "../../lib/juicy";
+import { Component, Point } from "../../lib/juicy";
 import { MapLoader, Tile, TileOffset } from "../helpers/map-loader";
 
 const tiles = new Image();
@@ -19,18 +19,34 @@ export class MapComponent extends Component {
         this.tiles = new Array(height).fill(false).map(() => new Array(width).fill(Tile.None));
     }
 
-    at(x: number, y: number) {
-        return this.tiles[y][x];
+    getTileCoords(worldCoords: Point) {
+        let { x, y } = worldCoords;
+        x = Math.floor(x / tileWidth);
+        y = Math.floor(y / tileHeight);
+
+        return new Point(x, y);
     }
 
-    set(x: number, y: number, tile: Tile) {
-        this.tiles[y][x] = tile;
+    getTile(x: number | Point, y?: number) {
+        if (x instanceof Point) {
+            y = x.y;
+            x = x.x;
+        }
+        else if (typeof(y) === 'undefined') {
+            throw `Only x coordinate was provied. Both x and y are needed`;
+        }
+
+        if (x < 0 || y < 0 || y >= this.tiles.length || x >= this.tiles[0].length) {
+            return Tile.None;
+        }
+
+        return this.tiles[y][x];
     }
 
     render(ctx: CanvasRenderingContext2D) {
         for (let y = 0; y < this.tiles.length; y ++) {
             for (let x = 0; x < this.tiles[y].length; x ++) {
-                const tile = this.at(x, y);
+                const tile = this.tiles[y][x];
                 if (tile == Tile.None) {
                     continue;
                 }

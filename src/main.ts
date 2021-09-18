@@ -3,6 +3,7 @@ import { ColorType, DarkColor, LightColor, PaletteManager } from './helpers/pale
 import { LoadingScreen } from './states/loading';
 import { Keys } from './helpers/constants';
 import { MapScreen } from './states/map';
+import { ControlsScreen } from './states/controls';
 
 // const keys = {
 //     LEFT: 37,
@@ -57,16 +58,30 @@ Game.afterRender((canvas: HTMLCanvasElement) => {
     }
 });
 
-let applyPalette = localStorage.getItem('applyPalette') !== 'off';
-const paletteButton = document.createElement('button');
-paletteButton.textContent = applyPalette ? 'Turn off Palette' : 'Turn on Palette';
-paletteButton.onclick = () => {
-    applyPalette = !applyPalette;
-    localStorage.setItem('applyPalette', applyPalette ? 'on' : 'off');
-    paletteButton.textContent = applyPalette ? 'Turn off Palette' : 'Turn on Palette';
-};
 document.body.appendChild(document.createElement('br'));
-document.body.appendChild(paletteButton);
+
+
+export const __DEV__ = localStorage.getItem('devMode') === 'on';
+const devModeButton = document.createElement('button');
+devModeButton.textContent = __DEV__ ? 'Turn off DevMode' : 'Turn on DevMode';
+devModeButton.onclick = () => {
+    localStorage.setItem('devMode', !__DEV__ ? 'on' : 'off');
+    location.reload();
+};
+document.body.appendChild(devModeButton);
+
+let applyPalette = true;
+if (__DEV__) {
+    applyPalette = localStorage.getItem('applyPalette') !== 'off';
+    const paletteButton = document.createElement('button');
+    paletteButton.textContent = applyPalette ? 'Turn off Palette' : 'Turn on Palette';
+    paletteButton.onclick = () => {
+        applyPalette = !applyPalette;
+        localStorage.setItem('applyPalette', applyPalette ? 'on' : 'off');
+        paletteButton.textContent = applyPalette ? 'Turn off Palette' : 'Turn on Palette';
+    };
+    document.body.appendChild(paletteButton);
+}
 
 // Document events
 document.addEventListener('mousewheel', Game.trigger.bind(Game, 'mousewheel'));
@@ -82,6 +97,11 @@ Sound.Load('FubSong', {
 
 // Sound.Play('FubSong');
 
-Game.setState(new MapScreen()).run();
+if (__DEV__) {
+    Game.setState(new MapScreen()).run();
+}
+else {
+    Game.setState(new LoadingScreen()).run();
+}
 
 // Game.setDebug(document.getElementById("fps")!);

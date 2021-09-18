@@ -71,7 +71,7 @@ class PaletteManager {
         [[255, 255, 255, 255], [170, 170, 170, 255], [85, 85, 85, 255], [0, 0, 0, 255]],
     ];
 
-    private current = 0;
+    private current = parseInt(localStorage.getItem('palette') || `0`);
 
     private templates: { [key: string]: ImageAndCanvas } = {};
     private nextTemplateId = 0;
@@ -122,6 +122,8 @@ class PaletteManager {
             id -= this.palettes.length;
         }
         this.current = id;
+
+        localStorage.setItem('palette', `${this.current}`);
 
         // Update all existing templates
         for (let i = 0; i < this.nextTemplateId; i ++) {

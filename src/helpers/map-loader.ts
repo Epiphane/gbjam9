@@ -4,11 +4,19 @@ export enum Tile {
     None,
     Brick1,
     Brick2,
+    Dark,
+    Low,
+    Mid,
+    Light,
 };
 
 export const TileOffset: { [key: number]: Point } = {
     [Tile.Brick1]: new Point(1, 0),
     [Tile.Brick2]: new Point(2, 0),
+    [Tile.Dark]: new Point(0, 1),
+    [Tile.Low]: new Point(0, 2),
+    [Tile.Mid]: new Point(0, 3),
+    [Tile.Light]: new Point(0, 4),
 };
 
 const TilesetToTile = (value: number) => {
@@ -108,8 +116,6 @@ class MapLoader {
 
         const parser = new DOMParser();
         const dom = parser.parseFromString(data, 'application/xml');
-        console.log(dom);
-
         if (dom.documentElement.nodeName == "parsererror") {
             throw 'error while parsing';
         }
@@ -157,6 +163,8 @@ class MapLoader {
                 tiles[y][x] = TilesetToTile(value);
             });
         });
+
+        console.log(tiles);
 
         return tiles;
     }

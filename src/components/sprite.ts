@@ -60,6 +60,8 @@ export class SpriteComponent extends Component {
         this.repeat = false;
         this.sprite = 0;
         this.sheet = [];
+
+        return this; // Enable chaining
     }
 
     runAnimation(sheet: number[], frameTime: number, repeat?: boolean) {

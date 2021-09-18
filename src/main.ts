@@ -2,6 +2,7 @@ import { Game, Sound } from '../lib/juicy';
 import { ColorType, DarkColor, LightColor, PaletteManager } from './helpers/palette';
 import { LoadingScreen } from './states/loading';
 import { Keys } from './helpers/constants';
+import { MapScreen } from './states/map';
 
 // const keys = {
 //     LEFT: 37,
@@ -80,6 +81,6 @@ Sound.Load('FubSong', {
 
 // Sound.Play('FubSong');
 
-Game.setState(new LoadingScreen()).run();
+Game.setState(new MapScreen()).run();
 
 // Game.setDebug(document.getElementById("fps")!);

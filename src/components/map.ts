@@ -39,7 +39,7 @@ export class MapComponent extends Component {
                     tiles,
                     // source
                     TileOffset[tile].x * tileWidth,
-                    TileOffset[tile].y * tileWidth,
+                    TileOffset[tile].y * tileHeight,
                     tileWidth,
                     tileHeight,
                     // destination

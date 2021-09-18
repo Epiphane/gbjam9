@@ -9,6 +9,7 @@ import { MapComponent } from "../components/map";
 import { SpriteComponent } from "../components/sprite";
 import { PaletteSelectionScreen } from "./palette-selector";
 import { PhysicsBody } from "../components/physics";
+import { Keys } from "../helpers/constants";
 
 export class MapScreen extends State {
     player: Entity;
@@ -20,7 +21,7 @@ export class MapScreen extends State {
         mapEntity.get(MapComponent)?.load('test');
 
         this.player = new Entity(this, [SpriteComponent, Hitbox, PhysicsBody]);
-        this.player.position.x = 16;
+        this.player.position.x = 46;
         this.player.position.y = 9 * 12;
         this.player.get(SpriteComponent)
             ?.setImage('./images/walk_boy.png')
@@ -29,11 +30,7 @@ export class MapScreen extends State {
 
         const hitbox = this.player.get(Hitbox)!;
         hitbox.setOffset(4, 4);
-        hitbox.setSize(7, 20);
-
-        const physics = this.player.get(PhysicsBody)!;
-        physics.velocity.x = 48;
-        // hitbox.visible = true;
+        hitbox.setSize(6, 20);
     }
 
     init() {
@@ -52,20 +49,35 @@ export class MapScreen extends State {
     key_RIGHT() {}
 
     update(dt: number) {
+        this.player.get(PhysicsBody)!.velocity.x = 0;
+        this.player.get(PhysicsBody)!.velocity.y = 0;
+        if (this.game.keyDown(Keys.UP)) {
+            this.player.get(PhysicsBody)!.velocity.y = -48;
+        }
+        if (this.game.keyDown(Keys.DOWN)) {
+            this.player.get(PhysicsBody)!.velocity.y = 48;
+        }
+        if (this.game.keyDown(Keys.LEFT)) {
+            this.player.get(PhysicsBody)!.velocity.x = -48;
+        }
+        if (this.game.keyDown(Keys.RIGHT)) {
+            this.player.get(PhysicsBody)!.velocity.x = 48;
+        }
+
         super.update(dt);
 
-        if (this.player.position.x > 128) {
-            const physics = this.player.get(PhysicsBody)!;
-            physics.velocity.x = -48;
+        // if (this.player.position.x > 128) {
+        //     const physics = this.player.get(PhysicsBody)!;
+        //     physics.velocity.x = -48;
 
-            this.player.get(SpriteComponent)!.flip = true;
-        }
+        //     this.player.get(SpriteComponent)!.flip = true;
+        // }
 
-        if (this.player.position.x < 16) {
-            const physics = this.player.get(PhysicsBody)!;
-            physics.velocity.x = 48;
+        // if (this.player.position.x < 16) {
+        //     const physics = this.player.get(PhysicsBody)!;
+        //     physics.velocity.x = 48;
 
-            this.player.get(SpriteComponent)!.flip = false;
-        }
+        //     this.player.get(SpriteComponent)!.flip = false;
+        // }
     }
 };

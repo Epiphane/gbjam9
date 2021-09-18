@@ -22,7 +22,7 @@ export class Hitbox extends Component {
     getBounds() {
         const size = this.size ? this.size : new Point(this.entity.width, this.entity.height)
         const min = this.entity.position.copy().add(this.offset);
-        const max = min.copy().add(size);
+        const max = min.copy().add(size).sub(new Point(1));
         return { min, max, size };
     }
 
@@ -30,10 +30,10 @@ export class Hitbox extends Component {
         const { min, max } = this.getBounds();
         const { min: otherMin, max: otherMax } = other.getBounds();
 
-        if (min.x >= otherMax.x ||
-            min.y >= otherMax.y ||
-            max.x <= otherMin.x ||
-            max.y <= otherMin.y
+        if (min.x > otherMax.x ||
+            min.y > otherMax.y ||
+            max.x < otherMin.x ||
+            max.y < otherMin.y
         ) {
             return false;
         }

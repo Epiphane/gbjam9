@@ -83,6 +83,8 @@ if (__DEV__) {
     document.body.appendChild(paletteButton);
 }
 
+// Game.timeScale = 0.2;
+
 // Document events
 document.addEventListener('mousewheel', Game.trigger.bind(Game, 'mousewheel'));
 

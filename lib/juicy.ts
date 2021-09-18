@@ -45,6 +45,9 @@ class Game {
     private state!: State;
     private lastTime: number = 0;
 
+    // For going slow
+    timeScale = 1;
+
     private canvas?: HTMLCanvasElement;
     private context: CanvasRenderingContext2D | null = null;
 
@@ -308,7 +311,7 @@ class Game {
             this.debug.innerHTML = 'FPS: ' + Math.floor(this.fps);
         }
 
-        const dt = (nextTime - this.lastTime) / 1000;
+        const dt = this.timeScale * (nextTime - this.lastTime) / 1000;
         if (dt > 0.2) {
             this.lastTime = nextTime;
             return;
@@ -624,7 +627,7 @@ export class Entity {
 
     render(context: CanvasRenderingContext2D) {
         context.save();
-        context.translate(Math.round(this.position.x), Math.round(this.position.y));
+        context.translate(Math.floor(this.position.x), Math.floor(this.position.y));
         context.scale(this.scale.x, this.scale.y);
 
         let renderArgs: RenderArgs;

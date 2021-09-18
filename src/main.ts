@@ -63,7 +63,7 @@ document.body.appendChild(document.createElement('br'));
 
 export const __DEV__ = localStorage.getItem('devMode') === 'on';
 const devModeButton = document.createElement('button');
-devModeButton.textContent = __DEV__ ? 'Turn off DevMode' : 'Turn on DevMode';
+devModeButton.textContent = __DEV__ ? 'Turn off DevMode (reloads page)' : 'Turn on DevMode (reloads page)';
 devModeButton.onclick = () => {
     localStorage.setItem('devMode', !__DEV__ ? 'on' : 'off');
     location.reload();

@@ -36,22 +36,22 @@ export class PaletteSelectionScreen extends State {
         }
     }
 
-    key_W() {
+    key_UP() {
         const newPalette = PaletteManager.getCurrentId() - this.palettesPerLine;
         PaletteManager.setCurrent(newPalette);
     }
 
-    key_A() {
+    key_LEFT() {
         const newPalette = PaletteManager.getCurrentId() - 1;
         PaletteManager.setCurrent(newPalette);
     }
 
-    key_S() {
+    key_DOWN() {
         const newPalette = PaletteManager.getCurrentId() + this.palettesPerLine;
         PaletteManager.setCurrent(newPalette);
     }
 
-    key_D() {
+    key_RIGHT() {
         const newPalette = PaletteManager.getCurrentId() + 1;
         PaletteManager.setCurrent(newPalette);
     }

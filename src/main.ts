@@ -2,17 +2,25 @@ import { Game, Sound } from '../lib/juicy';
 import { ColorType, DarkColor, LightColor, PaletteManager } from './helpers/palette';
 import { LoadingScreen } from './states/loading';
 
+// const keys = {
+//     LEFT: 37,
+//     UP: 38,
+//     RIGHT: 39,
+//     DOWN: 40,
+//     SPACE: 32,
+
+//     A: 65,
+//     D: 68,
+//     S: 83,
+//     W: 87,
+// };
 const keys = {
     LEFT: 37,
     UP: 38,
     RIGHT: 39,
     DOWN: 40,
-    SPACE: 32,
-
-    A: 65,
-    D: 68,
-    S: 83,
-    W: 87,
+    A: 90,
+    B: 88,
 };
 
 const gameCanvas = document.getElementById('game-canvas') as HTMLCanvasElement;

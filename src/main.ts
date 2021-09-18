@@ -1,6 +1,6 @@
 import { Game, Sound } from '../lib/juicy';
 import { ColorType, PaletteManager } from './helpers/palette';
-import LoadingScreen from './states/loading';
+import { LoadingScreen } from './states/loading';
 
 const keys = {
     LEFT: 37,

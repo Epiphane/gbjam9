@@ -57,11 +57,12 @@ Game.afterRender((canvas: HTMLCanvasElement) => {
     }
 });
 
-let applyPalette = true;
+let applyPalette = localStorage.getItem('applyPalette') !== 'off';
 const paletteButton = document.createElement('button');
-paletteButton.textContent = 'Turn off Palette';
+paletteButton.textContent = applyPalette ? 'Turn off Palette' : 'Turn on Palette';
 paletteButton.onclick = () => {
     applyPalette = !applyPalette;
+    localStorage.setItem('applyPalette', applyPalette ? 'on' : 'off');
     paletteButton.textContent = applyPalette ? 'Turn off Palette' : 'Turn on Palette';
 };
 document.body.appendChild(document.createElement('br'));

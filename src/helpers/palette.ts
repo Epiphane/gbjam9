@@ -78,6 +78,12 @@ class PaletteManager {
 
     private listeners: ((palette: Palette) => any)[] = [];
 
+    constructor() {
+        if (isNaN(this.current)) {
+            this.setCurrent(0);
+        }
+    }
+
     loadImage(src: string) {
         const img = document.createElement('canvas');
         const template = new Image();

@@ -2,7 +2,9 @@ import {
     State,
     Point,
     Entity,
+    Game,
 } from "../../lib/juicy";
+import { Hitbox } from "../components/stupid-hitbox";
 import { MapComponent } from "../components/map";
 import { SpriteComponent } from "../components/sprite";
 import { PaletteSelectionScreen } from "./palette-selector";
@@ -21,6 +23,11 @@ export class MapScreen extends State {
             ?.setImage('./images/idle_boy.png')
             .setSize(16, 24)
             .runAnimation([0, 1, 2, 3], 0.5, true);
+
+        const hitbox = player.add(Hitbox);
+        hitbox.setOffset(4, 4);
+        hitbox.setSize(7, 20);
+        // hitbox.visible = true;
     }
 
     init() {

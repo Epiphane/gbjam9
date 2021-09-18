@@ -38,7 +38,6 @@ sftp.connect({
     ]
 
     const excludePaths = [
-        /\.map$/,
         /\.ts$/,
     ]
 

@@ -21,8 +21,6 @@ const keys = {
     DOWN: 40,
     A: 90,
     B: 88,
-    L: 65,
-    R: 83,
     START: 13,
     SELECT: 8,
 };

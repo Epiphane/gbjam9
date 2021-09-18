@@ -5,6 +5,7 @@ import {
     TextComponent,
 } from "../../lib/juicy";
 import { DefaultFont } from "../helpers/constants";
+import { ControlsScreen } from "./controls";
 import { GameScreen } from "./game";
 
 export class LoadingScreen extends State {
@@ -27,6 +28,6 @@ export class LoadingScreen extends State {
     }
 
     update(dt: number) {
-        this.game.setState(new GameScreen());
+        this.game.setState(new ControlsScreen());
     }
 };

@@ -31,7 +31,7 @@ interface KeyNameToCodeMap {
 };
 
 interface GameSettings {
-    canvas: HTMLCanvasElement | string;
+    canvas?: HTMLCanvasElement | string;
     keys: KeyNameToCodeMap;
     width: number;
     height: number;
@@ -60,6 +60,9 @@ class Game {
     private fps: number = 0;
     private fpsAlpha: number = 0.95;
 
+    private singletons: { [key: string]: any } = {};
+    private afterRenderCallbacks: ((canvas: HTMLCanvasElement) => void)[] = [];
+
     init(settings: GameSettings) {
         const {
             canvas,
@@ -77,7 +80,7 @@ class Game {
         if (canvas instanceof HTMLCanvasElement) {
             canv = canvas;
         }
-        else {
+        else if (canvas) {
             const element = document.getElementById(canvas);
             if (element instanceof HTMLCanvasElement) {
                 canv = element;
@@ -85,6 +88,9 @@ class Game {
             else {
                 throw Error(`Canvas element with id ${canvas} not found.`);
             }
+        }
+        else {
+            canv = document.createElement('canvas');
         }
 
         this.setCanvas(canv);
@@ -115,6 +121,14 @@ class Game {
         return this; // Enable chaining
     }
 
+    singleton<T>(name: string, constructor: (new () => T)): T {
+        if (!this.singletons[name]) {
+            this.singletons[name] = new constructor();
+        }
+
+        return this.singletons[name];
+    }
+
     clear() {
         for (const action in this.listener) {
             document.removeEventListener(action, this.listener[action]);
@@ -130,7 +144,7 @@ class Game {
     setCanvas(canvas: HTMLCanvasElement) {
         this.canvas = canvas;
         this.context = canvas.getContext('2d');
-        
+
         canvas.style.width = `${this.scale.x * this.size.x}px`;
         canvas.style.height = `${this.scale.y * this.size.y}px`;
         SetCanvasSize(this.canvas, this.size.x, this.size.y);
@@ -179,7 +193,7 @@ class Game {
         this.resize();
         return this; // Enable chaining
     }
-    
+
     getCanvasCoords(evt: MouseEvent) {
         if (!this.canvas) {
             throw Error('Game was not properly initialized - canvas is unavailable');
@@ -318,22 +332,27 @@ class Game {
     }
 
     render() {
-        if (!this.context || !this.canvas) {
+        const { context, canvas } = this;
+        if (!context || !canvas) {
             this.running = false;
             throw Error('Game was not properly initialized - canvas is unavailable');
         }
 
-        this.context.save();
-  
+        context.save();
         if (!this.state.stopClear) {
-           this.context.clearRect(0, 0, this.size.x, this.size.y);
+           context.clearRect(0, 0, this.size.x, this.size.y);
         }
-  
-        this.state.render(this.context, this.canvas.width, this.canvas.height);
-  
-        this.context.restore();
+
+        this.state.render(context, canvas.width, canvas.height);
+        context.restore();
+
+        this.afterRenderCallbacks.forEach(callback => callback(canvas));
 
         return this; // Enable chaining
+    }
+
+    afterRender(callback: (canvas: HTMLCanvasElement) => any) {
+        this.afterRenderCallbacks.push(callback);
     }
 
     run() {
@@ -476,7 +495,7 @@ export class Entity {
 
         this.name = name;
         this.state = state;
-        
+
         components = (components || []).concat(this.initialComponents());
         components.forEach(c => this.addComponent(c));
         state.add(this);
@@ -526,7 +545,7 @@ export class Entity {
         // TODO account for parent entities
         const otherBottomRight = other.position.add(new Point(other.width, other.height));
         const bottomRight      = this .position.add(new Point(this .width, this .height));
-  
+
         return otherBottomRight.x >= this.position.x &&
                otherBottomRight.y >= this.position.y &&
                other.position.x   <= bottomRight.x   &&

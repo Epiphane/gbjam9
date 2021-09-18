@@ -1,4 +1,5 @@
 import { Game, Sound } from '../lib/juicy';
+import { ColorType, PaletteManager } from './helpers/palette';
 import LoadingScreen from './states/loading';
 
 const keys = {
@@ -14,12 +15,18 @@ const keys = {
     W: 87,
 };
 
+const gameCanvas = document.getElementById('game-canvas') as HTMLCanvasElement;
+const context = gameCanvas.getContext('2d');
+
 Game.init({
-    canvas: 'game-canvas',
-    keys,   
+    keys,
     width: 160,
     height: 144,
-    scale: 5,
+});
+
+Game.afterRender((canvas: HTMLCanvasElement) => {
+    gameCanvas.style.background = PaletteManager.getStyle(ColorType.Light);
+    PaletteManager.applyPalette(canvas, gameCanvas);
 });
 
 // Document events

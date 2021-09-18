@@ -2,27 +2,20 @@ import {
     BoxComponent,
     Entity,
     Game,
-    ImageComponent,
     State,
     TextComponent,
 } from "../../lib/juicy";
+import { ColoredSpriteComponent } from "../components/colored_sprite";
+import { SpriteComponent } from "../components/sprite";
+import { PaletteManager } from "../helpers/palette";
 
 export default class LoadingScreen extends State {
     text: TextComponent;
 
+    countdown = 1.2;
+
     constructor() {
         super();
-
-        const rect = new Entity(this);
-        const box = rect.add(BoxComponent);
-        box.fillStyle = 'blue';
-        box.entity.width = 158;
-        box.entity.height = 142;
-        box.entity.position.x = 1;
-        box.entity.position.y = 1;
-
-        const ppl = new Entity(this, 'player', [ImageComponent]);
-        ppl.get(ImageComponent)?.setImage('./images/player.png');
 
         const text = new Entity(this);
         this.text = text.add(TextComponent);
@@ -36,12 +29,24 @@ export default class LoadingScreen extends State {
             text.position.y = 20;
             ppl.position.y = text.position.y + text.height;
         });
-    }
 
-    init() {
+        const ppl = new Entity(this, 'player', [SpriteComponent]);
+        const sprite = ppl.get(SpriteComponent)!;
+        ppl.position.x = (Game.size.x - ppl.width) / 2;
+        sprite.setImage('./images/player.png');
+        sprite.setSize(32, 32);
+        sprite.runAnimation([0, 1, 2, 1], 0.15, true);
     }
 
     update(dt: number) {
         super.update(dt);
+
+        this.countdown -= dt;
+        if (this.countdown < 0) {
+            this.countdown = 1.2;
+
+            PaletteManager.setCurrent(PaletteManager.getCurrentId() + 1);
+            this.text.set({ text: `Palette #${PaletteManager.getCurrentId()}`})
+        }
     }
 };

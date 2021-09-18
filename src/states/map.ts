@@ -29,8 +29,9 @@ export class MapScreen extends State {
             .runAnimation([0, 1, 2, 3], 0.15, true);
 
         const hitbox = this.player.get(Hitbox)!;
-        hitbox.setOffset(4, 4);
-        hitbox.setSize(6, 20);
+        hitbox.setOffset(4, 5);
+        hitbox.setSize(6, 19);
+        // hitbox.visible = true;
     }
 
     init() {

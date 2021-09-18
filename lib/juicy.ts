@@ -467,6 +467,7 @@ export class State {
  *    render (context) - Calls render on all components
  */
 export type RenderArgs = [CanvasRenderingContext2D, number, number, number, number];
+export type ComponentList = (Component | (new () => Component))[];
 
 export class Entity {
     state: State;
@@ -487,7 +488,7 @@ export class Entity {
     parent?: Entity;
     children: Entity[] = [];
 
-    constructor(state: State, name?: string, components?: (Component | (new () => Component))[]) {
+    constructor(state: State, name?: string | ComponentList, components?: ComponentList) {
         if (typeof(name) !== 'string') {
             components = name;
             name = undefined;
@@ -668,11 +669,11 @@ export class Component {
     render(context: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) { }
 }
 
-export type Color = string | CanvasGradient | CanvasPattern;
+export type FillStyle = string | CanvasGradient | CanvasPattern;
 
 /* -------------------- Typical Components --------------- */
 export class ImageComponent extends Component {
-    private tint?: Color;
+    private tint?: FillStyle;
     opacity: number = 1;
     image: HTMLImageElement = new Image();
 
@@ -706,7 +707,7 @@ export class ImageComponent extends Component {
         }
     }
 
-    setTint(tint: Color) {
+    setTint(tint: FillStyle) {
         // TODO glean alpha of tint
         this.tint = tint;
 
@@ -756,9 +757,9 @@ export class ImageComponent extends Component {
 }
 
 export class BoxComponent extends Component {
-    fillStyle: Color = 'white';
+    fillStyle: FillStyle = 'white';
 
-    setFillStyle(style: Color) {
+    setFillStyle(style: FillStyle) {
         this.fillStyle = style;
     }
 
@@ -772,21 +773,20 @@ export interface TextInfo {
     font: string;
     size: number;
     text: string;
-    fillStyle: Color;
+    fillStyle: FillStyle;
     padding: Point;
 }
 
+export interface TextComponent extends TextInfo {}
 export class TextComponent extends Component {
     canvas: HTMLCanvasElement;
     context: CanvasRenderingContext2D;
 
-    textInfo: TextInfo = {
-        font: 'Arial',
-        size: 32,
-        text: '',
-        fillStyle: 'white',
-        padding: new Point()
-    };
+    font = 'Arial';
+    size = 32;
+    text = '';
+    fillStyle = 'white';
+    padding = new Point();
     opacity: number = 1;
     ready: boolean = false;
 
@@ -804,31 +804,36 @@ export class TextComponent extends Component {
         }
 
         // Set attributes
-        Object.assign(this.textInfo, config);
+        Object.assign(this, config);
 
-        const font = this.getFont();
-        const fonts = (document as any).fonts;
-        if (fonts && !fonts.check(font)) {
-            return fonts.load(font).then(() => {
+        if (config.font || config.size || config.text || config.fillStyle || config.padding) {
+            const font = this.getFont();
+            const fonts = (document as any).fonts;
+            if (fonts && !fonts.check(font)) {
+                return fonts.load(font).then(() => {
+                    this.renderOffscreen();
+                    this.ready = true;
+                });
+            }
+            else {
                 this.renderOffscreen();
                 this.ready = true;
-            });
+                return Promise.resolve();
+            }
         }
         else {
-            this.renderOffscreen();
-            this.ready = true;
             return Promise.resolve();
         }
     }
 
     getFont() {
-        return `${this.textInfo.size}px ${this.textInfo.font}`;
+        return `${this.size}px ${this.font}`;
     }
 
     measure() {
         this.context.font = this.getFont();
-        const size = this.context.measureText(this.textInfo.text);
-        return new Point(Math.ceil(size.width), Math.ceil(this.textInfo.size + 2));
+        const size = this.context.measureText(this.text);
+        return new Point(Math.ceil(size.width), Math.ceil(this.size + 2));
     }
 
     renderOffscreen() {
@@ -837,7 +842,7 @@ export class TextComponent extends Component {
         const context = this.context;
         const canvas = this.canvas;
         const size = this.measure();
-        const { fillStyle, text, padding } = this.textInfo;
+        const { fillStyle, text, padding } = this;
 
         // Resize canvas
         entity.width = size.x + padding.x * 2;

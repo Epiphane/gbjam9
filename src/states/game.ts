@@ -2,13 +2,14 @@ import {
     Entity,
     Game,
     State,
-    TextComponent,
 } from "../../lib/juicy";
+import { CoolText } from "../components/cool-text";
 import { SpriteComponent } from "../components/sprite";
-import { PaletteManager } from "../helpers/palette";
+import { DefaultFont } from "../helpers/constants";
+import { ColorType, PaletteManager } from "../helpers/palette";
 
 export class GameScreen extends State {
-    text: TextComponent;
+    text: CoolText;
 
     countdown = 1.2;
 
@@ -16,12 +17,13 @@ export class GameScreen extends State {
         super();
 
         const text = new Entity(this);
-        this.text = text.add(TextComponent);
+        this.text = text.add(CoolText);
         this.text.set({
             text: 'Palette #0',
-            fillStyle: 'black',
             size: 32,
-            font: 'Poiret One'
+            font: DefaultFont,
+            showBackground: true,
+            brightness: ColorType.Dark
         }).then(() => {
             text.position.x = (Game.size.x - text.width) / 2;
             text.position.y = 20;

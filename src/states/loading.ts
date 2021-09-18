@@ -4,7 +4,9 @@ import {
     State,
     TextComponent,
 } from "../../lib/juicy";
+import { DefaultFont } from "../helpers/constants";
 import { GameScreen } from "./game";
+import { PaletteSelectionScreen } from "./palette-selector";
 
 export class LoadingScreen extends State {
     text: TextComponent;
@@ -18,7 +20,7 @@ export class LoadingScreen extends State {
             text: 'Loading...',
             fillStyle: 'black',
             size: 32,
-            font: 'Poiret One'
+            font: DefaultFont,
         }).then(() => {
             text.position.x = (Game.size.x - text.width) / 2;
             text.position.y = 20;
@@ -26,6 +28,6 @@ export class LoadingScreen extends State {
     }
 
     update(dt: number) {
-        this.game.setState(new GameScreen());
+        this.game.setState(new PaletteSelectionScreen());
     }
 };

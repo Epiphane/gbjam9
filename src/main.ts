@@ -1,5 +1,5 @@
 import { Game, Sound } from '../lib/juicy';
-import { ColorType, PaletteManager } from './helpers/palette';
+import { ColorType, DarkColor, LightColor, PaletteManager } from './helpers/palette';
 import { LoadingScreen } from './states/loading';
 
 const keys = {
@@ -30,10 +30,28 @@ Game.init({
     height: 144,
 });
 
+let applyPalette = true;
 Game.afterRender((canvas: HTMLCanvasElement) => {
-    gameCanvas.style.background = PaletteManager.getStyle(ColorType.Light);
-    PaletteManager.applyPalette(canvas, gameCanvas);
+    if (applyPalette) {
+        gameCanvas.style.background = PaletteManager.getStyle(ColorType.Light);
+        PaletteManager.applyPalette(canvas, gameCanvas);
+    }
+    else {
+        const ctx = gameCanvas.getContext('2d')!;
+        ctx.fillStyle = LightColor;
+        ctx.fillRect(0, 0, 160, 144);
+        ctx.drawImage(canvas, 0, 0);
+    }
 });
+
+const paletteButton = document.createElement('button');
+paletteButton.textContent = 'Turn on Palette';
+paletteButton.onclick = () => {
+    applyPalette = !applyPalette;
+    paletteButton.textContent = applyPalette ? 'Turn off Palette' : 'Turn on Palette';
+};
+document.body.appendChild(document.createElement('br'));
+document.body.appendChild(paletteButton);
 
 // Document events
 document.addEventListener('mousewheel', Game.trigger.bind(Game, 'mousewheel'));

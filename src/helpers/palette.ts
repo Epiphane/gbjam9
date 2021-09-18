@@ -1,4 +1,4 @@
-import { Game, rand } from "../../lib/juicy";
+import { FillStyle, Game, rand } from "../../lib/juicy";
 
 export type Color = [r: number, g: number, b: number, a: number];
 export type Palette = [light: Color, mid: Color, low: Color, dark: Color];
@@ -14,6 +14,27 @@ type ImageAndCanvas = {
     destination: HTMLCanvasElement;
 }
 
+export const DarkColor = 'rgba(0, 0, 0, 255)';
+export const LowColor = 'rgba(85, 85, 85, 255)';
+export const MidColor = 'rgba(170, 170, 170, 255)';
+export const LightColor = 'rgba(255, 255, 255, 255)';
+
+export const ColorFromType = (type?: ColorType, backup?: FillStyle): FillStyle => {
+    switch (type)
+    {
+    case ColorType.Dark:
+        return DarkColor;
+    case ColorType.Low:
+        return LowColor;
+    case ColorType.Mid:
+        return MidColor;
+    case ColorType.Light:
+        return LightColor;
+    }
+
+    return backup || LightColor;
+}
+
 class PaletteManager {
     private palettes: Palette[] = [
         [[255, 255, 255, 255], [170, 170, 170, 255], [85, 85, 85, 255], [0, 0, 0, 255]],
@@ -21,7 +42,7 @@ class PaletteManager {
         [[255, 104, 13, 255], [173, 53, 25, 255], [138, 20, 51, 255], [32, 25, 91, 255]],
         [[178, 189, 1, 255], [128, 108, 18, 255], [97, 50, 15, 255], [55, 18, 64, 255]],
         [[91, 200, 200, 255], [35, 106, 106, 255], [84, 28, 28, 255], [40, 13, 13, 255]],
-        [[215, 130, 130, 255], [154, 51, 51, 255], [19, 58, 58, 255], [8, 25, 25, 255]],
+        // [[215, 130, 130, 255], [154, 51, 51, 255], [19, 58, 58, 255], [8, 25, 25, 255]],
         [[78, 201, 223, 255], [99, 161, 208, 255], [53, 118, 167, 255], [52, 73, 134, 255]],    // GOOD
         [[144, 184, 248, 255], [95, 133, 219, 255], [53, 57, 65, 255], [38, 40, 43, 255]],      // GOOD
         [[65, 216, 191, 255], [47, 137, 179, 255], [59, 80, 178, 255], [34, 87, 99, 255]],      // GOOD
@@ -69,6 +90,10 @@ class PaletteManager {
         };
 
         return img;
+    }
+
+    numPalettes() {
+        return this.palettes.length;
     }
 
     getCurrent(): Palette {

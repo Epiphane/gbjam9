@@ -7,11 +7,11 @@ import { CoolText } from "../components/cool-text";
 import { SpriteComponent } from "../components/sprite";
 import { DefaultFont } from "../helpers/constants";
 import { ColorType, PaletteManager } from "../helpers/palette";
+import { PaletteSelectionScreen } from "./palette-selector";
 
 export class GameScreen extends State {
     text: CoolText;
-
-    countdown = 1.2;
+    firstTime = true;
 
     constructor() {
         super();
@@ -38,15 +38,22 @@ export class GameScreen extends State {
         sprite.runAnimation([0, 1, 2, 1], 0.15, true);
     }
 
+    init() {
+        if (this.firstTime) {
+            this.game.setState(new PaletteSelectionScreen(this));
+            this.firstTime = false;
+        }
+    }
+
+    key_START() {
+        this.game.setState(new PaletteSelectionScreen(this));
+    }
+
     update(dt: number) {
         super.update(dt);
 
-        this.countdown -= dt;
-        if (this.countdown < 0) {
-            this.countdown = 1.2;
-
-            PaletteManager.setCurrent(PaletteManager.getCurrentId() + 1);
-            this.text.set({ text: `Palette #${PaletteManager.getCurrentId()}`})
-        }
+        this.text.set({
+            text: `Palette #${PaletteManager.getCurrentId() + 1}`,
+        });
     }
 };

@@ -6,7 +6,6 @@ import {
 } from "../../lib/juicy";
 import { DefaultFont } from "../helpers/constants";
 import { GameScreen } from "./game";
-import { PaletteSelectionScreen } from "./palette-selector";
 
 export class LoadingScreen extends State {
     text: TextComponent;
@@ -28,6 +27,6 @@ export class LoadingScreen extends State {
     }
 
     update(dt: number) {
-        this.game.setState(new PaletteSelectionScreen());
+        this.game.setState(new GameScreen());
     }
 };

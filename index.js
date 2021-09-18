@@ -5,6 +5,8 @@ const WebSocket = require("ws");
 const basedir = __dirname;
 var start = Date.now();
 
+fs.writeFileSync('./version.js', `var require = { urlArgs: "v=${start}" };`);
+
 function serveStatResult(res, path, err) {
   if (err) {
     if (err.code === "ENOENT") {
@@ -42,6 +44,10 @@ const server = http
       return;
     }
 
+    // req.url = req.url.substring(0, req.url.indexOf('?'));
+    if (req.url.indexOf('?') >= 0) {
+      req.url = req.url.substring(0, req.url.indexOf('?'));
+    }
     const path = (basedir + req.url).replace("%20", " ");
     fs.stat(path, (err, stat) => {
       if (!err && stat.isDirectory()) {

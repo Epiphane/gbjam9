@@ -21,6 +21,10 @@ const keys = {
     DOWN: 40,
     A: 90,
     B: 88,
+    L: 65,
+    R: 83,
+    START: 13,
+    SELECT: 8,
 };
 
 const gameCanvas = document.getElementById('game-canvas') as HTMLCanvasElement;
@@ -38,7 +42,6 @@ Game.init({
     height: 144,
 });
 
-let applyPalette = true;
 Game.afterRender((canvas: HTMLCanvasElement) => {
     if (applyPalette) {
         gameCanvas.style.background = PaletteManager.getStyle(ColorType.Light);
@@ -52,8 +55,9 @@ Game.afterRender((canvas: HTMLCanvasElement) => {
     }
 });
 
+let applyPalette = true;
 const paletteButton = document.createElement('button');
-paletteButton.textContent = 'Turn on Palette';
+paletteButton.textContent = 'Turn off Palette';
 paletteButton.onclick = () => {
     applyPalette = !applyPalette;
     paletteButton.textContent = applyPalette ? 'Turn off Palette' : 'Turn on Palette';

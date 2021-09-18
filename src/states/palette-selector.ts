@@ -14,8 +14,12 @@ export class PaletteSelectionScreen extends State {
     paletteSpacingX = 25;
     paletteSpacingY = 23;
 
-    constructor() {
+    prevState?: State;
+
+    constructor(prevState?: State) {
         super();
+
+        this.prevState = prevState;
 
         const numPalettes = PaletteManager.numPalettes();
 
@@ -54,6 +58,20 @@ export class PaletteSelectionScreen extends State {
     key_RIGHT() {
         const newPalette = PaletteManager.getCurrentId() + 1;
         PaletteManager.setCurrent(newPalette);
+    }
+
+    key_A() {
+        this.close();
+    }
+
+    key_B() {
+        this.close();
+    }
+
+    close() {
+        if (this.prevState) {
+            this.game.setState(this.prevState);
+        }
     }
 
     update(dt: number) {

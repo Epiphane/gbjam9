@@ -40,17 +40,34 @@
             image-rendering: pixelated;
             image-rendering: crisp-edges;
         }
+
+        #update {
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 10px;
+            font-family: 'VT323';
+            font-size: 24px;
+            background: white;
+            border: 2px solid black;
+            display: none;
+        }
     </style>
 </head>
 
 <body style="height: 100vh">
     <span id="fps"></span>
 
+    <a id="update" href="javascript:location.reload();">
+        Update available!
+    </a>
+
     <canvas id="game-canvas" width=160 height=144></canvas>
 
     <!-- Scripts -->
-    <script src="dist/src/hotreload.js"></script>
-    <script src="lib/require.js" data-main="dist/src/main"></script>
+    <script src="version.js"></script>
+    <script src="dist/src/hotreload.js?version=1"></script>
+    <script src="require.js" data-main="dist/src/main"></script>
 </body>
 
 </html>

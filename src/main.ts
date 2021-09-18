@@ -16,7 +16,13 @@ const keys = {
 };
 
 const gameCanvas = document.getElementById('game-canvas') as HTMLCanvasElement;
-const context = gameCanvas.getContext('2d');
+
+// Scale up the canvas to be as big as possible
+const maxScaleW = Math.floor(gameCanvas.parentElement!.clientWidth / 160);
+const maxScaleH = Math.floor(gameCanvas.parentElement!.clientHeight / 144);
+const scale = Math.min(maxScaleH, maxScaleW);
+gameCanvas.style.width = `${160 * scale}px`;
+gameCanvas.style.height = `${144 * scale}px`;
 
 Game.init({
     keys,

@@ -7,7 +7,7 @@
     "lib": "lib"
   },
   "scripts": {
-    "dev": "concurrently \"tsc -w\" \"nodemon --watch index.json --watch dist index.js\""
+    "dev": "concurrently \"tsc -w\" \"nodemon index.js\""
   },
   "repository": {
     "type": "git",

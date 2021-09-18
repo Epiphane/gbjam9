@@ -1,0 +1,4 @@
+{
+    "watch": ["index.js", "dist", "images", "audio", "css", "levels", "lib"],
+    "ext": "js, css, tsx, tmx, png, woff2, mp3"
+}

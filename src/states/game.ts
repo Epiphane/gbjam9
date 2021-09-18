@@ -20,10 +20,8 @@ export class GameScreen extends State {
         this.text = text.add(CoolText);
         this.text.set({
             text: 'Palette #0',
-            size: 32,
-            font: DefaultFont,
             showBackground: true,
-            brightness: ColorType.Dark
+            brightness: ColorType.Dark,
         }).then(() => {
             text.position.x = (Game.size.x - text.width) / 2;
             text.position.y = 20;

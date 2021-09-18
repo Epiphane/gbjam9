@@ -1,18 +1,17 @@
 import {
     Entity,
     State,
-    Point,
+    Game,
 } from "../../lib/juicy";
-import { CoolText } from "../components/cool-text";
-import { DefaultFont } from "../helpers/constants";
+import { CoolText, FontFace } from "../components/cool-text";
 import { ColorType, PaletteManager } from "../helpers/palette";
 
 export class PaletteSelectionScreen extends State {
     options: CoolText[] = [];
 
-    palettesPerLine = 6;
-    paletteSpacingX = 25;
-    paletteSpacingY = 23;
+    palettesPerLine = 8;
+    paletteSpacingX = 17;
+    paletteSpacingY = 15;
 
     prevState?: State;
 
@@ -28,16 +27,29 @@ export class PaletteSelectionScreen extends State {
             const text = entity.get(CoolText)!;
             text.set({
                 text: `${i + 1}`,
-                font: DefaultFont,
-                size: 24,
-                // padding: new Point(1),
                 showBackground: true,
                 brightness: ColorType.Dark,
             });
-            entity.position.x = 5 + (i % this.palettesPerLine) * this.paletteSpacingX;
-            entity.position.y = 5 + Math.floor(i / this.palettesPerLine) * this.paletteSpacingY;
+            entity.position.x = 15 + (i % this.palettesPerLine) * this.paletteSpacingX;
+            entity.position.y = 30 + Math.floor(i / this.palettesPerLine) * this.paletteSpacingY;
             this.options.push(text);
         }
+
+        const title = new Entity(this, [CoolText]);
+        title.get(CoolText)?.set({
+            text: `Palette Selector`,
+            fontFace: FontFace.Big,
+        });
+        title.position.x = Math.floor((Game.size.x - title.width) / 2);
+        title.position.y = 10;
+
+        const cont = new Entity(this, [CoolText]);
+        cont.get(CoolText)?.set({
+            text: `Press A to continue`,
+            fontFace: FontFace.Big,
+        });
+        cont.position.x = Math.floor((Game.size.x - cont.width) / 2);
+        cont.position.y = 120;
     }
 
     key_UP() {

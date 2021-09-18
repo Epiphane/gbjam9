@@ -42,12 +42,14 @@ Game.init({
 
 Game.afterRender((canvas: HTMLCanvasElement) => {
     if (applyPalette) {
-        gameCanvas.style.background = PaletteManager.getStyle(ColorType.Light);
+        const ctx = gameCanvas.getContext('2d')!;
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0, 0, 160, 144);
         PaletteManager.applyPalette(canvas, gameCanvas);
     }
     else {
         const ctx = gameCanvas.getContext('2d')!;
-        ctx.fillStyle = LightColor;
+        ctx.fillStyle = 'red';
         ctx.fillRect(0, 0, 160, 144);
         ctx.drawImage(canvas, 0, 0);
     }

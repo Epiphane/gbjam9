@@ -37,8 +37,8 @@ sftp.connect({
     ]
 
     const excludePaths = [
-        /.*map$/,
-        /.*ts$/,
+        /\.map$/,
+        /\.ts$/,
     ]
 
     const chokidar = require('chokidar');

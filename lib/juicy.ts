@@ -340,7 +340,8 @@ class Game {
 
         context.save();
         if (!this.state.stopClear) {
-           context.clearRect(0, 0, this.size.x, this.size.y);
+            context.fillStyle = 'white';
+            context.fillRect(0, 0, this.size.x, this.size.y);
         }
 
         this.state.render(context, canvas.width, canvas.height);

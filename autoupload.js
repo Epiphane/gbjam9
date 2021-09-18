@@ -34,6 +34,7 @@ sftp.connect({
         /^audio\/*/,
         /^css\/*/,
         /^images\/*/,
+        /^levels\/*/,
     ]
 
     const excludePaths = [

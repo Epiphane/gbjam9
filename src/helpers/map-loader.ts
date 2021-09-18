@@ -4,6 +4,10 @@ export enum Tile {
     None,
     Brick1,
     Brick2,
+    Wall1,
+    Wall2,
+    Wall3,
+    Wall4,
     Dark,
     Low,
     Mid,
@@ -13,6 +17,10 @@ export enum Tile {
 export const TileOffset: { [key: number]: Point } = {
     [Tile.Brick1]: new Point(1, 0),
     [Tile.Brick2]: new Point(2, 0),
+    [Tile.Wall1]: new Point(1, 1),
+    [Tile.Wall2]: new Point(2, 1),
+    [Tile.Wall3]: new Point(1, 2),
+    [Tile.Wall4]: new Point(2, 2),
     [Tile.Dark]: new Point(0, 1),
     [Tile.Low]: new Point(0, 2),
     [Tile.Mid]: new Point(0, 3),
@@ -163,8 +171,6 @@ class MapLoader {
                 tiles[y][x] = TilesetToTile(value);
             });
         });
-
-        console.log(tiles);
 
         return tiles;
     }

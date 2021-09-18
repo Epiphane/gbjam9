@@ -624,7 +624,7 @@ export class Entity {
 
     render(context: CanvasRenderingContext2D) {
         context.save();
-        context.translate(this.position.x, this.position.y);
+        context.translate(Math.round(this.position.x), Math.round(this.position.y));
         context.scale(this.scale.x, this.scale.y);
 
         let renderArgs: RenderArgs;

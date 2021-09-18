@@ -73,7 +73,7 @@ export class CoolText extends Component {
         this.entity.width = width * this.font.width - this.font.pad;
         this.entity.height = height * this.font.height - this.font.pad;
 
-        return Promise.resolve();
+        return this; // enable chaining
     }
 
     drawCharacter(ctx: CanvasRenderingContext2D, charCode: number, font: Font, brightness: ColorType, pos: Point) {
@@ -128,11 +128,33 @@ export class CoolText extends Component {
         }
 
         const cursor = new Point(x, y);
+        const maxX = this.wrapLength ? x + this.wrapLength * this.font.width : undefined;
         for (let c = 0; c < this.text.length; c++) {
+            const code = this.text.charCodeAt(c);
+            if (cursor.x === x && code === 32) {
+                continue;
+            }
+
+            // Should we wrap?
+            if (maxX && cursor.x !== x && code !== 32) {
+                let c2;
+                for (c2 = c; c2 < this.text.length; c2 ++) {
+                    if (this.text.charCodeAt(c2) === 32) {
+                        break;
+                    }
+                }
+
+                const wordWidth = c2 - c;
+                if (cursor.x + wordWidth * this.font.width >= maxX) {
+                    cursor.x = x;
+                    cursor.y += this.font.height;
+                }
+            }
+
             this.drawCharacter(ctx, this.text.charCodeAt(c), this.font, this.brightness, cursor);
             cursor.x += this.font.width;
 
-            if (this.wrapLength && (c + 1) % this.wrapLength === 0) {
+            if (maxX && cursor.x >= maxX) {
                 cursor.x = x;
                 cursor.y += this.font.height;
             }

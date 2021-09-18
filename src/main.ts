@@ -1,9 +1,9 @@
 import { Game, Sound } from '../lib/juicy';
-import { ColorType, DarkColor, LightColor, PaletteManager } from './helpers/palette';
+import { PaletteManager } from './helpers/palette';
 import { LoadingScreen } from './states/loading';
 import { Keys } from './helpers/constants';
 import { MapScreen } from './states/map';
-import { ControlsScreen } from './states/controls';
+import { __DEV__, __PALETTE__ } from './helpers/debug';
 
 // const keys = {
 //     LEFT: 37,
@@ -44,7 +44,7 @@ Game.init({
 });
 
 Game.afterRender((canvas: HTMLCanvasElement) => {
-    if (applyPalette) {
+    if (__PALETTE__) {
         const ctx = gameCanvas.getContext('2d')!;
         ctx.fillStyle = 'black';
         ctx.fillRect(0, 0, 160, 144);
@@ -60,30 +60,6 @@ Game.afterRender((canvas: HTMLCanvasElement) => {
 
 document.body.appendChild(document.createElement('br'));
 
-
-export const __DEV__ = localStorage.getItem('devMode') === 'on';
-const devModeButton = document.createElement('button');
-devModeButton.textContent = __DEV__ ? 'Turn off DevMode (reloads page)' : 'Turn on DevMode (reloads page)';
-devModeButton.onclick = () => {
-    localStorage.setItem('devMode', !__DEV__ ? 'on' : 'off');
-    location.reload();
-};
-document.body.appendChild(devModeButton);
-
-let applyPalette = true;
-if (__DEV__) {
-    applyPalette = localStorage.getItem('applyPalette') !== 'off';
-    const paletteButton = document.createElement('button');
-    paletteButton.textContent = applyPalette ? 'Turn off Palette' : 'Turn on Palette';
-    paletteButton.onclick = () => {
-        applyPalette = !applyPalette;
-        localStorage.setItem('applyPalette', applyPalette ? 'on' : 'off');
-        paletteButton.textContent = applyPalette ? 'Turn off Palette' : 'Turn on Palette';
-    };
-    document.body.appendChild(paletteButton);
-}
-
-// Game.timeScale = 0.2;
 
 // Document events
 document.addEventListener('mousewheel', Game.trigger.bind(Game, 'mousewheel'));

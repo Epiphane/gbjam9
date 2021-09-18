@@ -283,6 +283,10 @@ class Game {
         return this; // Enable chaining
     };
 
+    getState() {
+        return this.state;
+    }
+
     setState(state: State) {
         this.clear();
 

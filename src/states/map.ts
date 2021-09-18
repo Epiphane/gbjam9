@@ -31,7 +31,6 @@ export class MapScreen extends State {
         const hitbox = this.player.get(Hitbox)!;
         hitbox.setOffset(4, 5);
         hitbox.setSize(6, 19);
-        // hitbox.visible = true;
     }
 
     init() {
@@ -66,19 +65,5 @@ export class MapScreen extends State {
         }
 
         super.update(dt);
-
-        // if (this.player.position.x > 128) {
-        //     const physics = this.player.get(PhysicsBody)!;
-        //     physics.velocity.x = -48;
-
-        //     this.player.get(SpriteComponent)!.flip = true;
-        // }
-
-        // if (this.player.position.x < 16) {
-        //     const physics = this.player.get(PhysicsBody)!;
-        //     physics.velocity.x = 48;
-
-        //     this.player.get(SpriteComponent)!.flip = false;
-        // }
     }
 };

@@ -4,12 +4,12 @@
 // Thank you, uBlock
 
 import { Point, Component } from "../../lib/juicy";
+import { __HITBOXES__ } from "../helpers/debug";
 
 export class Hitbox extends Component {
     private offset = new Point(0);
     private size?: Point;
-
-    visible = false;
+    private visible = __HITBOXES__;
 
     setOffset(x: number, y: number) {
         this.offset = new Point(x, y);
@@ -17,6 +17,10 @@ export class Hitbox extends Component {
 
     setSize(width: number, height: number) {
         this.size = new Point(width, height);
+    }
+
+    setVisible(visible: boolean) {
+        this.visible = visible;
     }
 
     getBounds() {

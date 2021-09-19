@@ -11,8 +11,13 @@ export class MapComponent extends Component {
     tiles: Tile[][] = [];
 
     load(level: string) {
-        MapLoader.load(`levels/${level}.tmx`)
-            .then((data: Tile[][]) => this.tiles = data);
+        return MapLoader.load(`levels/${level}.tmx`)
+            .then((data: Tile[][]) => {
+                this.tiles = data;
+                this.entity.width = this.tiles[0].length * tileWidth;
+                this.entity.height = this.tiles.length * tileHeight;
+                return this;
+            });
     }
 
     setSize(width: number, height: number) {

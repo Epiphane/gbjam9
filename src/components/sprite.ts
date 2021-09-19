@@ -65,6 +65,10 @@ export class SpriteComponent extends Component {
         return this; // Enable chaining
     }
 
+    setFlip(flip: boolean) {
+        this.flip = flip;
+    }
+
     runAnimation(sheet: number[], frameTime: number, repeat?: boolean) {
         this.frameTime = frameTime;
         this.timeLeft = frameTime;

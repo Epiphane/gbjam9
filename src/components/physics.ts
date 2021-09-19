@@ -1,4 +1,4 @@
-import { Component, Point } from "../../lib/juicy";
+import { Component, Game, Point } from "../../lib/juicy";
 import { TileInfo } from "../helpers/tiles";
 import { MapComponent } from "./map";
 import { Hitbox } from "./stupid-hitbox";
@@ -6,10 +6,11 @@ import { Hitbox } from "./stupid-hitbox";
 export class PhysicsBody extends Component {
     active = true;
     velocity = new Point();
+    terminalVelocity = 100;
 
     // Each flag is whether or not you can move in the specified direction.
     // blocked[1][1] is unused, as it's the player's current location.
-    blocked = [
+    protected blocked = [
         [false, false, false],
         [false, false, false],
         [false, false, false],
@@ -54,7 +55,7 @@ export class PhysicsBody extends Component {
         }
     }
 
-    update(dt: number) {
+    update(dt: number, game: typeof Game) {
         if (!this.active) {
             return;
         }
@@ -73,14 +74,19 @@ export class PhysicsBody extends Component {
             return;
         }
 
+        this.computeBlockages(map, hitbox);
+        if (!this.blocked[2][1]) {
+            this.velocity.y += dt * 720;
+
+            this.velocity.y = Math.min(this.terminalVelocity, this.velocity.y);
+        }
+
         const { x: dx, y: dy } = this.velocity;
         if (dx === 0 && dy === 0) {
             return;
         }
 
-        this.computeBlockages(map, hitbox);
-
-        const steps = 8;
+        const steps = 100;
         let moveX = dx * dt / steps;
         let moveY = dy * dt / steps;
         let moveDirX = Math.sign(moveX) + 1;

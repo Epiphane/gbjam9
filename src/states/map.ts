@@ -60,7 +60,15 @@ export class MapScreen extends State {
     key_A() {
         this.player.components.forEach(c => {
             if (c instanceof PlayerForm) {
-                c.doAction();
+                c.endAction();
+            }
+        })
+    }
+
+    keyDown_A() {
+        this.player.components.forEach(c => {
+            if (c instanceof PlayerForm) {
+                c.startAction();
             }
         })
     }

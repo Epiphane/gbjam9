@@ -108,7 +108,14 @@ class Game {
         // document hooks
         document.onkeydown = (evt) => {
             this.keyState[evt.keyCode] = true;
+
+            const method = 'keyDown_' + this.CODES[evt.keyCode];
+            const state = this.state as any;
+            if (state && state[method]) {
+                state[method](this.CODES[evt.keyCode]);
+            }
         };
+
         document.onkeyup = (evt) => {
             this.keyState[evt.keyCode] = false;
 

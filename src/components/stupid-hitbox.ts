@@ -6,10 +6,19 @@
 import { Point, Component } from "../../lib/juicy";
 import { __HITBOXES__ } from "../helpers/debug";
 
+interface BoundingBox {
+    position: Point;
+    size: Point;
+}
+
 export class Hitbox extends Component {
     private offset = new Point(0);
     private size?: Point;
     private visible = __HITBOXES__;
+
+    getOffset() {
+        return this.offset;
+    }
 
     setOffset(x: number, y: number) {
         this.offset = new Point(x, y);
@@ -30,9 +39,18 @@ export class Hitbox extends Component {
         return { min, max, size };
     }
 
-    test(other: Hitbox) {
+    test(other: Hitbox | BoundingBox) {
         const { min, max } = this.getBounds();
-        const { min: otherMin, max: otherMax } = other.getBounds();
+        let otherMin, otherMax: Point;
+        if (other instanceof Hitbox) {
+            const bounds = other.getBounds();
+            otherMin = bounds.min;
+            otherMax = bounds.max;
+        }
+        else {
+            otherMin = other.position;
+            otherMax = other.position.copy().add(other.size);
+        }
 
         if (min.x > otherMax.x ||
             min.y > otherMax.y ||

@@ -14,28 +14,32 @@ import { Camera } from "../components/camera";
 import { PlayerAnimation } from "../components/player-animation";
 import { PlayerForm } from "../components/forms/player-form";
 import { AttackForm } from "../components/forms/attack";
+import { MapTraveller } from "../components/map-traveller";
+import { Teleporter } from "../helpers/map-loader";
 
 export class MapScreen extends State {
+    map: MapComponent;
     player: Entity;
     camera: Entity;
     ui: Entity;
     ready = false;
 
+    currentLevel!: string;
+
     constructor() {
         super();
 
         const mapEntity = new Entity(this, 'map', [MapComponent]);
-        mapEntity.get(MapComponent)
-            ?.load('test')
-            .then(() => {
-                this.ready = true;
-                this.camera.get(Camera)?.setBounds({
-                    min: new Point(),
-                    max: new Point(mapEntity.width, mapEntity.height)
-                });
-            });
+        this.map = mapEntity.get(MapComponent)!;
+        this.loadLevel('test');
 
-        this.player = new Entity(this, [SpriteComponent, Hitbox, PlayerPhysics, PlayerAnimation]);
+        this.player = new Entity(this, [
+            SpriteComponent,
+            Hitbox,
+            PlayerPhysics,
+            PlayerAnimation,
+            MapTraveller,
+        ]);
         this.player.position.x = 46;
         this.player.position.y = 9 * 12;
 
@@ -48,6 +52,9 @@ export class MapScreen extends State {
 
         // Player forms!
         this.player.add(AttackForm);
+
+        // Teleportation
+        this.player.get(MapTraveller)?.onTeleport(this.teleport.bind(this));
 
         // Making UI lol
         this.ui = new Entity(this);
@@ -99,6 +106,25 @@ export class MapScreen extends State {
     key_DOWN() {}
     key_LEFT() {}
     key_RIGHT() {}
+
+    loadLevel(name: string, from?: string) {
+        this.currentLevel = name;
+        this.map
+            .load(name)
+            .then((map) => {
+                this.ready = true;
+                this.camera.get(Camera)?.setBounds({
+                    min: new Point(),
+                    max: new Point(map.entity.width, map.entity.height)
+                });
+
+                this.player.get(MapTraveller)?.spawn(map, from);
+            });
+    }
+
+    teleport(teleporter: Teleporter) {
+        this.loadLevel(teleporter.destination, this.currentLevel);
+    }
 
     update(dt: number) {
         if (!this.ready) {

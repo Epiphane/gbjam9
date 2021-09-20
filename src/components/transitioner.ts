@@ -1,4 +1,5 @@
 import { Component, Point } from "../../lib/juicy";
+import { MapTraveller } from "./map-traveller";
 import { PhysicsBody } from "./physics";
 import { PlayerAnimation } from "./player-animation";
 import { PlayerPhysics } from "./player-physics";
@@ -15,6 +16,7 @@ export type Transition = (MoveTransition) & {
 };
 
 const InteractionComponents: (typeof Component)[] = [
+    MapTraveller,
     PhysicsBody,
     PlayerPhysics,
 ];

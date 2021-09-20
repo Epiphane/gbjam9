@@ -14,11 +14,11 @@ import { Camera } from "../components/camera";
 import { PlayerAnimation } from "../components/player-animation";
 import { PlayerForm } from "../components/forms/player-form";
 import { AttackForm } from "../components/forms/attack";
+import { Transitioner } from "../components/transitioner";
 import { MapTraveller } from "../components/map-traveller";
 import { Teleporter } from "../helpers/map-loader";
-import { Transitioner } from "../components/transitioner";
 
-export class MapScreen extends State {
+export class VaniaScreen extends State {
     map: MapComponent;
     player: Entity;
     camera: Entity;
@@ -32,7 +32,7 @@ export class MapScreen extends State {
 
         const mapEntity = new Entity(this, 'map', [MapComponent]);
         this.map = mapEntity.get(MapComponent)!;
-        this.loadLevel('test');
+        this.loadLevel('intro');
 
         this.player = new Entity(this, [
             Transitioner,

@@ -1,5 +1,12 @@
 import { Component, Point, Game, Entity } from '../../lib/juicy';
 
+export interface Animation {
+    name: string;
+    sheet: number[];
+    frameTime: number;
+    repeat?: boolean;
+};
+
 export class SpriteComponent extends Component {
     image: HTMLImageElement | HTMLCanvasElement = new Image();
     width?: number;
@@ -15,6 +22,7 @@ export class SpriteComponent extends Component {
     repeat = false;
     flip = false;
 
+    current: string = '';
     sheet: number[] = [];
     sprite: number = 0;
 
@@ -69,7 +77,12 @@ export class SpriteComponent extends Component {
         this.flip = flip;
     }
 
-    runAnimation(sheet: number[], frameTime: number, repeat?: boolean) {
+    runAnimation({ name, sheet, frameTime, repeat }: Animation) {
+        if (this.current === name) {
+            return this; // enable chaining
+        }
+
+        this.current = name;
         this.frameTime = frameTime;
         this.timeLeft = frameTime;
         this.sheet = sheet;

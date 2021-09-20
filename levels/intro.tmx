@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="10" height="12" tilewidth="16" tileheight="12" infinite="0" nextlayerid="7" nextobjectid="13">
+ <editorsettings>
+  <export format="json"/>
+ </editorsettings>
+ <tileset firstgid="1" source="tiles.tsx"/>
+ <layer id="1" name="Tile Layer 1" width="10" height="12">
+  <data encoding="csv">
+2,3,2,3,2,3,2,3,2,3,
+3,2,2,2,2,2,2,2,2,2,
+2,2,2,2,23,22,2,2,2,3,
+3,2,12,12,13,12,12,12,2,2,
+2,22,23,22,23,22,23,22,23,3,
+3,12,13,12,13,12,13,12,13,2,
+2,22,23,22,23,22,23,22,23,3,
+3,12,12,12,12,12,12,12,13,12,
+2,22,23,22,23,22,12,12,12,12,
+2,2,2,2,2,2,2,2,2,2,
+2,2,2,2,2,2,2,2,2,2,
+3,2,3,2,3,2,3,2,3,2
+</data>
+ </layer>
+ <objectgroup id="5" name="Spawners">
+  <object id="4" template="player.tx" name="From Hall0" x="154" y="89">
+   <properties>
+    <property name="dir" value="left"/>
+    <property name="source" value="hall0"/>
+   </properties>
+  </object>
+  <object id="12" template="player.tx" x="79" y="86"/>
+ </objectgroup>
+ <objectgroup id="6" name="Teleporters">
+  <object id="8" name="Onward" type="Teleport" x="155" y="84" width="5" height="24">
+   <properties>
+    <property name="destination" value="hall0"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

@@ -59,7 +59,7 @@ export class PlayerPhysics extends PhysicsBody {
 
         super.update(dt, game);
 
-        if (this.blocked[2][1]) {
+        if (!game.keyDown(Keys.UP) && this.blocked[2][1]) {
             this.jumpTail = 0;
         }
     }

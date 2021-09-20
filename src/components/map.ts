@@ -1,5 +1,5 @@
 import { Component, Point } from "../../lib/juicy";
-import { MapLoader, Tile, TileOffset } from "../helpers/map-loader";
+import { LoadedMap, MapLoader, Spawner, Teleporter, Tile, TileOffset } from "../helpers/map-loader";
 
 const tiles = new Image();
 tiles.src = './images/tiles.png';
@@ -9,11 +9,15 @@ const tileHeight = 12;
 
 export class MapComponent extends Component {
     tiles: Tile[][] = [];
+    spawners: Spawner[] = [];
+    teleporters: Teleporter[] = [];
 
     load(level: string) {
         return MapLoader.load(`levels/${level}.tmx`)
-            .then((data: Tile[][]) => {
-                this.tiles = data;
+            .then((data: LoadedMap) => {
+                this.tiles = data.tiles;
+                this.spawners = data.spawners;
+                this.teleporters = data.teleporters;
                 this.entity.width = this.tiles[0].length * tileWidth;
                 this.entity.height = this.tiles.length * tileHeight;
                 return this;

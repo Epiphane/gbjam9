@@ -29,7 +29,7 @@ if (__DEV__) {
 }
 
 // Show hitboxes
-export let __HITBOXES__ = true;
+export let __HITBOXES__ = false;
 if (__DEV__) {
     __HITBOXES__ = localStorage.getItem('__HITBOXES__') !== 'off';
     const hitboxButton = document.createElement('button');

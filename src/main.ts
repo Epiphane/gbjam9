@@ -2,7 +2,7 @@ import { Game, Sound } from '../lib/juicy';
 import { PaletteManager } from './helpers/palette';
 import { LoadingScreen } from './states/loading';
 import { Keys } from './helpers/constants';
-import { MapScreen } from './states/map';
+import { TestScreen } from './states/test';
 import { __DEV__, __PALETTE__ } from './helpers/debug';
 
 // const keys = {
@@ -76,7 +76,7 @@ Sound.Load('FubSong', {
 // Sound.Play('FubSong');
 
 if (__DEV__) {
-    Game.setState(new MapScreen()).run();
+    Game.setState(new TestScreen()).run();
 }
 else {
     Game.setState(new LoadingScreen()).run();

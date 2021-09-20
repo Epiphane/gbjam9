@@ -94,6 +94,7 @@ class Game {
         }
         else {
             canv = document.createElement('canvas');
+            canv.getContext('2d')!.imageSmoothingEnabled = false;
         }
 
         this.setCanvas(canv);
@@ -108,7 +109,14 @@ class Game {
         // document hooks
         document.onkeydown = (evt) => {
             this.keyState[evt.keyCode] = true;
+
+            const method = 'keyDown_' + this.CODES[evt.keyCode];
+            const state = this.state as any;
+            if (state && state[method]) {
+                state[method](this.CODES[evt.keyCode]);
+            }
         };
+
         document.onkeyup = (evt) => {
             this.keyState[evt.keyCode] = false;
 
@@ -411,7 +419,9 @@ export class State {
 
     update(dt: number): boolean | void {
         this.entities.forEach(e => {
-            e.update(dt);
+            if (!e.parent) {
+                e.update(dt);
+            }
         });
 
         return false;
@@ -419,7 +429,9 @@ export class State {
 
     render(context: CanvasRenderingContext2D, width: number, height: number) {
         this.entities.forEach(e => {
-            e.render(context);
+            if (!e.parent) {
+                e.render(context);
+            }
         });
     }
 
@@ -596,6 +608,7 @@ export class Entity {
     addChild(child: Entity) {
         child.parent = this;
         this.children.push(child);
+        return child;
     }
 
     mousedown(pos: Point) {
@@ -611,7 +624,9 @@ export class Entity {
             for (let i = 0; i < this.components.length; i++) {
                 if ((this.components[i] as any).__proto__.name === constructor.name) {
                     if (!this.updated[i]) {
-                        this.components[i].update(dt, this.state.game);
+                        if (this.components[i].active) {
+                            this.components[i].update(dt, this.state.game);
+                        }
                         this.updated[i] = true;
                     }
                     break;
@@ -622,10 +637,14 @@ export class Entity {
             this.updated.fill(false);
             for (let i = 0; i < this.components.length; i++) {
                 if (!this.updated[i]) {
-                    this.components[i].update(dt, this.state.game);
+                    if (this.components[i].active) {
+                        this.components[i].update(dt, this.state.game);
+                    }
                     this.updated[i] = true;
                 }
             }
+
+            this.children.forEach(child => child.update(dt));
         }
     }
 
@@ -649,7 +668,11 @@ export class Entity {
             throw Error(`${arguments.length} arguments passed to Entity.render, when only 1 or 5 are supported`);
         }
 
-        this.components.forEach(c => c.render.apply(c, renderArgs));
+        this.components.forEach(c => {
+            if (c.active) {
+                c.render.apply(c, renderArgs)
+            }
+        });
         this.children.forEach(child => child.render(context));
         context.restore();
     }
@@ -669,6 +692,10 @@ export class Entity {
  */
 export class Component {
     entity!: Entity;
+    active = true;
+
+    isActive() { return this.active; }
+    setActive(active: boolean) { this.active = active; }
 
     init(e: Entity) { }
     mousedown(pos: Point) {}

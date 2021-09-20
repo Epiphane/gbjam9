@@ -43,7 +43,7 @@ const TilesetToTile = (value: number) => {
     return Tile.None;
 };
 
-interface LevelLayer {
+interface TileLayer {
     id: number;
     name: string;
     visible: boolean;
@@ -58,25 +58,69 @@ interface Tileset {
     source: string;
 }
 
+interface Object {
+    name: string;
+    position: Point;
+    size: Point;
+    properties: { [key: string]: any };
+};
+
+interface ObjectGroup {
+    name: string;
+    objects: Object[];
+};
+
 interface LevelData {
     height: number;
     width: number;
     infinite: boolean;
-    layers: LevelLayer[];
+    objectGroups: ObjectGroup[];
+    tileLayers: TileLayer[];
     tileheight: number;
     tilewidth: number;
     tilesets: Tileset[];
 };
 
+export enum SpawnerAction {
+    None,
+    WalkLeft,
+    WalkRight,
+};
+
+export interface Spawner {
+    position: Point;
+    source?: string;
+    action: SpawnerAction;
+}
+
+export interface Teleporter {
+    position: Point;
+    size: Point;
+    destination: string;
+}
+
+export interface LoadedMap {
+    tiles: Tile[][];
+    spawners: Spawner[];
+    teleporters: Teleporter[];
+}
+
+const mapCache: { [key: string]: LoadedMap } = {};
+
 class MapLoader {
-    load(source: string): Promise<Tile[][]> {
+    load(source: string): Promise<LoadedMap> {
+        if (mapCache[source]) {
+            return Promise.resolve(mapCache[source]);
+        }
+
         return fetch(source)
             .then(data => data.text())
             .then(data => this.parseXML(data))
-            .then((data: LevelData) => this.parseMap(data));
+            .then((data: LevelData) => this.parseMap(data))
+            .then((data: LoadedMap) => mapCache[source] = data);
     }
 
-    parseLayer(node: Element): LevelLayer {
+    parseLayer(node: Element): TileLayer {
         const id = parseInt(node.getAttribute('id')!) || 0;
         const name = node.getAttribute('name') || '';
         const visible = node.getAttribute('infinite') !== '0';
@@ -111,12 +155,81 @@ class MapLoader {
         };
     }
 
+    parseProperties(node: Element): { [key: string]: any } {
+        const properties: { [key: string]: any } = {};
+
+        for (const index in node.children) {
+            const child = node.children[index];
+            if (child.nodeName === 'property') {
+                const name = child.getAttribute('name') || '';
+                const type = child.getAttribute('type') || 'string';
+                let value: any = child.getAttribute('value') || '';
+
+                if (type === 'int') {
+                    value = parseInt(value);
+                }
+                else if (type === 'bool') {
+                    value = value === 'true';
+                }
+                else if (type === 'float') {
+                    value = parseFloat(value);
+                }
+
+                properties[name] = value;
+            }
+        }
+
+        return properties;
+    }
+
+    parseObject(node: Element): Object {
+        const name = node.getAttribute('name') || '';
+        const position = new Point(
+            parseInt(node.getAttribute("x") || `0`),
+            parseInt(node.getAttribute("y") || `0`),
+        );
+        const size = new Point(
+            parseInt(node.getAttribute("width") || `0`),
+            parseInt(node.getAttribute("height") || `0`),
+        );
+        let properties = {};
+
+        for (const index in node.children) {
+            const child = node.children[index];
+            if (child.nodeName === 'properties') {
+                properties = this.parseProperties(child);
+            }
+        }
+
+        return {
+            name,
+            position,
+            size,
+            properties,
+        };
+    }
+
+    parseGroup(node: Element): ObjectGroup {
+        const name = node.getAttribute('name') || '';
+        const objects: Object[] = [];
+
+        for (const index in node.children) {
+            const child = node.children[index];
+            if (child.nodeName === 'object') {
+                objects.push(this.parseObject(child));
+            }
+        }
+
+        return { name, objects };
+    }
+
     parseXML(data: string): LevelData {
         const result: LevelData = {
             height: 0,
             width: 0,
             infinite: false,
-            layers: [],
+            objectGroups: [],
+            tileLayers: [],
             tileheight: 0,
             tilewidth: 0,
             tilesets: [],
@@ -134,16 +247,26 @@ class MapLoader {
         const tilewidth = parseInt(dom.documentElement.getAttribute('tilewidth')!) || 0;
         const tileheight = parseInt(dom.documentElement.getAttribute('tileheight')!) || 0;
 
-        const layers: LevelLayer[] = [];
+        const objectGroups: ObjectGroup[] = [];
+        const tileLayers: TileLayer[] = [];
         const tilesets: Tileset[] = [];
         for (const index in dom.documentElement.children) {
             const child = dom.documentElement.children[index];
+            if (!child.nodeName) {
+                continue;
+            }
 
             if (child.nodeName === 'layer') {
-                layers.push(this.parseLayer(child));
+                tileLayers.push(this.parseLayer(child));
             }
-            else if (child.nodeName === 'tileset') {
-
+            else if (child.nodeName === 'objectgroup') {
+                objectGroups.push(this.parseGroup(child));
+            }
+            else if (['tileset', 'editorsettings'].indexOf(child.nodeName) >= 0) {
+                // who cares, I don't
+            }
+            else {
+                console.warn(`idk what a ${child.nodeName} is`);
             }
         }
 
@@ -151,28 +274,66 @@ class MapLoader {
             height,
             width,
             infinite,
-            layers,
+            objectGroups,
+            tileLayers,
             tileheight,
             tilewidth,
             tilesets,
         };
     }
 
-    parseMap(data: LevelData): Tile[][] {
-        const tiles = new Array(data.height).fill(false).map(() => new Array(data.width).fill(Tile.None));
+    parseMap(data: LevelData): LoadedMap {
+        const result: LoadedMap = {
+            tiles: new Array(data.height).fill(false).map(() => new Array(data.width).fill(Tile.None)),
+            spawners: [],
+            teleporters: [],
+        };
 
-        data.layers.forEach(layer => {
+        data.tileLayers.forEach(layer => {
             layer.data.forEach((value, i) => {
                 const row = Math.floor(i / layer.width);
                 const col = i % layer.width;
                 const x = layer.x + col;
                 const y = layer.y + row;
 
-                tiles[y][x] = TilesetToTile(value);
+                result.tiles[y][x] = TilesetToTile(value);
             });
         });
 
-        return tiles;
+        data.objectGroups.forEach(group => {
+            if (group.name === 'Spawners') {
+                result.spawners = group.objects.map(obj => {
+                    const position = obj.position;
+                    const source = obj.properties['source']
+                    let action = SpawnerAction.None;
+
+                    if (obj.properties['dir'] === 'right') {
+                        action = SpawnerAction.WalkRight;
+                    }
+                    else if (obj.properties['dir'] === 'left') {
+                        action = SpawnerAction.WalkLeft;
+                    }
+
+                    return {
+                        position,
+                        source,
+                        action,
+                    };
+                });
+            }
+            else if (group.name === 'Teleporters') {
+                result.teleporters = group.objects.map(obj => {
+                    const { position, size } = obj;
+                    return {
+                        position,
+                        size,
+                        destination: obj.properties['destination'],
+                    };
+                });
+            }
+        })
+
+        return result;
     }
 };
 

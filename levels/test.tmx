@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="20" height="24" tilewidth="16" tileheight="12" infinite="0" nextlayerid="5" nextobjectid="1">
+<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="20" height="24" tilewidth="16" tileheight="12" infinite="0" nextlayerid="7" nextobjectid="12">
  <editorsettings>
-  <export target="test.json" format="json"/>
+  <export format="json"/>
  </editorsettings>
  <tileset firstgid="1" source="tiles.tsx"/>
  <layer id="1" name="Tile Layer 1" width="20" height="24">
@@ -15,8 +15,8 @@
 2,22,23,22,23,22,23,22,23,3,2,12,12,12,2,2,12,12,12,2,
 3,2,2,2,13,12,2,2,13,2,2,2,2,2,12,12,12,12,12,2,
 2,22,23,22,23,22,2,2,23,3,2,12,12,12,12,12,12,12,12,2,
-3,12,13,12,13,12,13,12,13,12,12,12,12,12,12,12,12,2,2,2,
-2,22,23,22,23,22,23,22,23,12,12,12,12,12,12,12,2,2,2,2,
+12,12,13,12,13,12,13,12,13,12,12,12,12,12,12,12,12,2,2,2,
+12,22,23,22,23,22,23,22,23,12,12,12,12,12,12,12,2,2,2,2,
 3,2,3,2,3,2,3,2,3,2,2,2,2,2,12,12,2,2,2,2,
 2,2,2,2,2,2,2,2,2,2,2,2,2,2,12,12,2,2,2,2,
 2,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,2,
@@ -27,9 +27,25 @@
 2,12,12,12,2,2,12,12,12,2,2,2,2,2,12,12,12,12,12,2,
 2,12,12,12,12,12,12,12,12,2,2,12,12,12,12,12,12,12,12,2,
 2,12,12,12,12,12,2,2,12,2,2,12,12,12,12,12,2,2,2,2,
-2,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,2,
-2,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,2,
+12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,2,
+12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,2,
 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2
 </data>
  </layer>
+ <objectgroup id="5" name="Spawners">
+  <object id="4" name="Start" type="Spawn" x="75" y="69" width="6" height="19"/>
+  <object id="6" name="FromMyself" type="Spawn" x="0" y="257" width="12" height="19">
+   <properties>
+    <property name="dir" value="right"/>
+    <property name="source" value="test"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="6" name="Teleporters">
+  <object id="8" name="Infinity" type="Teleport" x="-3" y="109" width="5" height="22">
+   <properties>
+    <property name="destination" value="test"/>
+   </properties>
+  </object>
+ </objectgroup>
 </map>

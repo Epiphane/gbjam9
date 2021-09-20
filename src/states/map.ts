@@ -11,6 +11,8 @@ import { PaletteSelectionScreen } from "./palette-selector";
 import { PlayerPhysics } from "../components/player-physics";
 import { Camera } from "../components/camera";
 import { PlayerAnimation } from "../components/player-animation";
+import { PlayerForm } from "../components/forms/player-form";
+import { AttackForm } from "../components/forms/attack";
 
 export class MapScreen extends State {
     player: Entity;
@@ -41,6 +43,9 @@ export class MapScreen extends State {
 
         this.camera = new Entity(this, [Camera]);
         this.camera.get(Camera)?.follow(this.player);
+
+        // Player forms!
+        this.player.add(AttackForm);
     }
 
     init() {
@@ -51,10 +56,18 @@ export class MapScreen extends State {
     }
 
     key_START() {}
+
     key_A() {
-        this.player.get(PlayerAnimation)!.attacking = true;
+        this.player.components.forEach(c => {
+            if (c instanceof PlayerForm) {
+                c.doAction();
+            }
+        })
     }
-    key_B() {}
+
+    key_B() {
+    }
+
     key_UP() {}
     key_DOWN() {}
     key_LEFT() {}

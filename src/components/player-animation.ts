@@ -36,6 +36,10 @@ export const Animations: { [key: string]: Animation } = {
     },
 };
 
+export enum PlayerAnimationEvent {
+    Attack,
+};
+
 export class PlayerAnimation extends Component {
     sprite!: SpriteComponent;
     physics?: PhysicsBody;
@@ -43,6 +47,7 @@ export class PlayerAnimation extends Component {
     moving = false;
     jumping = false;
     falling = false;
+
     attacking = false;
 
     init(e: Entity) {
@@ -64,6 +69,13 @@ export class PlayerAnimation extends Component {
         this.attacking = false;
     }
 
+    trigger(event: PlayerAnimationEvent) {
+        if (event == PlayerAnimationEvent.Attack) {
+            this.sprite.runAnimation(Animations.Attack);
+            this.attacking = true;
+        }
+    }
+
     update(dt: number) {
         if (!this.sprite) {
             return;
@@ -76,7 +88,6 @@ export class PlayerAnimation extends Component {
         }
 
         if (this.attacking) {
-            this.sprite.runAnimation(Animations.Attack);
             return;
         }
 

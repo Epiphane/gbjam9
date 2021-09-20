@@ -11,10 +11,17 @@ import { PaletteSelectionScreen } from "./palette-selector";
 import { PlayerPhysics } from "../components/player-physics";
 import { Keys } from "../helpers/constants";
 import { Camera } from "../components/camera";
+import {
+    CircleParticle,
+    Particle,
+    ParticleManagerComponent
+} from "../components/particle-manager"
+import { ColorType } from "../helpers/palette"
 
 export class MapScreen extends State {
     player: Entity;
     camera: Entity;
+    particles: Entity;
     ready = false;
 
     constructor() {
@@ -45,6 +52,8 @@ export class MapScreen extends State {
 
         this.camera = new Entity(this, [Camera]);
         this.camera.get(Camera)?.follow(this.player);
+
+        this.particles = new Entity(this, [ParticleManagerComponent]);
     }
 
     init() {
@@ -68,6 +77,18 @@ export class MapScreen extends State {
         }
 
         super.update(dt);
+
+        // Particle test, to be deleted
+        const p = new CircleParticle(1, (p, dt) => {
+            p.origin.x += 0.5;
+            p.origin.y += 0.4;
+            return true
+        },
+            this.player.position.copy(),
+            3,
+            ColorType.Dark
+        )
+        this.particles.get(ParticleManagerComponent)?.addParticle(p)
     }
 
     render(ctx: CanvasRenderingContext2D, width: number, height: number) {

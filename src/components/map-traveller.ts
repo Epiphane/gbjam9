@@ -1,7 +1,8 @@
-import { Component } from "../../lib/juicy";
-import { Teleporter } from "../helpers/map-loader";
+import { Component, Point } from "../../lib/juicy";
+import { Spawner, SpawnerAction, Teleporter } from "../helpers/map-loader";
 import { MapComponent } from "./map";
 import { Hitbox } from "./stupid-hitbox";
+import { Transitioner } from "./transitioner";
 
 type TeleportCallback = (tp: Teleporter) => void;
 
@@ -14,24 +15,22 @@ export class MapTraveller extends Component {
     }
 
     spawn(map: MapComponent, source?: string) {
-        let found = false;
+        let match: Spawner | undefined;
         map.spawners.forEach(spawner => {
             if (spawner.source === source) {
-                this.entity.position = spawner.position.copy();
-                found = true;
+                match = spawner;
             }
         });
 
-        if (!found) {
+        if (!match) {
             map.spawners.forEach(spawner => {
                 if (!spawner.source) {
-                    this.entity.position = spawner.position.copy();
-                    found = true;
+                    match = spawner;
                 }
             });
         }
 
-        if (found) {
+        if (match) {
             const hitbox = this.entity.get(Hitbox);
             if (!hitbox) {
                 console.error(`Can't simulate physics without a hitbox. Add the Hitbox component to your entity`);
@@ -39,7 +38,29 @@ export class MapTraveller extends Component {
                 return;
             }
 
-            this.entity.position.sub(hitbox.getOffset());
+            this.entity.position = match.position.copy().sub(hitbox.getOffset());
+
+            const transitioner = this.entity.get(Transitioner);
+            if (transitioner) {
+                switch (match.action) {
+                case SpawnerAction.WalkLeft:
+                    transitioner.transition({
+                        type: 'Move',
+                        distance: new Point(-8, 0),
+                        moveTime: 0.5,
+                        time: 0.75,
+                    });
+                    break;
+                case SpawnerAction.WalkRight:
+                    transitioner.transition({
+                        type: 'Move',
+                        distance: new Point(8, 0),
+                        moveTime: 0.5,
+                        time: 0.75,
+                    });
+                    break;
+                }
+            }
         }
     }
 

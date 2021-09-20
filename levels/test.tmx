@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="20" height="24" tilewidth="16" tileheight="12" infinite="0" nextlayerid="7" nextobjectid="12">
  <editorsettings>
-  <export target="test.json" format="json"/>
+  <export format="json"/>
  </editorsettings>
  <tileset firstgid="1" source="tiles.tsx"/>
  <layer id="1" name="Tile Layer 1" width="20" height="24">
@@ -27,14 +27,14 @@
 2,12,12,12,2,2,12,12,12,2,2,2,2,2,12,12,12,12,12,2,
 2,12,12,12,12,12,12,12,12,2,2,12,12,12,12,12,12,12,12,2,
 2,12,12,12,12,12,2,2,12,2,2,12,12,12,12,12,2,2,2,2,
-2,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,2,
-2,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,2,
+12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,2,
+12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,2,
 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2
 </data>
  </layer>
  <objectgroup id="5" name="Spawners">
   <object id="4" name="Start" type="Spawn" x="75" y="69" width="6" height="19"/>
-  <object id="6" name="FromMyself" type="Spawn" x="17" y="255" width="6" height="19">
+  <object id="6" name="FromMyself" type="Spawn" x="0" y="257" width="12" height="19">
    <properties>
     <property name="dir" value="right"/>
     <property name="source" value="test"/>

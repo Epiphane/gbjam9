@@ -81,7 +81,7 @@ export class PlayerAnimation extends Component {
             return;
         }
 
-        if (this.physics) {
+        if (this.physics?.isActive()) {
             this.moving = this.physics.velocity.x != 0;
             this.jumping = this.physics.velocity.y < 0;
             this.falling = this.physics.velocity.y > 0;

@@ -624,7 +624,9 @@ export class Entity {
             for (let i = 0; i < this.components.length; i++) {
                 if ((this.components[i] as any).__proto__.name === constructor.name) {
                     if (!this.updated[i]) {
-                        this.components[i].update(dt, this.state.game);
+                        if (this.components[i].active) {
+                            this.components[i].update(dt, this.state.game);
+                        }
                         this.updated[i] = true;
                     }
                     break;
@@ -635,7 +637,9 @@ export class Entity {
             this.updated.fill(false);
             for (let i = 0; i < this.components.length; i++) {
                 if (!this.updated[i]) {
-                    this.components[i].update(dt, this.state.game);
+                    if (this.components[i].active) {
+                        this.components[i].update(dt, this.state.game);
+                    }
                     this.updated[i] = true;
                 }
             }
@@ -664,7 +668,11 @@ export class Entity {
             throw Error(`${arguments.length} arguments passed to Entity.render, when only 1 or 5 are supported`);
         }
 
-        this.components.forEach(c => c.render.apply(c, renderArgs));
+        this.components.forEach(c => {
+            if (c.active) {
+                c.render.apply(c, renderArgs)
+            }
+        });
         this.children.forEach(child => child.render(context));
         context.restore();
     }
@@ -684,6 +692,10 @@ export class Entity {
  */
 export class Component {
     entity!: Entity;
+    active = true;
+
+    isActive() { return this.active; }
+    setActive(active: boolean) { this.active = active; }
 
     init(e: Entity) { }
     mousedown(pos: Point) {}

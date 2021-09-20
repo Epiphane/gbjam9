@@ -16,6 +16,7 @@ import { PlayerForm } from "../components/forms/player-form";
 import { AttackForm } from "../components/forms/attack";
 import { MapTraveller } from "../components/map-traveller";
 import { Teleporter } from "../helpers/map-loader";
+import { Transitioner } from "../components/transitioner";
 
 export class MapScreen extends State {
     map: MapComponent;
@@ -34,6 +35,7 @@ export class MapScreen extends State {
         this.loadLevel('test');
 
         this.player = new Entity(this, [
+            Transitioner,
             SpriteComponent,
             Hitbox,
             PlayerPhysics,

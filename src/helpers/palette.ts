@@ -183,9 +183,9 @@ class PaletteManager {
 
             // Based on the red value, pick which of the 4 colors this means.
             const rValue = templateData[i];
-            if (rValue >= 85) pindex --;
-            if (rValue >= 170) pindex --;
-            if (rValue >= 255) pindex --;
+            if (rValue >= 75) pindex --;
+            if (rValue >= 160) pindex --;
+            if (rValue >= 245) pindex --;
             const color = palette[pindex];
 
             colored.data[i+0] = color[0];

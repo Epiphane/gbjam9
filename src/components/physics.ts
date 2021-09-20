@@ -55,6 +55,10 @@ export class PhysicsBody extends Component {
         }
     }
 
+    isBlocked(dx: number, dy: number) {
+        return this.blocked[dy + 1][dx + 1];
+    }
+
     update(dt: number, game: typeof Game) {
         if (!this.active) {
             return;

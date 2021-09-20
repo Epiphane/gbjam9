@@ -17,17 +17,6 @@ export class PlayerPhysics extends PhysicsBody {
         this.terminalVelocity = 150;
     }
 
-    jump(dt: number) {
-        if (this.blocked[2][1]) {
-            this.velocity.y = -100;
-            this.jumpTail = 2;
-        }
-        else if (this.jumpTail > 0) {
-            this.jumpTail -= dt;
-            this.velocity.y -= 120 * dt;
-        }
-    }
-
     update(dt: number, game: typeof Game) {
         this.velocity.x = 0;
         if (game.keyDown(Keys.LEFT)) {

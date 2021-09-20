@@ -3,6 +3,7 @@ import {
     Point,
     Entity,
     Game,
+    ImageComponent,
 } from "../../lib/juicy";
 import { Hitbox } from "../components/stupid-hitbox";
 import { MapComponent } from "../components/map";
@@ -17,6 +18,7 @@ import { AttackForm } from "../components/forms/attack";
 export class MapScreen extends State {
     player: Entity;
     camera: Entity;
+    ui: Entity;
     ready = false;
 
     constructor() {
@@ -46,6 +48,23 @@ export class MapScreen extends State {
 
         // Player forms!
         this.player.add(AttackForm);
+
+        // Making UI lol
+        this.ui = new Entity(this);
+        this.remove(this.ui);
+
+        // Haha I'm hacking hahaha
+        const formFrame = this.ui.addChild(new Entity(this, [SpriteComponent]));
+        formFrame.get(SpriteComponent)
+            ?.setImage('./images/forms.png')
+            .setSize(20, 20)
+            .runAnimation({ name: 'Frame', frameTime: 0, repeat: true, sheet: [0]});
+
+        const formType = this.ui.addChild(new Entity(this, [SpriteComponent]));
+        formType.get(SpriteComponent)
+            ?.setImage('./images/forms.png')
+            .setSize(20, 20)
+            .runAnimation({ name: 'Frame', frameTime: 0, repeat: true, sheet: [1]});
     }
 
     init() {
@@ -87,5 +106,7 @@ export class MapScreen extends State {
 
         super.render(ctx, width, height);
         ctx.restore();
+
+        this.ui.render(ctx);
     }
 };

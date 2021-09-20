@@ -94,6 +94,7 @@ class Game {
         }
         else {
             canv = document.createElement('canvas');
+            canv.getContext('2d')!.imageSmoothingEnabled = false;
         }
 
         this.setCanvas(canv);
@@ -418,7 +419,9 @@ export class State {
 
     update(dt: number): boolean | void {
         this.entities.forEach(e => {
-            e.update(dt);
+            if (!e.parent) {
+                e.update(dt);
+            }
         });
 
         return false;
@@ -426,7 +429,9 @@ export class State {
 
     render(context: CanvasRenderingContext2D, width: number, height: number) {
         this.entities.forEach(e => {
-            e.render(context);
+            if (!e.parent) {
+                e.render(context);
+            }
         });
     }
 
@@ -603,6 +608,7 @@ export class Entity {
     addChild(child: Entity) {
         child.parent = this;
         this.children.push(child);
+        return child;
     }
 
     mousedown(pos: Point) {
@@ -633,6 +639,8 @@ export class Entity {
                     this.updated[i] = true;
                 }
             }
+
+            this.children.forEach(child => child.update(dt));
         }
     }
 

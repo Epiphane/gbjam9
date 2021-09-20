@@ -105,12 +105,19 @@ export interface LoadedMap {
     teleporters: Teleporter[];
 }
 
+const mapCache: { [key: string]: LoadedMap } = {};
+
 class MapLoader {
     load(source: string): Promise<LoadedMap> {
+        if (mapCache[source]) {
+            return Promise.resolve(mapCache[source]);
+        }
+
         return fetch(source)
             .then(data => data.text())
             .then(data => this.parseXML(data))
-            .then((data: LevelData) => this.parseMap(data));
+            .then((data: LevelData) => this.parseMap(data))
+            .then((data: LoadedMap) => mapCache[source] = data);
     }
 
     parseLayer(node: Element): TileLayer {

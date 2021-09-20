@@ -9,8 +9,8 @@ import { MapComponent } from "../components/map";
 import { SpriteComponent } from "../components/sprite";
 import { PaletteSelectionScreen } from "./palette-selector";
 import { PlayerPhysics } from "../components/player-physics";
-import { Keys } from "../helpers/constants";
 import { Camera } from "../components/camera";
+import { PlayerAnimation } from "../components/player-animation";
 
 export class MapScreen extends State {
     player: Entity;
@@ -31,16 +31,12 @@ export class MapScreen extends State {
                 });
             });
 
-        this.player = new Entity(this, [SpriteComponent, Hitbox, PlayerPhysics]);
+        this.player = new Entity(this, [SpriteComponent, Hitbox, PlayerPhysics, PlayerAnimation]);
         this.player.position.x = 46;
         this.player.position.y = 9 * 12;
-        this.player.get(SpriteComponent)
-            ?.setImage('./images/walk_boy.png')
-            .setSize(16, 24)
-            .runAnimation([0, 1, 2, 3], 0.15, true);
 
         const hitbox = this.player.get(Hitbox)!;
-        hitbox.setOffset(4, 5);
+        hitbox.setOffset(13, 5);
         hitbox.setSize(6, 19);
 
         this.camera = new Entity(this, [Camera]);
@@ -55,7 +51,9 @@ export class MapScreen extends State {
     }
 
     key_START() {}
-    key_A() {}
+    key_A() {
+        this.player.get(PlayerAnimation)!.attacking = true;
+    }
     key_B() {}
     key_UP() {}
     key_DOWN() {}

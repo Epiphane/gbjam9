@@ -17,6 +17,7 @@ import { AttackForm } from "../components/forms/attack";
 import { Transitioner } from "../components/transitioner";
 import { MapTraveller } from "../components/map-traveller";
 import { Teleporter } from "../helpers/map-loader";
+import { Follower } from "../components/follower";
 
 export class VaniaScreen extends State {
     map: MapComponent;
@@ -33,7 +34,7 @@ export class VaniaScreen extends State {
 
         const mapEntity = new Entity(this, 'map');
         this.map = mapEntity.add(MapComponent);
-        this.player = new Entity(this, [
+        this.player = new Entity(this, "player", [
             Transitioner,
             MapTraveller,
             SpriteComponent,
@@ -123,7 +124,7 @@ export class VaniaScreen extends State {
                 // Spawn enemies bby
                 map.enemySpawners.forEach(spawner => {
                     let enemy = new Entity(this);
-                        enemy.position = spawner.position.copy();
+                    enemy.position = spawner.position.copy();
                     if (spawner.enemyType === "birb") {
                         enemy.add(SpriteComponent)
                             .setImage('./images/birb.png')
@@ -134,6 +135,8 @@ export class VaniaScreen extends State {
                                 frameTime: 0.15,
                                 repeat: true
                             })
+
+                        enemy.add(Follower).target = this.player
                         this.enemies.push(enemy);
                     }
                     else if (spawner.enemyType === 'egg') {

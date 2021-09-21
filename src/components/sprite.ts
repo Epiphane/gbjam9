@@ -12,9 +12,9 @@ export class SpriteComponent extends Component {
     width?: number;
     height?: number;
 
-    sheetWidth   = 0;
-    sheetHeight  = 0;
-    spriteWidth  = 0;
+    sheetWidth = 0;
+    sheetHeight = 0;
+    spriteWidth = 0;
     spriteHeight = 0;
 
     frameTime = -1; // Don't animate yet
@@ -36,8 +36,8 @@ export class SpriteComponent extends Component {
     }
 
     protected onImageLoad = () => {
-        this.sheetWidth   = this.image.width / this.spriteWidth;
-        this.sheetHeight  = this.image.height / this.spriteHeight;
+        this.sheetWidth = this.image.width / this.spriteWidth;
+        this.sheetHeight = this.image.height / this.spriteHeight;
 
         if (this.entity) {
             this.entity.state.updated = true;
@@ -75,6 +75,7 @@ export class SpriteComponent extends Component {
 
     setFlip(flip: boolean) {
         this.flip = flip;
+        return this; // Enable 2chainz
     }
 
     runAnimation({ name, sheet, frameTime, repeat }: Animation) {
@@ -97,7 +98,7 @@ export class SpriteComponent extends Component {
     }
 
     goNextFrame() {
-        this.sprite ++;
+        this.sprite++;
 
         this.timeLeft = this.frameTime;
 
@@ -120,7 +121,7 @@ export class SpriteComponent extends Component {
             this.timeLeft -= dt;
 
             if (this.timeLeft <= 0) {
-               this.goNextFrame();
+                this.goNextFrame();
             }
         }
     }

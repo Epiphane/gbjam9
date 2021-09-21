@@ -1,5 +1,6 @@
 import { Component, Point } from "../../lib/juicy";
-import { LoadedMap, MapLoader, Spawner, Teleporter, Tile, TileOffset } from "../helpers/map-loader";
+import { LoadedMap, MapLoader, Spawner, Teleporter } from "../helpers/map-loader";
+import { Tile, TileInfo } from "../helpers/tiles";
 
 const tiles = new Image();
 tiles.src = './images/tiles.png';
@@ -63,8 +64,8 @@ export class MapComponent extends Component {
                 ctx.drawImage(
                     tiles,
                     // source
-                    TileOffset[tile].x * tileWidth,
-                    TileOffset[tile].y * tileHeight,
+                    TileInfo[tile].offset.x * tileWidth,
+                    TileInfo[tile].offset.y * tileHeight,
                     tileWidth,
                     tileHeight,
                     // destination

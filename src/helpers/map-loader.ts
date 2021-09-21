@@ -1,38 +1,11 @@
 import { Game, Point } from '../../lib/juicy';
-
-export enum Tile {
-    None,
-    Brick1,
-    Brick2,
-    Wall1,
-    Wall2,
-    Wall3,
-    Wall4,
-    Dark,
-    Low,
-    Mid,
-    Light,
-};
-
-export const TileOffset: { [key: number]: Point } = {
-    [Tile.Brick1]: new Point(1, 0),
-    [Tile.Brick2]: new Point(2, 0),
-    [Tile.Wall1]: new Point(1, 1),
-    [Tile.Wall2]: new Point(2, 1),
-    [Tile.Wall3]: new Point(1, 2),
-    [Tile.Wall4]: new Point(2, 2),
-    [Tile.Dark]: new Point(0, 1),
-    [Tile.Low]: new Point(0, 2),
-    [Tile.Mid]: new Point(0, 3),
-    [Tile.Light]: new Point(0, 4),
-};
+import { Tile, TileInfo } from './tiles';
 
 const TilesetToTile = (value: number) => {
-    const tiles = Object.keys(TileOffset);
-    for (let i = 0; i < tiles.length; i++) {
-        const key = parseInt(tiles[i]);
+    for (const keyStr in Tile) {
+        const key = parseInt(keyStr);
         if (!isNaN(key)) {
-            const offset = TileOffset[key];
+            const offset = TileInfo[key as Tile].offset;
             const val = 1 + offset.y * 10 + offset.x;
             if (value === val) {
                 return key;

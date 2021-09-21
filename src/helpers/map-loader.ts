@@ -62,6 +62,7 @@ export enum SpawnerAction {
 
 export interface Spawner {
     position: Point;
+    size: Point;
     source?: string;
     action: SpawnerAction;
 }
@@ -247,7 +248,7 @@ class MapLoader {
             else if (child.nodeName === 'objectgroup') {
                 objectGroups.push(this.parseGroup(child));
             }
-            else if (['tileset', 'editorsettings'].indexOf(child.nodeName) >= 0) {
+            else if (['imagelayer', 'tileset', 'editorsettings'].indexOf(child.nodeName) >= 0) {
                 // who cares, I don't
             }
             else {
@@ -264,6 +265,35 @@ class MapLoader {
             tileheight,
             tilewidth,
             tilesets,
+        };
+    }
+
+    makeSpawner(obj: Object): Spawner {
+        const { position, size, properties: { source, dir } } = obj;
+        let action = SpawnerAction.None;
+
+        if (dir === 'right') {
+            action = SpawnerAction.WalkRight;
+        }
+        else if (dir === 'left') {
+            action = SpawnerAction.WalkLeft;
+        }
+
+        return {
+            position,
+            size,
+            source,
+            action,
+        };
+    }
+
+    makeTeleporter(obj: Object): Teleporter {
+        const { position, size, properties: { type, destination } } = obj;
+        return {
+            position,
+            size,
+            destination,
+            type: (TeleporterType[type] as any as TeleporterType) || TeleporterType.Normal
         };
     }
 
@@ -288,34 +318,21 @@ class MapLoader {
 
         data.objectGroups.forEach(group => {
             if (group.name === 'Spawners') {
-                result.spawners = group.objects.map(obj => {
-                    const position = obj.position;
-                    const source = obj.properties['source']
-                    let action = SpawnerAction.None;
-
-                    if (obj.properties['dir'] === 'right') {
-                        action = SpawnerAction.WalkRight;
+                group.objects.forEach(obj => {
+                    result.spawners.push(this.makeSpawner(obj));
+                    if (obj.properties.twoWay) {
+                        obj.properties.destination = obj.properties.source;
+                        result.teleporters.push(this.makeTeleporter(obj));
                     }
-                    else if (obj.properties['dir'] === 'left') {
-                        action = SpawnerAction.WalkLeft;
-                    }
-
-                    return {
-                        position,
-                        source,
-                        action,
-                    };
                 });
             }
             else if (group.name === 'Teleporters') {
-                result.teleporters = group.objects.map(obj => {
-                    const { position, size, properties: { type } } = obj;
-                    return {
-                        position,
-                        size,
-                        destination: obj.properties['destination'],
-                        type: (TeleporterType[type] as any as TeleporterType) || TeleporterType.Normal
-                    };
+                group.objects.forEach(obj => {
+                    result.teleporters.push(this.makeTeleporter(obj));
+                    if (obj.properties.twoWay) {
+                        obj.properties.source = obj.properties.destination;
+                        result.spawners.push(this.makeSpawner(obj));
+                    }
                 });
             }
             else if (group.name === "EnemySpawner") {

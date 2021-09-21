@@ -4,6 +4,7 @@ export enum Tile {
     None,
     Brick1,
     Brick2,
+    BreakableBrick,
     Wall1,
     Wall2,
     Wall3,
@@ -33,6 +34,10 @@ export const TileInfo: { [key in Tile]: TileInfo } = {
     [Tile.Brick2]: {
         walkable: false,
         offset: new Point(2, 0),
+    },
+    [Tile.BreakableBrick]: {
+        walkable: false,
+        offset: new Point(3, 0),
     },
     [Tile.Wall1]: {
         walkable: true,

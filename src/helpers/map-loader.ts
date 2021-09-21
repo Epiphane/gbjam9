@@ -72,10 +72,16 @@ export interface Teleporter {
     destination: string;
 }
 
+export interface EnemySpawner {
+    position: Point;
+    enemyType: string;
+}
+
 export interface LoadedMap {
     tiles: Tile[][];
     spawners: Spawner[];
     teleporters: Teleporter[];
+    enemySpawners: EnemySpawner[];
 }
 
 const mapCache: { [key: string]: LoadedMap } = {};
@@ -260,6 +266,7 @@ class MapLoader {
             tiles: new Array(data.height).fill(false).map(() => new Array(data.width).fill(Tile.None)),
             spawners: [],
             teleporters: [],
+            enemySpawners: [],
         };
 
         data.tileLayers.forEach(layer => {
@@ -303,6 +310,15 @@ class MapLoader {
                         destination: obj.properties['destination'],
                     };
                 });
+            }
+            else if (group.name === "EnemySpawner") {
+                result.enemySpawners = group.objects.map(obj => {
+                    const { position } = obj;
+                    return {
+                        position,
+                        enemyType: obj.properties['EnemyType'],
+                    }
+                })
             }
         })
 

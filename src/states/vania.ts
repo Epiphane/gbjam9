@@ -21,6 +21,7 @@ import { Teleporter } from "../helpers/map-loader";
 export class VaniaScreen extends State {
     map: MapComponent;
     player: Entity;
+    enemies: Entity[] = [];
     camera: Entity;
     ui: Entity;
     ready = false;
@@ -65,13 +66,13 @@ export class VaniaScreen extends State {
         formFrame.get(SpriteComponent)
             ?.setImage('./images/forms.png')
             .setSize(20, 20)
-            .runAnimation({ name: 'Frame', frameTime: 0, repeat: true, sheet: [0]});
+            .runAnimation({ name: 'Frame', frameTime: 0, repeat: true, sheet: [0] });
 
         const formType = this.ui.addChild(new Entity(this, [SpriteComponent]));
         formType.get(SpriteComponent)
             ?.setImage('./images/forms.png')
             .setSize(20, 20)
-            .runAnimation({ name: 'Frame', frameTime: 0, repeat: true, sheet: [1]});
+            .runAnimation({ name: 'Frame', frameTime: 0, repeat: true, sheet: [1] });
     }
 
     init() {
@@ -81,7 +82,7 @@ export class VaniaScreen extends State {
         this.game.setState(new PaletteSelectionScreen(this));
     }
 
-    key_START() {}
+    key_START() { }
 
     key_A() {
         this.player.components.forEach(c => {
@@ -102,10 +103,10 @@ export class VaniaScreen extends State {
     key_B() {
     }
 
-    key_UP() {}
-    key_DOWN() {}
-    key_LEFT() {}
-    key_RIGHT() {}
+    key_UP() { }
+    key_DOWN() { }
+    key_LEFT() { }
+    key_RIGHT() { }
 
     loadLevel(name: string, from?: string) {
         this.currentLevel = name;
@@ -118,11 +119,32 @@ export class VaniaScreen extends State {
                     max: new Point(map.entity.width, map.entity.height)
                 });
 
+                // Spawn enemies bby
+                map.enemySpawners.forEach(spawner => {
+                    if (spawner.enemyType === "birb") {
+                        var enemy = new Entity(this)
+                        enemy.position = spawner.position
+                        this.enemies.push(enemy)
+                        enemy.add(SpriteComponent)
+                            .setImage('./images/birb.png')
+                            .setSize(11, 11)
+                            .runAnimation({
+                                name: 'Idle',
+                                sheet: [0, 1, 2, 3, 4],
+                                frameTime: 0.15,
+                                repeat: true
+                            })
+                    }
+                })
                 this.player.get(MapTraveller)?.spawn(map, from);
             });
     }
 
     teleport(teleporter: Teleporter) {
+        this.enemies.forEach(element => {
+            this.remove(element)
+        });
+        this.enemies = []
         this.loadLevel(teleporter.destination, this.currentLevel);
     }
 

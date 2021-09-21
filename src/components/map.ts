@@ -1,5 +1,5 @@
 import { Component, Point } from "../../lib/juicy";
-import { LoadedMap, MapLoader, Spawner, Teleporter } from "../helpers/map-loader";
+import { EnemySpawner, LoadedMap, MapLoader, Spawner, Teleporter } from "../helpers/map-loader";
 import { Tile, TileInfo } from "../helpers/tiles";
 
 const tiles = new Image();
@@ -12,6 +12,7 @@ export class MapComponent extends Component {
     tiles: Tile[][] = [];
     spawners: Spawner[] = [];
     teleporters: Teleporter[] = [];
+    enemySpawners: EnemySpawner[] = [];
 
     load(level: string) {
         return MapLoader.load(`levels/${level}.tmx`)
@@ -19,6 +20,7 @@ export class MapComponent extends Component {
                 this.tiles = data.tiles;
                 this.spawners = data.spawners;
                 this.teleporters = data.teleporters;
+                this.enemySpawners = data.enemySpawners;
                 this.entity.width = this.tiles[0].length * tileWidth;
                 this.entity.height = this.tiles.length * tileHeight;
                 return this;
@@ -42,7 +44,7 @@ export class MapComponent extends Component {
             y = x.y;
             x = x.x;
         }
-        else if (typeof(y) === 'undefined') {
+        else if (typeof (y) === 'undefined') {
             throw `Only x coordinate was provied. Both x and y are needed`;
         }
 
@@ -54,8 +56,8 @@ export class MapComponent extends Component {
     }
 
     render(ctx: CanvasRenderingContext2D) {
-        for (let y = 0; y < this.tiles.length; y ++) {
-            for (let x = 0; x < this.tiles[y].length; x ++) {
+        for (let y = 0; y < this.tiles.length; y++) {
+            for (let x = 0; x < this.tiles[y].length; x++) {
                 const tile = this.tiles[y][x];
                 if (tile == Tile.None) {
                     continue;

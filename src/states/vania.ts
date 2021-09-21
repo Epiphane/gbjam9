@@ -32,8 +32,6 @@ export class VaniaScreen extends State {
 
         const mapEntity = new Entity(this, 'map', [MapComponent]);
         this.map = mapEntity.get(MapComponent)!;
-        this.loadLevel('intro');
-
         this.player = new Entity(this, [
             Transitioner,
             SpriteComponent,

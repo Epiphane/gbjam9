@@ -14,18 +14,18 @@ export class PlayerPhysics extends PhysicsBody {
     constructor() {
         super();
 
-        this.terminalVelocity = 150;
+        this.terminalVelocity = 200;
     }
 
     update(dt: number, game: typeof Game) {
         this.velocity.x = 0;
         if (game.keyDown(Keys.LEFT)) {
             this.entity.get(SpriteComponent)?.setFlip(true);
-            this.velocity.x = -64;
+            this.velocity.x = -90;
         }
         if (game.keyDown(Keys.RIGHT)) {
             this.entity.get(SpriteComponent)?.setFlip(false);
-            this.velocity.x = 64;
+            this.velocity.x = 90;
         }
 
         if (this.blocked[2][1]) {

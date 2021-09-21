@@ -31,15 +31,15 @@ export class VaniaScreen extends State {
     constructor() {
         super();
 
-        const mapEntity = new Entity(this, 'map', [MapComponent]);
-        this.map = mapEntity.get(MapComponent)!;
+        const mapEntity = new Entity(this, 'map');
+        this.map = mapEntity.add(MapComponent);
         this.player = new Entity(this, [
             Transitioner,
+            MapTraveller,
             SpriteComponent,
             Hitbox,
             PlayerPhysics,
             PlayerAnimation,
-            MapTraveller,
         ]);
         this.player.position.x = 46;
         this.player.position.y = 9 * 12;
@@ -109,6 +109,7 @@ export class VaniaScreen extends State {
     key_RIGHT() { }
 
     loadLevel(name: string, from?: string) {
+        this.ready = false;
         this.currentLevel = name;
         this.map
             .load(name)
@@ -121,10 +122,9 @@ export class VaniaScreen extends State {
 
                 // Spawn enemies bby
                 map.enemySpawners.forEach(spawner => {
+                    let enemy = new Entity(this);
+                        enemy.position = spawner.position.copy();
                     if (spawner.enemyType === "birb") {
-                        var enemy = new Entity(this)
-                        enemy.position = spawner.position
-                        this.enemies.push(enemy)
                         enemy.add(SpriteComponent)
                             .setImage('./images/birb.png')
                             .setSize(11, 11)
@@ -134,9 +134,35 @@ export class VaniaScreen extends State {
                                 frameTime: 0.15,
                                 repeat: true
                             })
+                        this.enemies.push(enemy);
+                    }
+                    else if (spawner.enemyType === 'egg') {
+                        enemy.add(SpriteComponent)
+                            .setImage('./images/home.png')
+                            .setSize(102, 83)
+                            .runAnimation({
+                                name: 'Flicker',
+                                sheet: [0, 1],
+                                frameTime: 1,
+                                repeat: true
+                            });
+                        map.addToBackground(enemy);
+                    }
+                    else {
+                        this.remove(enemy);
                     }
                 })
                 this.player.get(MapTraveller)?.spawn(map, from);
+            })
+            .catch((e) => {
+                console.error(`failed loading level ${name}`)
+                console.error(e);
+                if (from) {
+                    this.loadLevel(from);
+                }
+                else {
+                    localStorage.removeItem('currentLevel');
+                }
             });
     }
 

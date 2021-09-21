@@ -10,6 +10,7 @@ export class PlayerPhysics extends PhysicsBody {
     coyote = 0;
     jumpTail = 0;
     upWasPressed = false;
+    cancelNextJump = false;
 
     constructor() {
         super();
@@ -35,7 +36,7 @@ export class PlayerPhysics extends PhysicsBody {
             this.coyote -= dt;
         }
 
-        if (game.keyDown(Keys.UP)) {
+        if (!this.cancelNextJump && game.keyDown(Keys.UP)) {
             // Start jump
             if (this.coyote > 0 && !this.upWasPressed) {
                 this.velocity.y = -150;
@@ -62,5 +63,6 @@ export class PlayerPhysics extends PhysicsBody {
         if (!game.keyDown(Keys.UP) && this.blocked[2][1]) {
             this.jumpTail = 0;
         }
+        this.cancelNextJump = false;
     }
 };

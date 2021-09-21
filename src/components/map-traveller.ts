@@ -1,6 +1,9 @@
-import { Component, Point } from "../../lib/juicy";
-import { Spawner, SpawnerAction, Teleporter } from "../helpers/map-loader";
+import { Component, Game, Point } from "../../lib/juicy";
+import { Keys } from "../helpers/constants";
+import { Spawner, SpawnerAction, Teleporter, TeleporterType } from "../helpers/map-loader";
 import { MapComponent } from "./map";
+import { PhysicsBody } from "./physics";
+import { PlayerPhysics } from "./player-physics";
 import { Hitbox } from "./stupid-hitbox";
 import { Transitioner } from "./transitioner";
 
@@ -76,6 +79,7 @@ export class MapTraveller extends Component {
             return;
         }
 
+        const physics = this.entity.get(PlayerPhysics);
         const hitbox = this.entity.get(Hitbox);
         if (!hitbox) {
             console.error(`Can't simulate physics without a hitbox. Add the Hitbox component to your entity`);
@@ -83,9 +87,21 @@ export class MapTraveller extends Component {
             return;
         }
 
+
         map.teleporters.forEach(teleporter => {
             if (hitbox.test(teleporter)) {
-                if (this.callback) {
+                let teleport = false;
+                if (teleporter.type === TeleporterType.Normal) {
+                    teleport = true;
+                }
+                else if (teleporter.type === TeleporterType.Door) {
+                    if (physics && physics.isBlocked(0, 1) && Game.keyDown(Keys.UP)) {
+                        teleport = true;
+                        physics.cancelNextJump = true;
+                    }
+                }
+
+                if (this.callback && teleport) {
                     this.callback(teleporter);
                 }
             }

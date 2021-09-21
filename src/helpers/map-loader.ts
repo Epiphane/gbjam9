@@ -66,10 +66,16 @@ export interface Spawner {
     action: SpawnerAction;
 }
 
+export enum TeleporterType {
+    Normal,
+    Door,
+}
+
 export interface Teleporter {
     position: Point;
     size: Point;
     destination: string;
+    type: TeleporterType;
 }
 
 export interface EnemySpawner {
@@ -303,11 +309,12 @@ class MapLoader {
             }
             else if (group.name === 'Teleporters') {
                 result.teleporters = group.objects.map(obj => {
-                    const { position, size } = obj;
+                    const { position, size, properties: { type } } = obj;
                     return {
                         position,
                         size,
                         destination: obj.properties['destination'],
+                        type: (TeleporterType[type] as any as TeleporterType) || TeleporterType.Normal
                     };
                 });
             }

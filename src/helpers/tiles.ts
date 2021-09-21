@@ -17,12 +17,14 @@ export enum Tile {
 interface TileInfo {
     walkable: boolean;
     offset: Point;
+    background?: boolean;
 }
 
 export const TileInfo: { [key in Tile]: TileInfo } = {
     [Tile.None]: {
         walkable: true,
         offset: new Point(0, 0),
+        background: true,
     },
     [Tile.Brick1]: {
         walkable: false,
@@ -35,33 +37,41 @@ export const TileInfo: { [key in Tile]: TileInfo } = {
     [Tile.Wall1]: {
         walkable: true,
         offset: new Point(1, 1),
+        background: true,
     },
     [Tile.Wall2]: {
         walkable: true,
         offset: new Point(2, 1),
+        background: true,
     },
     [Tile.Wall3]: {
         walkable: true,
         offset: new Point(1, 2),
+        background: true,
     },
     [Tile.Wall4]: {
         walkable: true,
         offset: new Point(2, 2),
+        background: true,
     },
     [Tile.Dark]: {
         walkable: true,
         offset: new Point(0, 1),
+        background: true,
     },
     [Tile.Low]: {
         walkable: true,
         offset: new Point(0, 2),
+        background: true,
     },
     [Tile.Mid]: {
         walkable: true,
         offset: new Point(0, 3),
+        background: true,
     },
     [Tile.Light]: {
         walkable: true,
         offset: new Point(0, 4),
+        background: true,
     },
 };

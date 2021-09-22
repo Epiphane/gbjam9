@@ -16,6 +16,10 @@ export class Hitbox extends Component {
     private size?: Point;
     private visible = __HITBOXES__;
 
+    getSize() {
+        return this.size || new Point(this.entity.width, this.entity.height);
+    }
+
     getOffset() {
         return this.offset;
     }
@@ -33,7 +37,7 @@ export class Hitbox extends Component {
     }
 
     getBounds() {
-        const size = this.size ? this.size : new Point(this.entity.width, this.entity.height)
+        const size = this.getSize();
         const min = this.entity.position.copy().add(this.offset);
         const max = min.copy().add(size).sub(new Point(1));
         return { min, max, size };

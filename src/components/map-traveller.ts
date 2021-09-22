@@ -42,6 +42,7 @@ export class MapTraveller extends Component {
             }
 
             this.entity.position = match.position.copy().sub(hitbox.getOffset());
+            this.entity.position.y += match.size.y - hitbox.getSize().y;
 
             const transitioner = this.entity.get(Transitioner);
             if (transitioner) {

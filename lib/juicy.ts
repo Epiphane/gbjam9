@@ -440,10 +440,7 @@ export class State {
     }
 
     get(name: string): Entity | undefined {
-        const matches = this.entities.filter(e => e.name === name);
-        if (matches.length) {
-            return matches[0];
-        }
+        return this.entities.find(e => e.name === name);
     }
 
     remove(nameOrEntity: Entity | string) {
@@ -508,16 +505,11 @@ export class Entity {
     parent?: Entity;
     children: Entity[] = [];
 
-    constructor(state: State, name?: string | ComponentList, components?: ComponentList) {
-        if (typeof(name) !== 'string') {
-            components = name;
-            name = undefined;
-        }
-
+    constructor(state: State, components?: ComponentList, name?: string) {
         this.name = name;
         this.state = state;
 
-        components = (components || []).concat(this.initialComponents());
+        components = (components ?? []).concat(this.initialComponents());
         components.forEach(c => this.addComponent(c));
         state.add(this);
 

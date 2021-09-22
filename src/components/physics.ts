@@ -2,6 +2,7 @@ import { Component, Game, Point } from "../../lib/juicy";
 import { TileInfo } from "../helpers/tiles";
 import { MapComponent } from "./map";
 import { Hitbox } from "./stupid-hitbox";
+import { getMapFromComponent } from '../helpers/quick-get';
 
 export class PhysicsBody extends Component {
     active = true;
@@ -64,7 +65,7 @@ export class PhysicsBody extends Component {
             return;
         }
 
-        const map = this.entity.state.get('map')?.get(MapComponent);
+        const map = getMapFromComponent(this)
         if (!map) {
             console.error(`Can't simulate physics without a map entity. Add this to your scene: new Entity(this, 'map', [MapComponent]);`);
             this.active = false;

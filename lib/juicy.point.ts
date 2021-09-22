@@ -27,6 +27,12 @@ export class Point {
         return this;
     }
 
+    multScalar(scalar: number) {
+        this.x *= scalar;
+        this.y *= scalar;
+        return this;
+    }
+
     sub(other: Point) {
         this.x -= other.x;
         this.y -= other.y;

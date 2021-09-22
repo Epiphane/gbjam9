@@ -2,8 +2,6 @@ import {
     State,
     Point,
     Entity,
-    Game,
-    ImageComponent,
 } from "../../lib/juicy";
 import { Hitbox } from "../components/stupid-hitbox";
 import { MapComponent } from "../components/map";
@@ -18,12 +16,14 @@ import { Transitioner } from "../components/transitioner";
 import { MapTraveller } from "../components/map-traveller";
 import { Teleporter } from "../helpers/map-loader";
 import { Follower } from "../components/follower";
+import { ParticleManagerComponent } from "../components/particle-manager"
 
 export class VaniaScreen extends State {
     map: MapComponent;
     player: Entity;
     enemies: Entity[] = [];
     camera: Entity;
+    particles: Entity;
     ui: Entity;
     ready = false;
 
@@ -32,16 +32,16 @@ export class VaniaScreen extends State {
     constructor() {
         super();
 
-        const mapEntity = new Entity(this, 'map');
+        const mapEntity = new Entity(this, [], 'map');
         this.map = mapEntity.add(MapComponent);
-        this.player = new Entity(this, "player", [
+        this.player = new Entity(this, [
             Transitioner,
             MapTraveller,
             SpriteComponent,
             Hitbox,
             PlayerPhysics,
             PlayerAnimation,
-        ]);
+        ], 'player');
         this.player.position.x = 46;
         this.player.position.y = 9 * 12;
 
@@ -61,6 +61,8 @@ export class VaniaScreen extends State {
         // Making UI lol
         this.ui = new Entity(this);
         this.remove(this.ui);
+
+        this.particles = new Entity(this, [ParticleManagerComponent], 'particles')
 
         // Haha I'm hacking hahaha
         const formFrame = this.ui.addChild(new Entity(this, [SpriteComponent]));

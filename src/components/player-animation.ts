@@ -1,8 +1,10 @@
-import { Component, Entity } from "../../lib/juicy";
+import { Component, Entity, Point } from "../../lib/juicy";
 import { PhysicsBody } from "./physics";
 import { PlayerPhysics } from "./player-physics";
-import { SpriteComponent } from "./sprite";
-import { Animation } from "./sprite";
+import { Animation, SpriteComponent } from "./sprite";
+import { CircleParticle } from "./particle-manager";
+import { getParticlesFromComponent } from "../helpers/quick-get";
+import { ColorType } from "../helpers/palette";
 
 export const Animations: { [key: string]: Animation } = {
     Idle: {
@@ -81,10 +83,46 @@ export class PlayerAnimation extends Component {
             return;
         }
 
+        const wasFalling = this.falling;
+
         if (this.physics?.isActive()) {
             this.moving = this.physics.velocity.x != 0;
             this.jumping = this.physics.velocity.y < 0;
             this.falling = this.physics.velocity.y > 0;
+        }
+
+        if (wasFalling && !this.falling) {
+            // TODO-EF: Helper functions that do all this math junk for you
+            const leftParticle = new CircleParticle(
+                0.2,
+                (p, dt) => {
+                    p.origin.x += p.velocity.x * dt;
+                    p.velocity.x += dt * 800;
+                    p.lifespan -= dt;
+                    return p.lifespan > 0;
+                },
+                this.entity.position.copy().add(new Point((this.sprite?.spriteWidth ?? 0) / 2, (this.sprite?.spriteHeight ?? 0) - 2)),
+                new Point(-150, 0),
+                1,
+                ColorType.Dark
+            );
+
+            const rightParticle = new CircleParticle(
+                0.2,
+                (p, dt) => {
+                    p.origin.x += p.velocity.x * dt;
+                    p.velocity.x -= dt * 800;
+                    p.lifespan -= dt;
+                    return p.lifespan > 0;
+                },
+                this.entity.position.copy().add(new Point((this.sprite?.spriteWidth ?? 0) / 2, (this.sprite?.spriteHeight ?? 0) - 2)),
+                new Point(150, 0),
+                1,
+                ColorType.Dark
+            );
+
+            getParticlesFromComponent(this)?.addParticle(leftParticle);
+            getParticlesFromComponent(this)?.addParticle(rightParticle);
         }
 
         if (this.attacking) {

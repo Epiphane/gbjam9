@@ -80,7 +80,7 @@ export class PhysicsBody extends Component {
 
         this.computeBlockages(map, hitbox);
         if (!this.blocked[2][1]) {
-            this.velocity.y += dt * 720;
+            this.velocity.y += dt * 800;
 
             this.velocity.y = Math.min(this.terminalVelocity, this.velocity.y);
         }

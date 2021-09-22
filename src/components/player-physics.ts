@@ -10,22 +10,23 @@ export class PlayerPhysics extends PhysicsBody {
     coyote = 0;
     jumpTail = 0;
     upWasPressed = false;
+    cancelNextJump = false;
 
     constructor() {
         super();
 
-        this.terminalVelocity = 150;
+        this.terminalVelocity = 200;
     }
 
     update(dt: number, game: typeof Game) {
         this.velocity.x = 0;
         if (game.keyDown(Keys.LEFT)) {
             this.entity.get(SpriteComponent)?.setFlip(true);
-            this.velocity.x = -64;
+            this.velocity.x = -90;
         }
         if (game.keyDown(Keys.RIGHT)) {
             this.entity.get(SpriteComponent)?.setFlip(false);
-            this.velocity.x = 64;
+            this.velocity.x = 90;
         }
 
         if (this.blocked[2][1]) {
@@ -35,7 +36,7 @@ export class PlayerPhysics extends PhysicsBody {
             this.coyote -= dt;
         }
 
-        if (game.keyDown(Keys.UP)) {
+        if (!this.cancelNextJump && game.keyDown(Keys.UP)) {
             // Start jump
             if (this.coyote > 0 && !this.upWasPressed) {
                 this.velocity.y = -150;
@@ -62,5 +63,6 @@ export class PlayerPhysics extends PhysicsBody {
         if (!game.keyDown(Keys.UP) && this.blocked[2][1]) {
             this.jumpTail = 0;
         }
+        this.cancelNextJump = false;
     }
 };

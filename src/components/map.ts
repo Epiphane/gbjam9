@@ -1,5 +1,6 @@
-import { Component, Point } from "../../lib/juicy";
-import { LoadedMap, MapLoader, Spawner, Teleporter, Tile, TileOffset } from "../helpers/map-loader";
+import { Component, Entity, Game, Point } from "../../lib/juicy";
+import { EnemySpawner, LoadedMap, MapLoader, Spawner, Teleporter } from "../helpers/map-loader";
+import { Tile, TileInfo } from "../helpers/tiles";
 
 const tiles = new Image();
 tiles.src = './images/tiles.png';
@@ -11,13 +12,18 @@ export class MapComponent extends Component {
     tiles: Tile[][] = [];
     spawners: Spawner[] = [];
     teleporters: Teleporter[] = [];
+    enemySpawners: EnemySpawner[] = [];
+
+    private backdrop: Entity[] = [];
 
     load(level: string) {
         return MapLoader.load(`levels/${level}.tmx`)
             .then((data: LoadedMap) => {
+                this.backdrop = [];
                 this.tiles = data.tiles;
                 this.spawners = data.spawners;
                 this.teleporters = data.teleporters;
+                this.enemySpawners = data.enemySpawners;
                 this.entity.width = this.tiles[0].length * tileWidth;
                 this.entity.height = this.tiles.length * tileHeight;
                 return this;
@@ -26,6 +32,11 @@ export class MapComponent extends Component {
 
     setSize(width: number, height: number) {
         this.tiles = new Array(height).fill(false).map(() => new Array(width).fill(Tile.None));
+    }
+
+    addToBackground(e: Entity) {
+        e.state.remove(e);
+        this.backdrop.push(e);
     }
 
     getTileCoords(worldCoords: Point) {
@@ -41,7 +52,7 @@ export class MapComponent extends Component {
             y = x.y;
             x = x.x;
         }
-        else if (typeof(y) === 'undefined') {
+        else if (typeof (y) === 'undefined') {
             throw `Only x coordinate was provied. Both x and y are needed`;
         }
 
@@ -52,19 +63,57 @@ export class MapComponent extends Component {
         return this.tiles[y][x];
     }
 
+    drawTile(ctx: CanvasRenderingContext2D, tile: Tile, x: number, y: number) {
+        ctx.drawImage(
+            tiles,
+            // source
+            TileInfo[tile].offset.x * tileWidth,
+            TileInfo[tile].offset.y * tileHeight,
+            tileWidth,
+            tileHeight,
+            // destination
+            x * tileWidth,
+            y * tileHeight,
+            tileWidth,
+            tileHeight
+        );
+    }
+
+    update(dt: number, game: typeof Game) {
+        super.update(dt, game);
+
+        this.backdrop.forEach(e => e.update(dt));
+    }
+
     render(ctx: CanvasRenderingContext2D) {
-        for (let y = 0; y < this.tiles.length; y ++) {
-            for (let x = 0; x < this.tiles[y].length; x ++) {
+        // First, background pass
+        for (let y = 0; y < this.tiles.length; y++) {
+            for (let x = 0; x < this.tiles[y].length; x++) {
                 const tile = this.tiles[y][x];
-                if (tile == Tile.None) {
+                if (tile === Tile.None || !TileInfo[tile].background) {
+                    continue;
+                }
+
+                this.drawTile(ctx, tile, x, y);
+            }
+        }
+
+        this.backdrop.forEach(entity =>
+            entity.render(ctx));
+
+        // Then, foreground
+        for (let y = 0; y < this.tiles.length; y++) {
+            for (let x = 0; x < this.tiles[y].length; x++) {
+                const tile = this.tiles[y][x];
+                if (tile == Tile.None || TileInfo[tile].background) {
                     continue;
                 }
 
                 ctx.drawImage(
                     tiles,
                     // source
-                    TileOffset[tile].x * tileWidth,
-                    TileOffset[tile].y * tileHeight,
+                    TileInfo[tile].offset.x * tileWidth,
+                    TileInfo[tile].offset.y * tileHeight,
                     tileWidth,
                     tileHeight,
                     // destination

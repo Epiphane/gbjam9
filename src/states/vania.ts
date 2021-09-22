@@ -17,10 +17,12 @@ import { AttackForm } from "../components/forms/attack";
 import { Transitioner } from "../components/transitioner";
 import { MapTraveller } from "../components/map-traveller";
 import { Teleporter } from "../helpers/map-loader";
+import { Follower } from "../components/follower";
 
 export class VaniaScreen extends State {
     map: MapComponent;
     player: Entity;
+    enemies: Entity[] = [];
     camera: Entity;
     ui: Entity;
     ready = false;
@@ -30,17 +32,15 @@ export class VaniaScreen extends State {
     constructor() {
         super();
 
-        const mapEntity = new Entity(this, 'map', [MapComponent]);
-        this.map = mapEntity.get(MapComponent)!;
-        this.loadLevel('intro');
-
-        this.player = new Entity(this, [
+        const mapEntity = new Entity(this, 'map');
+        this.map = mapEntity.add(MapComponent);
+        this.player = new Entity(this, "player", [
             Transitioner,
+            MapTraveller,
             SpriteComponent,
             Hitbox,
             PlayerPhysics,
             PlayerAnimation,
-            MapTraveller,
         ]);
         this.player.position.x = 46;
         this.player.position.y = 9 * 12;
@@ -67,13 +67,13 @@ export class VaniaScreen extends State {
         formFrame.get(SpriteComponent)
             ?.setImage('./images/forms.png')
             .setSize(20, 20)
-            .runAnimation({ name: 'Frame', frameTime: 0, repeat: true, sheet: [0]});
+            .runAnimation({ name: 'Frame', frameTime: 0, repeat: true, sheet: [0] });
 
         const formType = this.ui.addChild(new Entity(this, [SpriteComponent]));
         formType.get(SpriteComponent)
             ?.setImage('./images/forms.png')
             .setSize(20, 20)
-            .runAnimation({ name: 'Frame', frameTime: 0, repeat: true, sheet: [1]});
+            .runAnimation({ name: 'Frame', frameTime: 0, repeat: true, sheet: [1] });
     }
 
     init() {
@@ -83,7 +83,7 @@ export class VaniaScreen extends State {
         this.game.setState(new PaletteSelectionScreen(this));
     }
 
-    key_START() {}
+    key_START() { }
 
     key_A() {
         this.player.components.forEach(c => {
@@ -104,12 +104,13 @@ export class VaniaScreen extends State {
     key_B() {
     }
 
-    key_UP() {}
-    key_DOWN() {}
-    key_LEFT() {}
-    key_RIGHT() {}
+    key_UP() { }
+    key_DOWN() { }
+    key_LEFT() { }
+    key_RIGHT() { }
 
     loadLevel(name: string, from?: string) {
+        this.ready = false;
         this.currentLevel = name;
         this.map
             .load(name)
@@ -120,11 +121,59 @@ export class VaniaScreen extends State {
                     max: new Point(map.entity.width, map.entity.height)
                 });
 
+                // Spawn enemies bby
+                map.enemySpawners.forEach(spawner => {
+                    let enemy = new Entity(this);
+                    enemy.position = spawner.position.copy();
+                    if (spawner.enemyType === "birb") {
+                        enemy.add(SpriteComponent)
+                            .setImage('./images/birb.png')
+                            .setSize(11, 11)
+                            .runAnimation({
+                                name: 'Idle',
+                                sheet: [0, 1, 2, 3, 4],
+                                frameTime: 0.15,
+                                repeat: true
+                            })
+
+                        enemy.add(Follower).target = this.player
+                        this.enemies.push(enemy);
+                    }
+                    else if (spawner.enemyType === 'egg') {
+                        enemy.add(SpriteComponent)
+                            .setImage('./images/home.png')
+                            .setSize(102, 83)
+                            .runAnimation({
+                                name: 'Flicker',
+                                sheet: [0, 1],
+                                frameTime: 1,
+                                repeat: true
+                            });
+                        map.addToBackground(enemy);
+                    }
+                    else {
+                        this.remove(enemy);
+                    }
+                })
                 this.player.get(MapTraveller)?.spawn(map, from);
+            })
+            .catch((e) => {
+                console.error(`failed loading level ${name}`)
+                console.error(e);
+                if (from) {
+                    this.loadLevel(from);
+                }
+                else {
+                    localStorage.removeItem('currentLevel');
+                }
             });
     }
 
     teleport(teleporter: Teleporter) {
+        this.enemies.forEach(element => {
+            this.remove(element)
+        });
+        this.enemies = []
         this.loadLevel(teleporter.destination, this.currentLevel);
     }
 

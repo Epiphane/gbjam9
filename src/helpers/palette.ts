@@ -104,7 +104,7 @@ class PaletteManager {
     }
 
     getCurrent(): Palette {
-        return this.palettes[this.getCurrentId()];
+        return this.palettes[this.getCurrentId()]!;
     }
 
     getCurrentId() {
@@ -133,13 +133,13 @@ class PaletteManager {
 
         // Update all existing templates
         for (let i = 0; i < this.nextTemplateId; i ++) {
-            const { template, destination } = this.templates[`${i}`];
+            const { template, destination } = this.templates[`${i}`]!;
             this.applyPalette(template, destination);
         }
 
         const palette = this.getCurrent();
         for (let i = 0; i < this.listeners.length; i ++) {
-            this.listeners[i](palette);
+            this.listeners[i]!(palette);
         }
     }
 
@@ -151,7 +151,7 @@ class PaletteManager {
     applyPalette(template: HTMLCanvasElement | HTMLImageElement, destination: HTMLCanvasElement) {
         let templateId = destination.getAttribute('palette-dest');
         if (templateId) {
-            this.templates[templateId].template = template;
+            this.templates[templateId]!.template = template;
         }
         else {
             templateId = `${this.nextTemplateId++}`;
@@ -182,11 +182,11 @@ class PaletteManager {
             let pindex = 3;
 
             // Based on the red value, pick which of the 4 colors this means.
-            const rValue = templateData[i];
+            const rValue = templateData[i]!;
             if (rValue >= 75) pindex --;
             if (rValue >= 160) pindex --;
             if (rValue >= 245) pindex --;
-            const color = palette[pindex];
+            const color = palette[pindex]!;
 
             colored.data[i+0] = color[0];
             colored.data[i+1] = color[1];

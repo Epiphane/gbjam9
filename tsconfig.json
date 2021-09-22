@@ -6,11 +6,12 @@
     "strict": true,
     "target": "es2017",
     "baseUrl": "lib",
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "noUncheckedIndexedAccess": true
   },
   "compileOnSave": true,
   "include": [
     "src/**/*",
     "lib/**/*"
-  ],
+  ]
 }

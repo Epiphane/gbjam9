@@ -51,13 +51,13 @@ export class PhysicsBody extends Component {
             for (let j = 0; j <= 2; j++) {
                 if (i === 1 && j === 1) continue;
 
-                this.blocked[j][i]  = !this.isValidMove(i - 1, j - 1, map, hitbox);
+                this.blocked[j]![i]  = !this.isValidMove(i - 1, j - 1, map, hitbox);
             }
         }
     }
 
     isBlocked(dx: number, dy: number) {
-        return this.blocked[dy + 1][dx + 1];
+        return this.blocked[dy + 1]![dx + 1];
     }
 
     update(dt: number, game: typeof Game) {
@@ -80,7 +80,7 @@ export class PhysicsBody extends Component {
         }
 
         this.computeBlockages(map, hitbox);
-        if (!this.blocked[2][1]) {
+        if (!this.blocked[2]![1]) {
             this.velocity.y += dt * 800;
 
             this.velocity.y = Math.min(this.terminalVelocity, this.velocity.y);
@@ -111,13 +111,13 @@ export class PhysicsBody extends Component {
             }
             // First, we try the double pixel special
             else if (!subpixelX && !subpixelY) {
-                if (!this.blocked[moveDirY][moveDirX]) {
+                if (!this.blocked[moveDirY]![moveDirX]) {
                     this.entity.position.x = newX;
                     this.entity.position.y = newY;
                     this.computeBlockages(map, hitbox);
                 }
                 // Uh oh, something is bad. Let's try just X
-                else if (!this.blocked[1][moveDirX]) {
+                else if (!this.blocked[1]![moveDirX]) {
                     this.entity.position.x = newX;
                     this.velocity.y = 0;
                     moveDirY = 1;
@@ -125,7 +125,7 @@ export class PhysicsBody extends Component {
                     this.computeBlockages(map, hitbox);
                 }
                 // No? How about Y?
-                else if (!this.blocked[moveDirY][1]) {
+                else if (!this.blocked[moveDirY]![1]) {
                     this.entity.position.y = newY;
                     this.velocity.x = 0;
                     moveDirX = 1;
@@ -145,7 +145,7 @@ export class PhysicsBody extends Component {
             // Barring that, it's horizontal time
             else if (subpixelY) {
                 this.entity.position.y = newY;
-                if (!this.blocked[1][moveDirX]) {
+                if (!this.blocked[1]![moveDirX]) {
                     this.entity.position.x = newX;
                     this.computeBlockages(map, hitbox);
                 }
@@ -159,7 +159,7 @@ export class PhysicsBody extends Component {
             // Finally, verticality
             else {
                 this.entity.position.x = newX;
-                if (!this.blocked[moveDirY][1]) {
+                if (!this.blocked[moveDirY]![1]) {
                     this.entity.position.y = newY;
                     this.computeBlockages(map, hitbox);
                 }
@@ -172,4 +172,4 @@ export class PhysicsBody extends Component {
             }
         }
     }
-};
+}

@@ -31,7 +31,7 @@ class MultiSampleSound {
     }
 
     play() {
-        this.elements[this.index].play();
+        this.elements[this.index]?.play();
         this.index = (this.index + 1) % this.elements.length;
     }
 
@@ -48,8 +48,8 @@ class MultiSampleSound {
 }
 
 export function MuteMusic() {
-    for (var key in Sounds) {
-        Sounds[key].elements.forEach(function (element) {
+    for (const key in Sounds) {
+        Sounds[key]?.elements.forEach(function (element) {
             if (element.loop) {
                 element.volume = 0;
             }
@@ -58,8 +58,8 @@ export function MuteMusic() {
 }
 
 export function MuteSfx() {
-    for (var key in Sounds) {
-        Sounds[key].elements.forEach(function (element) {
+    for (const key in Sounds) {
+        Sounds[key]?.elements.forEach(function (element) {
             if (!element.loop) {
                 element.volume = 0;
             }
@@ -68,11 +68,11 @@ export function MuteSfx() {
 }
 
 export function Play(name: string) {
-    Sounds[name].play();
+    Sounds[name]?.play();
 }
 
 export function Pause(name: string) {
-    Sounds[name].pause();
+    Sounds[name]?.pause();
 }
 
 export function Load(name: string, properties: SoundProperties) {

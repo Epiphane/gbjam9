@@ -103,7 +103,7 @@ class Game {
         this.KEYS = keys || {};
         this.CODES = {};
         for (const key in keys) {
-            this.CODES[keys[key]] = key;
+            this.CODES[keys[key]!] = key;
         }
 
         // document hooks
@@ -142,7 +142,7 @@ class Game {
 
     clear() {
         for (const action in this.listener) {
-            document.removeEventListener(action, this.listener[action]);
+            document.removeEventListener(action, this.listener[action]!);
         }
         this.listener = {};
     }
@@ -241,17 +241,12 @@ class Game {
         return this; // Enable chaining
     }
 
-    keyDown(key: string | string[]) {
+    keyDown(key: string | string[]): boolean {
         if (typeof (key) === 'string') {
-            return this.keyState[this.KEYS[key]];
+            return this.keyState[this.KEYS[key]!]!;
         }
         else {
-            for (let k = 0; k < key.length; k++) {
-                if (this.keyDown(key[k]))
-                    return true;
-            }
-
-            return false;
+            return key.some(k => this.keyDown(k))
         }
     }
 
@@ -281,11 +276,11 @@ class Game {
         else {
             callback = keys as any as EventListener;
             if (this.listener[action]) {
-                document.removeEventListener(action, this.listener[action]);
+                document.removeEventListener(action, this.listener[action]!);
             }
 
             this.listener[action] = callback;
-            document.addEventListener(action, this.listener[action]);
+            document.addEventListener(action, this.listener[action]!);
         }
 
         return this; // Enable chaining
@@ -616,8 +611,8 @@ export class Entity {
             for (let i = 0; i < this.components.length; i++) {
                 if ((this.components[i] as any).__proto__.name === constructor.name) {
                     if (!this.updated[i]) {
-                        if (this.components[i].active) {
-                            this.components[i].update(dt, this.state.game);
+                        if (this.components[i]?.active) {
+                            this.components[i]!.update(dt, this.state.game);
                         }
                         this.updated[i] = true;
                     }
@@ -629,8 +624,8 @@ export class Entity {
             this.updated.fill(false);
             for (let i = 0; i < this.components.length; i++) {
                 if (!this.updated[i]) {
-                    if (this.components[i].active) {
-                        this.components[i].update(dt, this.state.game);
+                    if (this.components[i]?.active) {
+                        this.components[i]!.update(dt, this.state.game);
                     }
                     this.updated[i] = true;
                 }

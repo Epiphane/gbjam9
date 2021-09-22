@@ -29,7 +29,7 @@ export class PlayerPhysics extends PhysicsBody {
             this.velocity.x = 90;
         }
 
-        if (this.blocked[2][1]) {
+        if (this.blocked[2]![1]) {
             this.coyote = 0.05;
         }
         else {
@@ -60,7 +60,7 @@ export class PlayerPhysics extends PhysicsBody {
 
         super.update(dt, game);
 
-        if (!game.keyDown(Keys.UP) && this.blocked[2][1]) {
+        if (!game.keyDown(Keys.UP) && this.blocked[2]![1]) {
             this.jumpTail = 0;
         }
         this.cancelNextJump = false;

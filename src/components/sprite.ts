@@ -130,7 +130,7 @@ export class SpriteComponent extends Component {
         context.imageSmoothingEnabled = false;
 
         context.save();
-        const index = this.sheet[this.sprite];
+        const index = this.sheet[this.sprite]!;
         var sx = (index % this.sheetWidth) * this.spriteWidth;
         var sy = Math.floor(index / this.sheetWidth) * this.spriteHeight;
 

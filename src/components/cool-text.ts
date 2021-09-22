@@ -54,7 +54,7 @@ export class CoolText extends Component {
     showBackground = false;
     brightness = ColorType.Dark;
 
-    font = fonts[FontFace.Normal];
+    font = fonts[FontFace.Normal]!;
     letterWidth = 3;
     letterHeight = 5;
 
@@ -69,7 +69,7 @@ export class CoolText extends Component {
             height = Math.ceil(this.text.length / this.wrapLength);
         }
 
-        this.font = fonts[this.fontFace];
+        this.font = fonts[this.fontFace]!;
         this.entity.width = width * this.font.width - this.font.pad;
         this.entity.height = height * this.font.height - this.font.pad;
 

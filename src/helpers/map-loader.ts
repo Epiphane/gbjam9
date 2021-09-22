@@ -96,7 +96,7 @@ const mapCache: { [key: string]: LoadedMap } = {};
 class MapLoader {
     load(source: string): Promise<LoadedMap> {
         if (mapCache[source]) {
-            return Promise.resolve(mapCache[source]);
+            return Promise.resolve(mapCache[source]!);
         }
 
         return fetch(source)
@@ -117,7 +117,7 @@ class MapLoader {
 
         let data: number[] = [];
         for (const index in node.children) {
-            const child = node.children[index];
+            const child = node.children[index]!;
             if (child.nodeName === 'data') {
                 const encoding = child.getAttribute('encoding');
                 if (encoding === 'csv') {
@@ -145,7 +145,7 @@ class MapLoader {
         const properties: { [key: string]: any } = {};
 
         for (const index in node.children) {
-            const child = node.children[index];
+            const child = node.children[index]!;
             if (child.nodeName === 'property') {
                 const name = child.getAttribute('name') || '';
                 const type = child.getAttribute('type') || 'string';
@@ -181,7 +181,7 @@ class MapLoader {
         let properties = {};
 
         for (const index in node.children) {
-            const child = node.children[index];
+            const child = node.children[index]!;
             if (child.nodeName === 'properties') {
                 properties = this.parseProperties(child);
             }
@@ -200,7 +200,7 @@ class MapLoader {
         const objects: Object[] = [];
 
         for (const index in node.children) {
-            const child = node.children[index];
+            const child = node.children[index]!;
             if (child.nodeName === 'object') {
                 objects.push(this.parseObject(child));
             }
@@ -237,7 +237,7 @@ class MapLoader {
         const tileLayers: TileLayer[] = [];
         const tilesets: Tileset[] = [];
         for (const index in dom.documentElement.children) {
-            const child = dom.documentElement.children[index];
+            const child = dom.documentElement.children[index]!;
             if (!child.nodeName) {
                 continue;
             }
@@ -312,7 +312,7 @@ class MapLoader {
                 const x = layer.x + col;
                 const y = layer.y + row;
 
-                result.tiles[y][x] = TilesetToTile(value);
+                result.tiles[y]![x] = TilesetToTile(value);
             });
         });
 

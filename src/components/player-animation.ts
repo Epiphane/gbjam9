@@ -6,7 +6,7 @@ import { CircleParticle } from "./particle-manager";
 import { getParticlesFromComponent } from "../helpers/quick-get";
 import { ColorType } from "../helpers/palette";
 
-export const Animations: { [key: string]: Animation } = {
+export const Animations = {
     Idle: {
         name: 'Idle',
         sheet: [0, 1, 2, 3],
@@ -37,6 +37,10 @@ export const Animations: { [key: string]: Animation } = {
         repeat: true,
     },
 };
+
+// Verify that Animations conforms to { string : Animation }, but
+//      still allows for autocompletion of .Falling, .Jumping etc.
+{ const _ = Animations as { [key: string]: Animation } }
 
 export enum PlayerAnimationEvent {
     Attack,

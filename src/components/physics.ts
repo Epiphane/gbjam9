@@ -5,7 +5,6 @@ import { Hitbox } from "./stupid-hitbox";
 import { getMapFromComponent } from '../helpers/quick-get';
 
 export class PhysicsBody extends Component {
-    active = true;
     velocity = new Point();
     terminalVelocity = 100;
 
@@ -61,21 +60,17 @@ export class PhysicsBody extends Component {
     }
 
     update(dt: number, game: typeof Game) {
-        if (!this.active) {
-            return;
-        }
-
         const map = getMapFromComponent(this)
         if (!map) {
             console.error(`Can't simulate physics without a map entity. Add this to your scene: new Entity(this, 'map', [MapComponent]);`);
-            this.active = false;
+            this.setActive(false);
             return;
         }
 
         const hitbox = this.entity.get(Hitbox);
         if (!hitbox) {
             console.error(`Can't simulate physics without a hitbox. Add the Hitbox component to your entity`);
-            this.active = false;
+            this.setActive(false);
             return;
         }
 

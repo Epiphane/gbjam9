@@ -37,8 +37,6 @@ export class VaniaScreen extends State {
     currentForm: SpriteComponent;
     ready = false;
 
-    currentLevel!: string;
-
     constructor() {
         super();
 
@@ -153,7 +151,6 @@ export class VaniaScreen extends State {
 
     loadLevel(name: string, from?: string) {
         this.ready = false;
-        this.currentLevel = name;
         this.map
             .load(name)
             .then((map) => {
@@ -243,7 +240,7 @@ export class VaniaScreen extends State {
             this.remove(element)
         });
         this.enemies = []
-        this.loadLevel(teleporter.destination, this.currentLevel);
+        this.loadLevel(teleporter.destination, this.map.name);
     }
 
     update(dt: number) {

@@ -19,6 +19,7 @@ interface TileInfo {
     walkable: boolean;
     offset: Point;
     background?: boolean;
+    breaksInto?: Tile;
 }
 
 export const TileInfo: { [key in Tile]: TileInfo } = {
@@ -38,6 +39,7 @@ export const TileInfo: { [key in Tile]: TileInfo } = {
     [Tile.BreakableBrick]: {
         walkable: false,
         offset: new Point(3, 0),
+        breaksInto: Tile.Wall1,
     },
     [Tile.Wall1]: {
         walkable: true,

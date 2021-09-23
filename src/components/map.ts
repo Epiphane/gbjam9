@@ -1,5 +1,6 @@
 import { Component, Entity, Game, Point } from "../../lib/juicy";
 import { EnemySpawner, LoadedMap, MapLoader, Spawner, Teleporter } from "../helpers/map-loader";
+import { SaveManager } from "../helpers/save-manager";
 import { Tile, TileInfo } from "../helpers/tiles";
 
 const tiles = new Image();
@@ -9,6 +10,7 @@ const tileWidth = 16;
 const tileHeight = 12;
 
 export class MapComponent extends Component {
+    name: string = '';
     tiles: Tile[][] = [];
     spawners: Spawner[] = [];
     teleporters: Teleporter[] = [];
@@ -17,6 +19,7 @@ export class MapComponent extends Component {
     private backdrop: Entity[] = [];
 
     load(level: string) {
+        this.name = level;
         return MapLoader.load(`levels/${level}.tmx`)
             .then((data: LoadedMap) => {
                 this.backdrop = [];
@@ -26,6 +29,10 @@ export class MapComponent extends Component {
                 this.enemySpawners = data.enemySpawners;
                 this.entity.width = this.tiles[0]!.length * tileWidth;
                 this.entity.height = this.tiles.length * tileHeight;
+
+                const breaks = (SaveManager.get(`${this.name}_breaks`) ?? []) as Point[];
+                breaks.forEach(pos => this.breakTile(pos.x, pos.y));
+
                 return (this as MapComponent);
             });
     }
@@ -61,6 +68,22 @@ export class MapComponent extends Component {
         }
 
         return this.tiles[y]![x]!;
+    }
+
+    breakTile(x: number, y: number) {
+        if (x < 0 || y < 0 || y >= this.tiles.length || x >= this.tiles[0]!.length) {
+            return;
+        }
+
+        const current = this.tiles[y]![x]!;
+        const { breaksInto } = TileInfo[current];
+        if (breaksInto) {
+            const breaks = SaveManager.get(`${this.name}_breaks`) ?? [];
+            breaks.push({x, y});
+            SaveManager.set(`${this.name}_breaks`, breaks);
+
+            this.tiles[y]![x]! = breaksInto;
+        }
     }
 
     drawTile(ctx: CanvasRenderingContext2D, tile: Tile, x: number, y: number) {

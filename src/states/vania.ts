@@ -22,6 +22,10 @@ import { SaveManager } from "../helpers/save-manager";
 import { PowerupAnimations } from "../helpers/powerup";
 import { GainNailScreen } from "./gain-nail";
 
+const PlayerForms = [
+    AttackForm
+];
+
 export class VaniaScreen extends State {
     map: MapComponent;
     player: Entity;
@@ -29,6 +33,8 @@ export class VaniaScreen extends State {
     camera: Entity;
     particles: Entity;
     ui: Entity;
+    currentFormFrame: SpriteComponent;
+    currentForm: SpriteComponent;
     ready = false;
 
     currentLevel!: string;
@@ -57,7 +63,15 @@ export class VaniaScreen extends State {
         this.camera.get(Camera)?.follow(this.player);
 
         // Player forms!
-        this.player.add(AttackForm);
+        this.player.add(AttackForm).setActive(false);
+
+        let hasAnyForms = false;
+        PlayerForms.forEach(Form => {
+            const hasForm = this.hasForm(Form);
+            // Set active to true if this is the first form we have
+            this.player.add(Form).setActive(hasForm && !hasAnyForms);
+            hasAnyForms ||= this.hasForm(Form);
+        });
 
         // Teleportation
         this.player.get(MapTraveller)?.onTeleport(this.teleport.bind(this));
@@ -69,20 +83,41 @@ export class VaniaScreen extends State {
         this.particles = new Entity(this, [ParticleManagerComponent], 'particles')
 
         // Haha I'm hacking hahaha
-        const formFrame = this.ui.addChild(new Entity(this, [SpriteComponent]));
-        formFrame.get(SpriteComponent)
-            ?.setImage('./images/forms.png')
+        const formFrame = this.ui.addChild(new Entity(this));
+        this.currentFormFrame = formFrame.add(SpriteComponent)
+            .setImage('./images/forms.png')
             .setSize(20, 20)
-            .runAnimation({ name: 'Frame', frameTime: 0, repeat: true, sheet: [0] });
+            .runAnimation({ name: 'Frame', frameTime: 0, repeat: true, sheet: [0] })
+            .setActive(hasAnyForms);
 
         const formType = this.ui.addChild(new Entity(this, [SpriteComponent]));
-        formType.get(SpriteComponent)
-            ?.setImage('./images/forms.png')
+        this.currentForm = formType.add(SpriteComponent)
+            .setImage('./images/forms.png')
             .setSize(20, 20)
-            .runAnimation({ name: 'Frame', frameTime: 0, repeat: true, sheet: [1] });
+            .runAnimation({ name: 'Frame', frameTime: 0, repeat: true, sheet: [1] })
+            .setActive(hasAnyForms);
     }
 
     init() {
+    }
+
+    hasForm<Form extends PlayerForm>(form: (new () => Form)) {
+        return SaveManager.get(form.name);
+    }
+
+    unlockForm<Form extends PlayerForm>(form: (new () => Form)) {
+        SaveManager.set(form.name, true);
+        this.currentFormFrame.setActive(true);
+        this.currentForm.setActive(true);
+        this.setForm(form);
+    }
+
+    setForm<Form extends PlayerForm>(form: (new () => Form)) {
+        this.player.components.forEach(c => {
+            if (c instanceof PlayerForm) {
+                c.setActive(c instanceof form);
+            }
+        });
     }
 
     key_SELECT() {
@@ -94,7 +129,7 @@ export class VaniaScreen extends State {
 
     key_A() {
         this.player.components.forEach(c => {
-            if (c instanceof PlayerForm) {
+            if (c instanceof PlayerForm && c.isActive()) {
                 c.endAction();
             }
         })
@@ -102,7 +137,7 @@ export class VaniaScreen extends State {
 
     keyDown_A() {
         this.player.components.forEach(c => {
-            if (c instanceof PlayerForm) {
+            if (c instanceof PlayerForm && c.isActive()) {
                 c.startAction();
             }
         })
@@ -159,7 +194,7 @@ export class VaniaScreen extends State {
                         map.addToBackground(enemy);
                     }
                     else if (spawner.enemyType === 'nail') {
-                        if (!SaveManager.get('nail')) {
+                        if (!this.hasForm(AttackForm)) {
                             const sprite = enemy
                                 .add(SpriteComponent)
                                 .setImage('./images/powerup.png')
@@ -173,7 +208,10 @@ export class VaniaScreen extends State {
                                             type: 'GetForm',
                                             powerup: sprite,
                                             time: 15,
-                                            onComplete: () => Game.setState(new GainNailScreen(this))
+                                            onComplete: () => {
+                                                this.unlockForm(AttackForm);
+                                                Game.setState(new GainNailScreen(this))
+                                            }
                                         });
                                     }
                                 };

@@ -684,7 +684,7 @@ export class Component {
     active = true;
 
     isActive() { return this.active; }
-    setActive(active: boolean) { this.active = active; }
+    setActive(active: boolean) { this.active = active; return this; }
 
     init(e: Entity) { }
     mousedown(pos: Point) {}

@@ -1,4 +1,5 @@
 import { Game } from "../../lib/juicy";
+import { __DEV__ } from "./debug";
 
 class SaveGame {
     id: string;
@@ -10,11 +11,19 @@ class SaveGame {
     }
 
     private load() {
-        this.props = JSON.parse(localStorage.getItem(`save_${this.id}`) || '{}');
+        const existing = localStorage.getItem(`save_${this.id}`) || '{}';
+        try {
+            this.props = JSON.parse(existing);
+        } catch (e) {
+            this.props = JSON.parse(atob(existing));
+        }
+
+        this.persist();
     }
 
     private persist() {
-        localStorage.setItem(`save_${this.id}`, JSON.stringify(this.props));
+        let data = JSON.stringify(this.props);
+        localStorage.setItem(`save_${this.id}`, __DEV__ ? data : btoa(data));
     }
 
     get(name: string) {

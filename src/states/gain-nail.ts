@@ -103,7 +103,7 @@ export class GainNailScreen extends State {
         {
             const text = new Entity(this, [CoolText]);
             text.get(CoolText)?.set({
-                text: `Press B to return`,
+                text: `B to close`,
                 fontFace: FontFace.Big,
             });
             text.position.x = Math.floor((canvas.width - text.width) / 2);

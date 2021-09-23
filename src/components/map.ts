@@ -26,7 +26,7 @@ export class MapComponent extends Component {
                 this.enemySpawners = data.enemySpawners;
                 this.entity.width = this.tiles[0]!.length * tileWidth;
                 this.entity.height = this.tiles.length * tileHeight;
-                return this;
+                return (this as MapComponent);
             });
     }
 
@@ -86,24 +86,26 @@ export class MapComponent extends Component {
     }
 
     render(ctx: CanvasRenderingContext2D) {
-        // First, background pass
-        this.tiles.forEach((tileRow, y) => {
-            tileRow.forEach((tile, x) => {
+        for (let y = 0; y < this.tiles.length; y++) {
+            for (let x = 0; x < this.tiles[y]!.length; x++) {
+                const tile = this.tiles[y]![x]!;
                 if (tile === Tile.None || !TileInfo[tile].background) {
-                    return;
+                    continue;
                 }
 
                 this.drawTile(ctx, tile, x, y);
-            });
-        });
+            }
+        }
 
         this.backdrop.forEach(entity =>
             entity.render(ctx));
 
-        this.tiles.forEach((tileRow, y) => {
-            tileRow.forEach((tile, x) => {
-                if (tile === Tile.None || !TileInfo[tile].background) {
-                    return;
+        // Then, foreground
+        for (let y = 0; y < this.tiles.length; y++) {
+            for (let x = 0; x < this.tiles[y]!.length; x++) {
+                const tile = this.tiles[y]![x]!;
+                if (tile == Tile.None || TileInfo[tile].background) {
+                    continue;
                 }
 
                 ctx.drawImage(
@@ -119,7 +121,7 @@ export class MapComponent extends Component {
                     tileWidth,
                     tileHeight
                 );
-            });
-        });
+            }
+        }
     }
 };

@@ -16,6 +16,9 @@ export class Hitbox extends Component {
     private size?: Point;
     private visible = __HITBOXES__;
 
+    private colliding: Hitbox[] = [];
+    onCollide?: (other: Hitbox) => void;
+
     getSize() {
         return this.size || new Point(this.entity.width, this.entity.height);
     }
@@ -65,6 +68,32 @@ export class Hitbox extends Component {
         }
 
         return true;
+    }
+
+    update(dt: number) {
+        if (this.onCollide) {
+            this.entity.state.entities.forEach(e => {
+                const hitbox = e.get(Hitbox);
+                if (!hitbox) {
+                    return;
+                }
+
+                if (hitbox === this) {
+                    return;
+                }
+
+                const collideNdx = this.colliding.indexOf(hitbox);
+                const wasColliding = collideNdx >= 0;
+                const colliding = this.test(hitbox);
+                if (colliding && !wasColliding) {
+                    this.onCollide!(hitbox);
+                    this.colliding.push(hitbox);
+                }
+                else if (!colliding && wasColliding) {
+                    this.colliding.splice(collideNdx, 1);
+                }
+            });
+        }
     }
 
     render(ctx: CanvasRenderingContext2D) {

@@ -350,5 +350,5 @@ class MapLoader {
     }
 };
 
-const loader = Game.singleton('MapLoader', MapLoader);
+const loader = Game.singleton(MapLoader);
 export { loader as MapLoader };

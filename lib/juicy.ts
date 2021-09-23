@@ -132,12 +132,12 @@ class Game {
         return this; // Enable chaining
     }
 
-    singleton<T>(name: string, constructor: (new () => T)): T {
-        if (!this.singletons[name]) {
-            this.singletons[name] = new constructor();
+    singleton<T>(constructor: (new () => T)): T {
+        if (!this.singletons[constructor.name]) {
+            this.singletons[constructor.name] = new constructor();
         }
 
-        return this.singletons[name];
+        return this.singletons[constructor.name];
     }
 
     clear() {
@@ -354,7 +354,7 @@ class Game {
             context.fillRect(0, 0, this.size.x, this.size.y);
         }
 
-        this.state.render(context, canvas.width, canvas.height);
+        this.state.render(context);
         context.restore();
 
         this.afterRenderCallbacks.forEach(callback => callback(canvas));
@@ -422,7 +422,7 @@ export class State {
         return false;
     }
 
-    render(context: CanvasRenderingContext2D, width: number, height: number) {
+    render(context: CanvasRenderingContext2D) {
         this.entities.forEach(e => {
             if (!e.parent) {
                 e.render(context);
@@ -567,7 +567,7 @@ export class Entity {
         }
 
         if (c.entity) {
-            c.entity.remove(c);
+            throw `Component already has an entity`;
         }
 
         c.entity = this;
@@ -580,8 +580,10 @@ export class Entity {
         return this.addComponent(constructor) as C;
     }
 
-    remove(component: Component) {
-        this.components = this.components.filter(c => c !== component);
+    remove<C extends Component>(constructor: (new () => C)) {
+        this.components = this.components.filter(c =>
+            (c as any).__proto__.constructor.name !== constructor.name
+        );
     }
 
     get<C extends Component>(constructor: (new () => C)): C | undefined {

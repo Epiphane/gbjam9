@@ -6,7 +6,13 @@ import { CircleParticle } from "./particle-manager";
 import { getParticlesFromComponent } from "../helpers/quick-get";
 import { ColorType } from "../helpers/palette";
 
-export const Animations = {
+export const PlayerAnimations = {
+    GainingForm: {
+        name: 'GainingForm',
+        sheet: [0],
+        frameTime: 0.75,
+        repeat: true,
+    },
     Idle: {
         name: 'Idle',
         sheet: [0, 1, 2, 3],
@@ -38,9 +44,9 @@ export const Animations = {
     },
 };
 
-// Verify that Animations conforms to { string : Animation }, but
+// Verify that PlayerAnimations conforms to { string : Animation }, but
 //      still allows for autocompletion of .Falling, .Jumping etc.
-{ const _ = Animations as { [key: string]: Animation } }
+{ const _ = PlayerAnimations as { [key: string]: Animation } }
 
 export enum PlayerAnimationEvent {
     Attack,
@@ -66,7 +72,7 @@ export class PlayerAnimation extends Component {
         this.sprite
             .setImage('./images/boy.png')
             .setSize(32, 24)
-            .runAnimation(Animations.Idle);
+            .runAnimation(PlayerAnimations.Idle);
         this.sprite.oncompleteanimation = this.onAnimationComplete.bind(this);
         this.physics = e.get(PlayerPhysics) || e.get(PhysicsBody);
     }
@@ -77,7 +83,7 @@ export class PlayerAnimation extends Component {
 
     trigger(event: PlayerAnimationEvent) {
         if (event == PlayerAnimationEvent.Attack) {
-            this.sprite.runAnimation(Animations.Attack);
+            this.sprite.runAnimation(PlayerAnimations.Attack);
             this.attacking = true;
         }
     }
@@ -134,16 +140,16 @@ export class PlayerAnimation extends Component {
         }
 
         if (this.jumping) {
-            this.sprite.runAnimation(Animations.Jumping);
+            this.sprite.runAnimation(PlayerAnimations.Jumping);
         }
         else if (this.falling) {
-            this.sprite.runAnimation(Animations.Falling);
+            this.sprite.runAnimation(PlayerAnimations.Falling);
         }
         else if (!this.moving) {
-            this.sprite.runAnimation(Animations.Idle);
+            this.sprite.runAnimation(PlayerAnimations.Idle);
         }
         else {
-            this.sprite.runAnimation(Animations.Walk);
+            this.sprite.runAnimation(PlayerAnimations.Walk);
         }
     }
 }

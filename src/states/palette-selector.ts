@@ -100,9 +100,9 @@ export class PaletteSelectionScreen extends State {
         })
     }
 
-    render(ctx: CanvasRenderingContext2D, width: number, height: number) {
+    render(ctx: CanvasRenderingContext2D) {
         if (this.prevState) {
-            this.prevState.render(ctx, width, height);
+            this.prevState.render(ctx);
         }
 
         ctx.save();
@@ -111,7 +111,7 @@ export class PaletteSelectionScreen extends State {
         ctx.fillRect(-2, -2, this.game.size.x - 2 * this.padding + 4, this.game.size.y - 2 * this.padding + 4);
         ctx.fillStyle = LightColor;
         ctx.fillRect(0, 0, this.game.size.x - 2 * this.padding, this.game.size.y - 2 * this.padding);
-        super.render(ctx, width, height);
+        super.render(ctx);
         ctx.restore();
     }
 };

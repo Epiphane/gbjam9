@@ -1,4 +1,5 @@
 import { Component, Point, Game, Entity } from '../../lib/juicy';
+import { CoolText } from './cool-text';
 
 export interface Animation {
     name: string;
@@ -8,12 +9,10 @@ export interface Animation {
 };
 
 export class SpriteComponent extends Component {
-    image: HTMLImageElement | HTMLCanvasElement = new Image();
-    width?: number;
-    height?: number;
+    image: HTMLCanvasElement = document.createElement('canvas');
 
-    sheetWidth = 0;
-    sheetHeight = 0;
+    sheetWidth = 1;
+    sheetHeight = 1;
     spriteWidth = 0;
     spriteHeight = 0;
 
@@ -21,9 +20,10 @@ export class SpriteComponent extends Component {
     timeLeft = 0;
     repeat = false;
     flip = false;
+    opacity = 1;
 
     current: string = '';
-    sheet: number[] = [];
+    sheet: number[] = [0];
     sprite: number = 0;
 
     onload?: ((img: SpriteComponent) => void);
@@ -31,11 +31,11 @@ export class SpriteComponent extends Component {
 
     oncompleteanimation?: (() => any);
 
-    init() {
-        this.image.onload = this.onImageLoad;
-    }
+    protected onImageLoad = (img: HTMLImageElement) => {
+        this.image.width = img.width;
+        this.image.height = img.height;
+        this.image.getContext('2d')?.drawImage(img, 0, 0);
 
-    protected onImageLoad = () => {
         this.sheetWidth = this.image.width / this.spriteWidth;
         this.sheetHeight = this.image.height / this.spriteHeight;
 
@@ -49,12 +49,9 @@ export class SpriteComponent extends Component {
     }
 
     setImage(url: string) {
-        if (this.image instanceof HTMLImageElement) {
-            this.image.src = url;
-        }
-        else {
-            throw 'SpriteComponent image is not an instance of an HTMLImageElement';
-        }
+        const image = new Image();
+        image.src = url;
+        image.onload = this.onImageLoad.bind(this, image);
 
         return this; // Enable chaining
     }
@@ -68,7 +65,7 @@ export class SpriteComponent extends Component {
         this.frameTime = -1; // Don't animate yet
         this.repeat = false;
         this.sprite = 0;
-        this.sheet = [];
+        this.sheet = [0];
 
         return this; // Enable chaining
     }
@@ -79,16 +76,15 @@ export class SpriteComponent extends Component {
     }
 
     runAnimation({ name, sheet, frameTime, repeat }: Animation) {
-        if (this.current === name) {
-            return this; // enable chaining
+        this.frameTime = frameTime;
+        if (this.current !== name) {
+            this.current = name;
+            this.timeLeft = frameTime;
+            this.sprite = 0;
         }
 
-        this.current = name;
-        this.frameTime = frameTime;
-        this.timeLeft = frameTime;
         this.sheet = sheet;
         this.repeat = !!repeat;
-        this.sprite = 0;
 
         return this; // Enable chaining
     }
@@ -138,7 +134,36 @@ export class SpriteComponent extends Component {
             context.translate(this.spriteWidth, 0);
             context.scale(-1, 1);
         }
-        context.drawImage(this.image, sx, sy, this.spriteWidth, this.spriteHeight, x, y, w, h);
+        if (this.opacity === 1) {
+            context.drawImage(this.image, sx, sy, this.spriteWidth, this.spriteHeight, x, y, w, h);
+        }
+        else {
+            const canvasData = context.getImageData(this.entity.position.x, this.entity.position.y, this.spriteWidth, this.spriteHeight).data
+            const imageData = this.image.getContext('2d')!.getImageData(sx, sy, this.spriteWidth, this.spriteHeight).data
+            const colored = this.image.getContext('2d')!.createImageData(w, h);
+            for (let i = 0; i < colored.data.length; i += 4) {
+                if (imageData[i + 3] === 0) continue;
+
+                let hash = ((i + 123816749814 + Math.sin(i) * 10021416854) * 232134210958);
+                hash = hash % 213978625;
+                hash = (hash % 100) / 100;
+
+                if (this.opacity > hash) {
+                    colored.data[i+0] = imageData[i+0];
+                    colored.data[i+1] = imageData[i+1];
+                    colored.data[i+2] = imageData[i+2];
+                    colored.data[i+3] = 255;
+                }
+                else {
+                    colored.data[i+0] = canvasData[i+0];
+                    colored.data[i+1] = canvasData[i+1];
+                    colored.data[i+2] = canvasData[i+2];
+                    colored.data[i+3] = 255;
+                }
+            }
+
+            context.putImageData(colored, this.entity.position.x, this.entity.position.y);
+        }
         context.restore();
     }
 };

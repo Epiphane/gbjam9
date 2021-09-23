@@ -1,6 +1,7 @@
 import {
     State,
     Point,
+    Game,
     Entity,
 } from "../../lib/juicy";
 import { Hitbox } from "../components/stupid-hitbox";
@@ -17,6 +18,9 @@ import { MapTraveller } from "../components/map-traveller";
 import { Teleporter } from "../helpers/map-loader";
 import { Follower } from "../components/follower";
 import { ParticleManagerComponent } from "../components/particle-manager"
+import { SaveManager } from "../helpers/save-manager";
+import { PowerupAnimations } from "../helpers/powerup";
+import { GainNailScreen } from "./gain-nail";
 
 export class VaniaScreen extends State {
     map: MapComponent;
@@ -85,7 +89,8 @@ export class VaniaScreen extends State {
         this.game.setState(new PaletteSelectionScreen(this));
     }
 
-    key_START() { }
+    key_START() {
+    }
 
     key_A() {
         this.player.components.forEach(c => {
@@ -126,7 +131,7 @@ export class VaniaScreen extends State {
                 // Spawn enemies bby
                 map.enemySpawners.forEach(spawner => {
                     let enemy = new Entity(this);
-                    enemy.position = spawner.position.copy();
+                        enemy.position = spawner.position.copy();
                     if (spawner.enemyType === "birb") {
                         enemy.add(SpriteComponent)
                             .setImage('./images/birb.png')
@@ -152,6 +157,30 @@ export class VaniaScreen extends State {
                                 repeat: true
                             });
                         map.addToBackground(enemy);
+                    }
+                    else if (spawner.enemyType === 'nail') {
+                        if (!SaveManager.get('nail')) {
+                            const sprite = enemy
+                                .add(SpriteComponent)
+                                .setImage('./images/powerup.png')
+                                .setSize(11, 11)
+                                .runAnimation(PowerupAnimations.Float);
+                            enemy.add(Hitbox)
+                                .onCollide = (other: Hitbox) => {
+                                    enemy.remove(Hitbox);
+                                    if (other.entity === this.player) {
+                                        this.player.get(Transitioner)?.transition({
+                                            type: 'GetForm',
+                                            powerup: sprite,
+                                            time: 15,
+                                            onComplete: () => Game.setState(new GainNailScreen(this))
+                                        });
+                                    }
+                                };
+                        }
+                        else {
+                            this.remove(enemy);
+                        }
                     }
                     else {
                         this.remove(enemy);
@@ -187,11 +216,11 @@ export class VaniaScreen extends State {
         super.update(dt);
     }
 
-    render(ctx: CanvasRenderingContext2D, width: number, height: number) {
+    render(ctx: CanvasRenderingContext2D) {
         ctx.save();
         ctx.translate(Math.floor(-this.camera.position.x), Math.floor(-this.camera.position.y));
 
-        super.render(ctx, width, height);
+        super.render(ctx);
         ctx.restore();
 
         this.ui.render(ctx);

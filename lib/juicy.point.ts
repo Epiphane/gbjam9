@@ -1,3 +1,5 @@
+import { PlayerAnimationEvent } from "../src/components/player-animation";
+
 export class Point {
     x: number;
     y: number;
@@ -15,15 +17,27 @@ export class Point {
         return new Point(this.x, this.y);
     }
 
-    add(other: Point) {
-        this.x += other.x;
-        this.y += other.y;
+    add(x: Point | number, y?: number) {
+        if (typeof(x) === 'number') {
+            this.x += x;
+            this.y += typeof(y) === 'number' ? y : x;
+        }
+        else {
+            this.x += x.x;
+            this.y += x.y;
+        }
         return this;
     }
 
-    mult(other: Point) {
-        this.x *= other.x;
-        this.y *= other.y;
+    mult(x: Point | number, y?: number) {
+        if (typeof(x) === 'number') {
+            this.x *= x;
+            this.y *= typeof(y) === 'number' ? y : x;
+        }
+        else {
+            this.x *= x.x;
+            this.y *= x.y;
+        }
         return this;
     }
 

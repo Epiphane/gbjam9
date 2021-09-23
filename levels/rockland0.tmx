@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="20" height="12" tilewidth="16" tileheight="12" infinite="0" nextlayerid="7" nextobjectid="15">
+<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="20" height="12" tilewidth="16" tileheight="12" infinite="0" nextlayerid="7" nextobjectid="18">
  <tileset firstgid="1" source="tiles.tsx"/>
  <layer id="1" name="Tile Layer 1" width="20" height="12">
   <data encoding="csv">
@@ -17,8 +17,10 @@
 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2
 </data>
  </layer>
- <objectgroup id="2" name="Spawners" locked="1"/>
- <objectgroup id="3" name="Teleporters">
+ <objectgroup id="2" name="Spawners" locked="1">
+  <object id="15" x="156" y="106" width="5" height="19"/>
+ </objectgroup>
+ <objectgroup id="3" name="Teleporters" locked="1">
   <object id="12" x="0" y="108" width="4" height="24">
    <properties>
     <property name="destination" value="crossroad0"/>
@@ -34,5 +36,11 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="4" name="EnemySpawner" locked="1"/>
+ <objectgroup id="4" name="EnemySpawner">
+  <object id="16" x="211" y="111" width="8" height="8">
+   <properties>
+    <property name="EnemyType" value="nail"/>
+   </properties>
+  </object>
+ </objectgroup>
 </map>

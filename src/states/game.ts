@@ -4,6 +4,6 @@ export class GameScreen extends VaniaScreen {
     constructor() {
         super();
 
-        this.loadLevel('intro');
+        this.loadLevel('egg0');
     }
 };

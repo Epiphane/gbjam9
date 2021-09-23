@@ -198,5 +198,5 @@ class PaletteManager {
     }
 };
 
-const manager = Game.singleton('PaletteManager', PaletteManager);
+const manager = Game.singleton(PaletteManager);
 export { manager as PaletteManager };

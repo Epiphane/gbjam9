@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="16" height="20" tilewidth="16" tileheight="12" infinite="0" nextlayerid="7" nextobjectid="18">
+ <tileset firstgid="1" source="tiles.tsx"/>
+ <layer id="1" name="Tile Layer 1" width="16" height="20">
+  <data encoding="csv">
+2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+2,31,31,31,31,31,31,31,31,31,31,31,31,31,31,2,
+2,31,31,31,31,31,31,31,31,31,31,31,31,31,31,2,
+2,31,31,31,31,31,31,31,31,31,31,31,31,31,31,2,
+2,31,31,31,31,31,31,31,31,31,31,31,31,31,31,2,
+2,31,31,31,31,31,31,31,31,31,31,31,31,31,31,2,
+2,31,31,31,31,31,31,31,31,31,31,31,31,31,31,2,
+31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,2,
+31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,2,
+2,2,2,2,2,2,2,14,15,2,2,2,2,2,2,2,
+2,25,25,24,25,25,24,24,24,24,25,24,25,24,25,2,
+2,24,25,24,25,24,25,25,25,25,24,24,25,24,24,2,
+2,25,24,24,25,24,25,25,24,25,25,24,24,24,24,2,
+2,25,25,24,24,25,24,25,24,25,25,24,24,24,25,2,
+2,25,25,24,25,24,25,25,24,24,25,24,25,24,25,2,
+2,24,24,24,25,24,25,24,25,25,25,24,25,25,24,2,
+2,25,25,24,24,25,25,24,24,25,25,25,24,25,24,2,
+2,24,24,24,24,24,24,24,24,25,25,24,24,25,25,2,
+2,25,25,25,24,25,24,25,25,25,24,24,25,25,24,2,
+2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2
+</data>
+ </layer>
+ <objectgroup id="2" name="Spawners">
+  <object id="15" name="Default" x="70" y="84" width="5" height="19"/>
+ </objectgroup>
+ <objectgroup id="3" name="Teleporters">
+  <object id="12" x="0" y="84" width="4" height="24">
+   <properties>
+    <property name="destination" value="rockland0"/>
+    <property name="dir" value="right"/>
+    <property name="twoWay" type="bool" value="true"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="4" name="EnemySpawner">
+  <object id="16" x="108" y="80" width="8" height="8">
+   <properties>
+    <property name="EnemyType" value="birb"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

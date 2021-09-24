@@ -149,15 +149,15 @@ export class SpriteComponent extends Component {
                 hash = (hash % 100) / 100;
 
                 if (this.opacity > hash) {
-                    colored.data[i+0] = imageData[i+0];
-                    colored.data[i+1] = imageData[i+1];
-                    colored.data[i+2] = imageData[i+2];
+                    colored.data[i+0] = imageData[i+0]!;
+                    colored.data[i+1] = imageData[i+1]!;
+                    colored.data[i+2] = imageData[i+2]!;
                     colored.data[i+3] = 255;
                 }
                 else {
-                    colored.data[i+0] = canvasData[i+0];
-                    colored.data[i+1] = canvasData[i+1];
-                    colored.data[i+2] = canvasData[i+2];
+                    colored.data[i+0] = canvasData[i+0]!;
+                    colored.data[i+1] = canvasData[i+1]!;
+                    colored.data[i+2] = canvasData[i+2]!;
                     colored.data[i+3] = 255;
                 }
             }

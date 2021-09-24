@@ -87,11 +87,25 @@ export class MapComponent extends Component {
     }
 
     drawTile(ctx: CanvasRenderingContext2D, tile: Tile, x: number, y: number) {
+        const { offset, offsetAnim, offsetAnimTime } = TileInfo[tile];
+        let { x: offX, y: offY } = offset;
+
+        if (offsetAnim) {
+            const nFrames = offsetAnim.length + 1;
+            const animTime = offsetAnimTime ?? 1;
+            const frame = (Math.floor(Game.getTime() / animTime) % nFrames) - 1;
+
+            if (frame >= 0) {
+                offX = offsetAnim[frame]!.x;
+                offY = offsetAnim[frame]!.y;
+            }
+        }
+
         ctx.drawImage(
             tiles,
             // source
-            TileInfo[tile].offset.x * tileWidth,
-            TileInfo[tile].offset.y * tileHeight,
+            offX * tileWidth,
+            offY * tileHeight,
             tileWidth,
             tileHeight,
             // destination
@@ -131,19 +145,7 @@ export class MapComponent extends Component {
                     continue;
                 }
 
-                ctx.drawImage(
-                    tiles,
-                    // source
-                    TileInfo[tile].offset.x * tileWidth,
-                    TileInfo[tile].offset.y * tileHeight,
-                    tileWidth,
-                    tileHeight,
-                    // destination
-                    x * tileWidth,
-                    y * tileHeight,
-                    tileWidth,
-                    tileHeight
-                );
+                this.drawTile(ctx, tile, x, y);
             }
         }
     }

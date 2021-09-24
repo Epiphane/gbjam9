@@ -47,6 +47,7 @@ class Game {
 
     // For going slow
     timeScale = 1;
+    private time = 0;
 
     private canvas?: HTMLCanvasElement;
     private context: CanvasRenderingContext2D | null = null;
@@ -241,6 +242,10 @@ class Game {
         return this; // Enable chaining
     }
 
+    getTime() {
+        return this.time;
+    }
+
     keyDown(key: string | string[]): boolean {
         if (typeof (key) === 'string') {
             return this.keyState[this.KEYS[key]!]!;
@@ -325,6 +330,7 @@ class Game {
         }
 
         try {
+            this.time += dt;
             const updated = !this.state.update(dt) || this.state.updated;
             this.state.updated = false;
 

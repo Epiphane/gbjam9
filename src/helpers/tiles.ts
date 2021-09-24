@@ -13,11 +13,19 @@ export enum Tile {
     Low,
     Mid,
     Light,
+    WaterTop1,
+    WaterTop2,
+    Water1,
+    Water2,
+    Water3,
+    Water4,
 };
 
 interface TileInfo {
     walkable: boolean;
     offset: Point;
+    offsetAnim?: Point[];
+    offsetAnimTime?: number;
     background?: boolean;
     breaksInto?: Tile;
 }
@@ -79,6 +87,40 @@ export const TileInfo: { [key in Tile]: TileInfo } = {
     [Tile.Light]: {
         walkable: true,
         offset: new Point(0, 4),
+        background: true,
+    },
+    [Tile.WaterTop1]: {
+        walkable: false,
+        offset: new Point(3, 1),
+        offsetAnim: [new Point(5, 1)],
+        background: true,
+    },
+    [Tile.WaterTop2]: {
+        walkable: false,
+        offset: new Point(4, 1),
+        offsetAnim: [new Point(6, 1)],
+        background: true,
+    },
+    [Tile.Water1]: {
+        walkable: false,
+        offset: new Point(3, 2),
+        offsetAnim: [new Point(5, 2)],
+        background: true,
+    },
+    [Tile.Water2]: {
+        walkable: false,
+        offset: new Point(4, 2),
+        offsetAnim: [new Point(6, 2)],
+        background: true,
+    },
+    [Tile.Water3]: {
+        walkable: false,
+        offset: new Point(3, 3),
+        background: true,
+    },
+    [Tile.Water4]: {
+        walkable: false,
+        offset: new Point(4, 3),
         background: true,
     },
 };

@@ -21,6 +21,9 @@ import { ParticleManagerComponent } from "../components/particle-manager"
 import { SaveManager } from "../helpers/save-manager";
 import { PowerupAnimations } from "../helpers/powerup";
 import { GainNailScreen } from "./gain-nail";
+import { Drowner } from "../components/drowner";
+import { Health } from "../components/health";
+import { PlayerHealthRender } from "../components/player-health-render";
 
 const PlayerForms = [
     AttackForm
@@ -43,12 +46,14 @@ export class VaniaScreen extends State {
         const mapEntity = new Entity(this, [], 'map');
         this.map = mapEntity.add(MapComponent);
         this.player = new Entity(this, [
+            Health,
             Transitioner,
             MapTraveller,
             SpriteComponent,
             Hitbox,
             PlayerPhysics,
             PlayerAnimation,
+            Drowner,
         ], 'player');
         this.player.position.x = 46;
         this.player.position.y = 9 * 12;
@@ -74,6 +79,17 @@ export class VaniaScreen extends State {
         // Teleportation
         this.player.get(MapTraveller)?.onTeleport(this.teleport.bind(this));
 
+        // Health management
+        const health = this.player.get(Health);
+        health?.onDie(() => console.log('die'));
+        health?.setCurrentHealth(3);
+        health?.setMaxHealth(5);
+
+        // Drowning
+        this.player.get(Drowner)?.onDrown(() => {
+            health?.takeDamage(1);
+        });
+
         // Making UI lol
         this.ui = new Entity(this);
         this.remove(this.ui);
@@ -82,6 +98,7 @@ export class VaniaScreen extends State {
 
         // Haha I'm hacking hahaha
         const formFrame = this.ui.addChild(new Entity(this));
+        formFrame.position.x = this.game.size.x - 20;
         this.currentFormFrame = formFrame.add(SpriteComponent)
             .setImage('./images/forms.png')
             .setSize(20, 20)
@@ -89,11 +106,18 @@ export class VaniaScreen extends State {
             .setActive(hasAnyForms);
 
         const formType = this.ui.addChild(new Entity(this, [SpriteComponent]));
+        formType.position = formFrame.position.copy();
         this.currentForm = formType.add(SpriteComponent)
             .setImage('./images/forms.png')
             .setSize(20, 20)
             .runAnimation({ name: 'Frame', frameTime: 0, repeat: true, sheet: [1] })
             .setActive(hasAnyForms);
+
+        // Add player health to UI
+        const playerHealth = this.ui.addChild(new Entity(this));
+        playerHealth.position.x = 4;
+        playerHealth.position.y = 4;
+        playerHealth.add(PlayerHealthRender).health = this.player.get(Health);
     }
 
     init() {
@@ -249,6 +273,8 @@ export class VaniaScreen extends State {
         }
 
         super.update(dt);
+
+        this.ui.update(dt);
     }
 
     render(ctx: CanvasRenderingContext2D) {

@@ -42,6 +42,12 @@ export const PlayerAnimations = {
         frameTime: 0.15,
         repeat: true,
     },
+    Drowning: {
+        name: 'Drowning',
+        sheet: [12, 13],
+        frameTime: 0.05,
+        repeat: true,
+    },
 };
 
 // Verify that PlayerAnimations conforms to { string : Animation }, but

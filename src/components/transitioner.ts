@@ -17,7 +17,11 @@ export interface GetFormTransition {
     powerup: SpriteComponent;
 }
 
-export type Transition = (MoveTransition | GetFormTransition) & {
+export interface DrownTransition {
+    type: 'Drown';
+}
+
+export type Transition = (MoveTransition | GetFormTransition | DrownTransition) & {
     time: number;
     onComplete?: () => void;
 };
@@ -66,6 +70,8 @@ export class Transitioner extends Component {
                 playerStart: this.entity.position.copy(),
                 powerupStart: this.currentTransition.powerup.entity.position.copy(),
             };
+            break;
+        case 'Drown':
             break;
         }
     }
@@ -187,6 +193,9 @@ export class Transitioner extends Component {
                 break;
             case 'GetForm':
                 this.updateFormAnimation();
+                break;
+            case 'Drown':
+                this.entity.get(SpriteComponent)?.runAnimation(PlayerAnimations.Drowning);
                 break;
             }
 

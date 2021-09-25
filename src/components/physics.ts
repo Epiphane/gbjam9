@@ -56,7 +56,12 @@ export class PhysicsBody extends Component {
     }
 
     isBlocked(dx: number, dy: number) {
-        return this.blocked[dy + 1]![dx + 1];
+        if (dx >= -1 && dx <= 1 && dy >= -1 && dy <= 1) {
+            return this.blocked[dy + 1]![dx + 1];
+        }
+        else {
+            return !this.isValidMove(dx, dy, getMapFromComponent(this)!, this.entity.get(Hitbox)!);
+        }
     }
 
     update(dt: number, game: typeof Game) {

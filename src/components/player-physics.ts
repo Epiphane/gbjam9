@@ -40,7 +40,7 @@ export class PlayerPhysics extends PhysicsBody {
             // Start jump
             if (this.coyote > 0 && !this.upWasPressed) {
                 this.velocity.y = -150;
-                this.jumpTail = 0.5;
+                this.jumpTail = 0.3;
                 this.coyote = 0;
             }
             else if (this.jumpTail > 0 && this.velocity.y < 0) {

@@ -23,6 +23,7 @@ export enum Tile {
 
 interface TileInfo {
     walkable: boolean;
+    mustSwim?: boolean;
     offset: Point;
     offsetAnim?: Point[];
     offsetAnimTime?: number;
@@ -90,36 +91,42 @@ export const TileInfo: { [key in Tile]: TileInfo } = {
         background: true,
     },
     [Tile.WaterTop1]: {
-        walkable: false,
+        walkable: true,
+        mustSwim: true,
         offset: new Point(3, 1),
         offsetAnim: [new Point(5, 1)],
         background: true,
     },
     [Tile.WaterTop2]: {
-        walkable: false,
+        walkable: true,
+        mustSwim: true,
         offset: new Point(4, 1),
         offsetAnim: [new Point(6, 1)],
         background: true,
     },
     [Tile.Water1]: {
-        walkable: false,
+        walkable: true,
+        mustSwim: true,
         offset: new Point(3, 2),
         offsetAnim: [new Point(5, 2)],
         background: true,
     },
     [Tile.Water2]: {
-        walkable: false,
+        walkable: true,
+        mustSwim: true,
         offset: new Point(4, 2),
         offsetAnim: [new Point(6, 2)],
         background: true,
     },
     [Tile.Water3]: {
-        walkable: false,
+        walkable: true,
+        mustSwim: true,
         offset: new Point(3, 3),
         background: true,
     },
     [Tile.Water4]: {
-        walkable: false,
+        walkable: true,
+        mustSwim: true,
         offset: new Point(4, 3),
         background: true,
     },

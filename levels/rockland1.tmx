@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="16" height="20" tilewidth="16" tileheight="12" infinite="0" nextlayerid="7" nextobjectid="18">
+<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="16" height="20" tilewidth="16" tileheight="12" infinite="0" nextlayerid="7" nextobjectid="19">
  <tileset firstgid="1" source="tiles.tsx"/>
  <layer id="1" name="Tile Layer 1" width="16" height="20">
   <data encoding="csv">
@@ -13,16 +13,16 @@
 31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,2,
 31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,2,
 2,2,2,2,2,2,15,14,15,2,2,2,2,2,2,2,
-2,25,25,24,25,25,24,24,24,24,25,24,25,24,25,2,
-2,24,25,24,25,24,25,25,25,25,24,24,25,24,24,2,
-2,25,24,24,25,24,25,25,24,25,25,24,24,24,24,2,
-2,25,25,24,24,25,24,25,24,25,25,24,24,24,25,2,
-2,25,25,24,25,24,25,25,24,24,25,24,25,24,25,2,
-2,24,24,24,25,24,25,24,25,25,25,24,25,25,24,2,
-2,25,25,24,24,25,25,24,24,25,25,25,24,25,24,2,
-2,24,24,24,24,24,24,24,24,25,25,24,24,25,25,2,
-2,25,25,25,24,25,24,25,25,25,24,24,25,25,24,2,
-2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2
+2,2,2,2,2,2,24,24,24,2,2,2,2,2,2,2,
+2,2,2,2,2,2,25,25,25,2,2,2,2,2,2,2,
+2,2,2,2,2,2,25,25,24,2,2,2,2,2,2,2,
+2,2,2,2,2,2,24,25,24,2,2,2,2,2,2,2,
+2,2,2,2,2,2,25,25,24,2,2,2,2,2,2,2,
+2,2,2,2,2,2,25,24,25,2,2,2,2,2,2,2,
+2,2,2,2,2,2,25,24,24,2,2,2,2,2,2,2,
+2,2,2,2,2,2,24,24,24,2,2,2,2,2,2,2,
+2,2,2,2,2,2,24,25,25,2,2,2,2,2,2,2,
+2,2,2,2,2,2,24,25,24,2,2,2,2,2,2,2
 </data>
  </layer>
  <objectgroup id="2" name="Spawners">
@@ -33,6 +33,13 @@
    <properties>
     <property name="destination" value="rockland0"/>
     <property name="dir" value="right"/>
+    <property name="twoWay" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="18" x="96" y="236" width="48" height="4">
+   <properties>
+    <property name="destination" value="mudland0"/>
+    <property name="dir" value="swim_up"/>
     <property name="twoWay" type="bool" value="true"/>
    </properties>
   </object>

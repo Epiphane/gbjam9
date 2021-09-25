@@ -148,8 +148,8 @@ class Game {
         this.listener = {};
     }
 
-    setDebug(debug?: HTMLElement) {
-        this.debug = debug;
+    setDebug(debug?: HTMLElement | null) {
+        this.debug = debug ?? undefined;
         return this; // Enable chaining
     }
 

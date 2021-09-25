@@ -6,6 +6,7 @@ import {
 } from "../../lib/juicy";
 import { CoolText, FontFace } from "../components/cool-text";
 import { DefaultFont } from "../helpers/constants";
+import { __SKIP_CONTROLS__, __SKIP_PALETTE__ } from "../helpers/debug";
 import { SaveManager } from "../helpers/save-manager";
 import { ControlsScreen } from "./controls";
 import { GameScreen } from "./game";
@@ -27,10 +28,10 @@ export class LoadingScreen extends State {
     }
 
     update(dt: number) {
-        if (!SaveManager.get('controls_shown')) {
+        if (!__SKIP_CONTROLS__) {
             this.game.setState(new ControlsScreen());
         }
-        else if (!SaveManager.get('palette_shown')) {
+        else if (!__SKIP_PALETTE__) {
             this.game.setState(new PaletteSelectionScreen(new GameScreen()));
         }
         else {

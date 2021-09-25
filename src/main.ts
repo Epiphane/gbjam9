@@ -3,7 +3,7 @@ import { PaletteManager } from './helpers/palette';
 import { LoadingScreen } from './states/loading';
 import { Keys } from './helpers/constants';
 import { TestScreen } from './states/test';
-import { __DEV__, __PALETTE__ } from './helpers/debug';
+import { __DEV__, __PALETTE__, __TEST_LEVEL__ } from './helpers/debug';
 
 // const keys = {
 //     LEFT: 37,
@@ -75,11 +75,9 @@ Sound.Load('FubSong', {
 
 // Sound.Play('FubSong');
 
-if (__DEV__) {
+if (__TEST_LEVEL__) {
     Game.setState(new TestScreen()).run();
 }
 else {
     Game.setState(new LoadingScreen()).run();
 }
-
-// Game.setDebug(document.getElementById("fps")!);

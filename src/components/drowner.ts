@@ -8,9 +8,9 @@ import { Transitioner } from "./transitioner";
 export class Drowner extends Component {
     drowning = false;
     lastSafe = new Point();
-    callback?: () => void;
+    callback?: (lastSafePosition: Point) => void;
 
-    onDrown(callback: () => void) {
+    onDrown(callback: (lastSafePosition: Point) => void) {
         this.callback = callback;
     }
 
@@ -63,15 +63,20 @@ export class Drowner extends Component {
                     type: 'Drown',
                     time: 1,
                     onComplete: () => {
-                        this.entity.position = this.lastSafe;
                         if (this.callback) {
-                            this.callback();
+                            this.callback(this.lastSafe);
+                        }
+                        else {
+                            this.entity.position = this.lastSafe;
                         }
                     },
                 });
             }
             else if (this.callback) {
-                this.callback();
+                this.callback(this.lastSafe);
+            }
+            else {
+                this.entity.position = this.lastSafe;
             }
         }
         else if (!drown) {

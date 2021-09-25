@@ -200,12 +200,12 @@ export class Transitioner extends Component {
             }
 
             if (this.transitionTime >= this.currentTransition.time) {
+                this.enableInteraction();
                 if (this.currentTransition.onComplete) {
                     this.currentTransition.onComplete();
                 }
                 this.currentTransition = undefined;
                 this.transitionTime = 0;
-                this.enableInteraction();
             }
         }
     }

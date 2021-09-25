@@ -134,27 +134,6 @@ export class GainNailScreen extends State {
     render(ctx: CanvasRenderingContext2D) {
         this.prevState.render(ctx);
 
-        /*
-        // Dim the background
-        const imageData = ctx.getImageData(0, 0, this.game.size.x, this.game.size.y).data;
-        const colored = ctx.createImageData(this.game.size.x, this.game.size.y);
-        for (let i = 0; i < colored.data.length; i += 4) {
-            if (imageData[i + 3] === 0) continue;
-
-            let color = 0;
-            const rValue = imageData[i];
-            if (rValue >= 160) color = 85;
-            if (rValue >= 245) color = 170;
-
-            colored.data[i+0] = color;
-            colored.data[i+1] = color;
-            colored.data[i+2] = color;
-            colored.data[i+3] = 255;//color[3];
-        }
-
-        ctx.putImageData(colored, 0, 0);
-        */
-
         super.render(this.faderCtx);
 
         if (this.ready) {

@@ -3,6 +3,7 @@ import {
     Point,
     Game,
     Entity,
+    BehaviorComponent,
 } from "../../lib/juicy";
 import { Hitbox } from "../components/stupid-hitbox";
 import { MapComponent } from "../components/map";
@@ -24,6 +25,7 @@ import { GainNailScreen } from "./gain-nail";
 import { Drowner } from "../components/drowner";
 import { Health } from "../components/health";
 import { PlayerHealthRender } from "../components/player-health-render";
+import { __HITBOXES__ } from "../helpers/debug";
 
 const PlayerForms = [
     AttackForm
@@ -39,6 +41,7 @@ export class VaniaScreen extends State {
     currentFormFrame: SpriteComponent;
     currentForm: SpriteComponent;
     ready = false;
+    blackout?: Entity;
 
     constructor() {
         super();
@@ -81,13 +84,16 @@ export class VaniaScreen extends State {
 
         // Health management
         const health = this.player.get(Health);
-        health?.onDie(() => console.log('die'));
-        health?.setCurrentHealth(3);
+        health?.onDie(() => this.playerDied());
+        health?.setCurrentHealth(5);
         health?.setMaxHealth(5);
 
         // Drowning
-        this.player.get(Drowner)?.onDrown(() => {
+        this.player.get(Drowner)?.onDrown((lastPos: Point) => {
             health?.takeDamage(1);
+            if (health?.isAlive()) {
+                this.player.position = lastPos.copy();
+            }
         });
 
         // Making UI lol
@@ -121,6 +127,36 @@ export class VaniaScreen extends State {
     }
 
     init() {
+    }
+
+    playerDied() {
+        this.player.get(Transitioner)?.disableInteraction();
+
+        this.blackout = new Entity(this);
+        this.remove(this.blackout);
+        const sprite = this.blackout.add(SpriteComponent);
+        sprite.setSize(this.game.size.x, this.game.size.y);
+        sprite.image.width = this.game.size.x;
+        sprite.image.height = this.game.size.y;
+        sprite.opacity = 0;
+
+        const ctx = sprite.image.getContext('2d')!;
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0, 0, sprite.image.width, sprite.image.height);
+
+        this.blackout.add(BehaviorComponent).setCallback((dt: number) => {
+            sprite.opacity += dt;
+
+            if (sprite.opacity >= 2) {
+                this.blackout = undefined;
+                this.respawn();
+            }
+        });
+    }
+
+    respawn() {
+        const health = this.player.get(Health);
+        health?.setCurrentHealth(health.maxHealth);
     }
 
     hasForm<Form extends PlayerForm>(form: (new () => Form)) {
@@ -275,6 +311,7 @@ export class VaniaScreen extends State {
         super.update(dt);
 
         this.ui.update(dt);
+        this.blackout?.update(dt);
     }
 
     render(ctx: CanvasRenderingContext2D) {
@@ -285,5 +322,6 @@ export class VaniaScreen extends State {
         ctx.restore();
 
         this.ui.render(ctx);
+        this.blackout?.render(ctx);
     }
 };

@@ -900,16 +900,18 @@ export class TextComponent extends Component {
 
 export type Behavior = (dt: number, game: Game) => void;
 export class BehaviorComponent extends Component {
-    callback: Behavior;
+    callback?: Behavior;
 
-    constructor(callback: Behavior) {
-        super();
-
+    setCallback(callback: Behavior) {
         this.callback = callback;
+
+        return this; // enable chaining
     }
 
     update(dt: number, game: Game) {
-        this.callback(dt, game);
+        if (this.callback) {
+            this.callback(dt, game);
+        }
     }
 }
 

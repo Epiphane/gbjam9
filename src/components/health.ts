@@ -5,6 +5,10 @@ export class Health extends Component {
     maxHealth = 1;
     private dieCallback?: (health: Health) => void;
 
+    isAlive() {
+        return this.health > 0;
+    }
+
     onDie(callback: (health: Health) => void) {
         this.dieCallback = callback;
         return this; // enable chaining
@@ -30,7 +34,7 @@ export class Health extends Component {
 
     takeDamage(damage: number) {
         this.health -= damage;
-        if (this.health <= 0) {
+        if (!this.isAlive()) {
             this.die();
         }
     }

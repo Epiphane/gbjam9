@@ -4,30 +4,37 @@ import {
     State,
     TextComponent,
 } from "../../lib/juicy";
+import { CoolText, FontFace } from "../components/cool-text";
 import { DefaultFont } from "../helpers/constants";
+import { SaveManager } from "../helpers/save-manager";
 import { ControlsScreen } from "./controls";
 import { GameScreen } from "./game";
+import { PaletteSelectionScreen } from "./palette-selector";
 
 export class LoadingScreen extends State {
-    text: TextComponent;
 
     constructor() {
         super();
 
-        const text = new Entity(this);
-        this.text = text.add(TextComponent);
-        this.text.set({
+        const textEntity = new Entity(this);
+        const text = textEntity.add(CoolText);
+        text.set({
             text: 'Loading...',
-            fillStyle: 'black',
-            size: 32,
-            font: DefaultFont,
-        }).then(() => {
-            text.position.x = (Game.size.x - text.width) / 2;
-            text.position.y = 20;
+            fontFace: FontFace.Big,
         });
+        textEntity.position.x = (Game.size.x - textEntity.width) / 2;
+        textEntity.position.y = 20;
     }
 
     update(dt: number) {
-        this.game.setState(new ControlsScreen());
+        if (!SaveManager.get('controls_shown')) {
+            this.game.setState(new ControlsScreen());
+        }
+        else if (!SaveManager.get('palette_shown')) {
+            this.game.setState(new PaletteSelectionScreen(new GameScreen()));
+        }
+        else {
+            this.game.setState(new GameScreen());
+        }
     }
 };

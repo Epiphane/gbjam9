@@ -40,7 +40,7 @@ export class Drowner extends Component {
         const { min, max } = hitbox.getBounds();
 
         // Little bit of grace
-        max.y -= 4;
+        max.y -= 12;
         const tileMin = map.getTileCoords(min);
         const tileMax = map.getTileCoords(max);
 

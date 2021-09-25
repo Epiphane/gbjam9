@@ -121,7 +121,7 @@ if (__DEV__) {
     new Button({
         content: () => Game.timeScale !== 0 ? 'Pause' : 'Unpause',
         onclick: () => {
-            if (Game.isRunning()) {
+            if (Game.timeScale !== 0) {
                 Game.timeScale = 0;
             }
             else {
@@ -131,9 +131,9 @@ if (__DEV__) {
     });
 
     new Button({
-        content: () => 'Step 1/8 second',
+        content: () => 'Step 1 frame',
         onclick: () => {
-            Game.timeStep = 0.125;
+            Game.timeStep = 1 / 60;
         }
     });
 

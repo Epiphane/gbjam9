@@ -43,7 +43,7 @@ export class Camera extends Component {
         // There's probably some cool camera work to do here but WHATEVER
 
         this.targetX = this.target.position.x - Game.size.x / 2;
-        this.targetY = this.target.position.y - (Game.size.y - 60);
+        this.targetY = this.target.position.y - (Game.size.y - 59);
 
         this.entity.position.x = this.targetX;
         this.entity.position.y = this.targetY;

@@ -28,6 +28,8 @@ const keys = {
     [Keys.SELECT]: 8,
 };
 
+export { keys as KeyCodes };
+
 const gameCanvas = document.getElementById('game-canvas') as HTMLCanvasElement;
 
 // Scale up the canvas to be as big as possible

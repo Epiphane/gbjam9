@@ -2,7 +2,9 @@ import { Game } from "../../lib/juicy";
 import { Hitbox } from "../components/stupid-hitbox";
 import { LoadingScreen } from "../states/loading";
 import { TestScreen } from "../states/test";
+import { Keys } from "./constants";
 import { SaveManager } from "./save-manager";
+import { KeyCodes } from "../main";
 
 const debugElement = document.createElement('div');
 document.body.appendChild(debugElement);
@@ -11,9 +13,10 @@ class Button {
     content: () => string;
     el = document.createElement('button');
 
-    constructor({ content, onclick }: {
+    constructor({ content, onclick, parent }: {
         content: () => string,
         onclick?: () => void,
+        parent?: HTMLDivElement,
     }) {
         this.content = content;
         this.el.textContent = this.content();
@@ -21,7 +24,7 @@ class Button {
             onclick?.();
             this.el.textContent = this.content();
         };
-        debugElement.appendChild(this.el);
+        (parent ?? debugElement).appendChild(this.el);
     }
 }
 
@@ -110,4 +113,63 @@ if (__DEV__) {
             }
         }
     })
+}
+
+if (__DEV__) {
+    debugElement.appendChild(document.createElement('br'));
+    let stepButton;
+    new Button({
+        content: () => Game.timeScale !== 0 ? 'Pause' : 'Unpause',
+        onclick: () => {
+            if (Game.isRunning()) {
+                Game.timeScale = 0;
+            }
+            else {
+                Game.timeScale = 1;
+            }
+        }
+    });
+
+    new Button({
+        content: () => 'Step 1/8 second',
+        onclick: () => {
+            Game.timeStep = 0.125;
+        }
+    });
+
+    const keysElement = document.createElement('div');
+    debugElement.appendChild(keysElement);
+
+    const keyButton = (content: string, key: Keys) => {
+        const btn = new Button({
+            content: () => content,
+            onclick: () => {
+                if (btn.el.style.borderStyle === 'groove') {
+                    document.onkeydown!(new KeyboardEvent('keydown', {
+                        keyCode: KeyCodes[key],
+                    }))
+                    btn.el.style.borderStyle = 'inset';
+                }
+                else {
+                    document.onkeyup!(new KeyboardEvent('keyup', {
+                        keyCode: KeyCodes[key],
+                    }))
+                    btn.el.style.borderStyle = 'groove';
+                }
+            },
+            parent: keysElement,
+        });
+        btn.el.style.borderWidth = '8px';
+        btn.el.style.borderStyle = 'groove';
+        return btn;
+    }
+
+    keyButton('←', Keys.LEFT);
+    keyButton('→', Keys.RIGHT);
+    keyButton('↑', Keys.UP);
+    keyButton('↓', Keys.DOWN);
+    keyButton('A', Keys.A);
+    keyButton('B', Keys.B);
+    keyButton('START', Keys.START);
+    keyButton('SELECT', Keys.SELECT);
 }

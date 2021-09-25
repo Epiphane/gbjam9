@@ -47,6 +47,7 @@ class Game {
 
     // For going slow
     timeScale = 1;
+    timeStep?: number;
     private time = 0;
 
     private canvas?: HTMLCanvasElement;
@@ -323,7 +324,8 @@ class Game {
             this.debug.innerHTML = 'FPS: ' + Math.floor(this.fps);
         }
 
-        const dt = this.timeScale * (nextTime - this.lastTime) / 1000;
+        const dt = this.timeStep ? this.timeStep : this.timeScale * (nextTime - this.lastTime) / 1000;
+        this.timeStep = undefined;
         if (dt > 0.2) {
             this.lastTime = nextTime;
             return;
@@ -383,6 +385,10 @@ class Game {
 
     pause() {
         this.running = false;
+    }
+
+    isRunning() {
+        return this.running;
     }
 }
 

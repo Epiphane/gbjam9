@@ -1,4 +1,4 @@
-import { Component, Point } from "../../lib/juicy";
+import { Component, Entity, Point } from "../../lib/juicy";
 import { getMapFromComponent } from "../helpers/quick-get";
 import { TileInfo } from "../helpers/tiles";
 import { PlayerPhysics } from "./player-physics";
@@ -7,7 +7,7 @@ import { Transitioner } from "./transitioner";
 
 export class Drowner extends Component {
     drowning = false;
-    lastSafe = new Point();
+    lastSafe!: Point;
     callback?: (lastSafePosition: Point) => void;
 
     onDrown(callback: (lastSafePosition: Point) => void) {
@@ -15,6 +15,10 @@ export class Drowner extends Component {
     }
 
     update(dt: number) {
+        if (!this.lastSafe) {
+            this.lastSafe = this.entity.position.copy();
+        }
+
         const map = getMapFromComponent(this)
         if (!map) {
             console.error(`Can't simulate physics without a map entity. Add this to your scene: new Entity(this, 'map', [MapComponent]);`);
@@ -31,10 +35,6 @@ export class Drowner extends Component {
 
         const transitioner = this.entity.get(Transitioner);
         const physics = this.entity.get(PlayerPhysics);
-
-        if (this.drowning) {
-
-        }
 
         // Test map collision
         const { min, max } = hitbox.getBounds();

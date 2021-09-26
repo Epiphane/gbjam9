@@ -1,5 +1,8 @@
 import { Component, Point, Game, Entity } from '../../lib/juicy';
+import { ColorType, ColorTypeFromValue } from '../helpers/palette';
+import { getParticlesFromComponent } from '../helpers/quick-get';
 import { CoolText } from './cool-text';
+import { CircleParticle, Particle, PixelParticle } from './particle-manager';
 
 export interface Animation {
     name: string;
@@ -7,6 +10,10 @@ export interface Animation {
     frameTime: number;
     repeat?: boolean;
 };
+
+const DissolvingParticleUpdate = (thisParticle: Particle, dt: number) => {
+    thisParticle.origin.add(thisParticle.velocity.copy().mult(dt));
+}
 
 export class SpriteComponent extends Component {
     image: HTMLCanvasElement = document.createElement('canvas');
@@ -122,14 +129,45 @@ export class SpriteComponent extends Component {
         }
     }
 
+    computeSprite() {
+        const index = this.sheet[this.sprite < this.sheet.length ? this.sprite : this.sheet.length - 1]!;
+        var sx = (index % this.sheetWidth) * this.spriteWidth;
+        var sy = Math.floor(index / this.sheetWidth) * this.spriteHeight;
+        return { sx, sy };
+    }
+
+    dissolve() {
+        const particles = getParticlesFromComponent(this);
+        if (!particles) {
+            return;
+        }
+
+        const { sx, sy } = this.computeSprite();
+        const imageData = this.image.getContext('2d')!.getImageData(sx, sy, this.spriteWidth, this.spriteHeight).data;
+
+        for (let i = 0; i < imageData.length; i += 4) {
+            if (imageData[i + 3] !== 0) {
+                const x = (i / 4) % this.spriteWidth;
+                const y = Math.floor((i / 4) / this.spriteWidth);
+                const speedX = 5 + (Math.random() - 0.5) * 20;
+                const speedY = 5 + Math.random() * 5;
+                particles.addParticle(new PixelParticle(
+                    1.5 + Math.random() * 2,
+                    DissolvingParticleUpdate,
+                    new Point(this.flip ? this.spriteWidth - x : x, y).add(this.entity.position),
+                    new Point(this.flip ? -speedX : speedX, -speedY),
+                    imageData[i]!
+                ));
+            }
+        }
+    }
+
     render(context: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
         context.imageSmoothingEnabled = false;
 
         context.save();
-        const index = this.sheet[this.sprite]!;
-        var sx = (index % this.sheetWidth) * this.spriteWidth;
-        var sy = Math.floor(index / this.sheetWidth) * this.spriteHeight;
 
+        const { sx, sy } = this.computeSprite();
         if (this.flip) {
             context.translate(this.spriteWidth, 0);
             context.scale(-1, 1);

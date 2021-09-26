@@ -48,7 +48,7 @@ export const TileInfo: { [key in Tile]: TileInfo } = {
     [Tile.BreakableBrick]: {
         walkable: false,
         offset: new Point(3, 0),
-        breaksInto: Tile.Wall1,
+        breaksInto: Tile.Mid,
     },
     [Tile.Wall1]: {
         walkable: true,

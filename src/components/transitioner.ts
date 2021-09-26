@@ -1,5 +1,6 @@
 import { Component, Point } from "../../lib/juicy";
 import { PowerupAnimations } from "../helpers/powerup";
+import { Camera } from "./camera";
 import { MapTraveller } from "./map-traveller";
 import { PhysicsBody } from "./physics";
 import { PlayerAnimation, PlayerAnimations } from "./player-animation";
@@ -21,7 +22,15 @@ export interface DrownTransition {
     type: 'Drown';
 }
 
-export type Transition = (MoveTransition | GetFormTransition | DrownTransition) & {
+export interface FrogIntroTransition {
+    type: 'FrogIntro';
+    camera: Camera;
+    cameraPos: Point;
+}
+
+export type Transition = (
+    MoveTransition | GetFormTransition | DrownTransition | FrogIntroTransition
+) & {
     time: number;
     onComplete?: () => void;
 };
@@ -72,6 +81,8 @@ export class Transitioner extends Component {
             };
             break;
         case 'Drown':
+            break;
+        case 'FrogIntro':
             break;
         }
     }
@@ -176,6 +187,14 @@ export class Transitioner extends Component {
         }
     }
 
+    updateFrogIntro() {
+        if (this.currentTransition?.type !== 'FrogIntro') {
+            return;
+        }
+
+
+    }
+
     update(dt: number) {
         if (this.currentTransition) {
             this.transitionTime += dt;
@@ -196,6 +215,9 @@ export class Transitioner extends Component {
                 break;
             case 'Drown':
                 this.entity.get(SpriteComponent)?.runAnimation(PlayerAnimations.Drowning);
+                break;
+            case 'FrogIntro':
+                this.updateFrogIntro();
                 break;
             }
 

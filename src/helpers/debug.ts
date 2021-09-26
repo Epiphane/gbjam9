@@ -116,6 +116,16 @@ if (__DEV__) {
 }
 
 if (__DEV__) {
+    new Button({
+        content: () => 'Clear save file',
+        onclick: () => {
+            SaveManager.clear();
+            location.reload();
+        }
+    });
+}
+
+if (__DEV__) {
     debugElement.appendChild(document.createElement('br'));
     let stepButton;
     new Button({

@@ -9,19 +9,28 @@ export interface CameraBounds {
 
 export class Camera extends Component {
     target?: Entity;
-    targetX = 0;
-    targetY = 0;
-    targetIsFalling = false;
-    easing = 0.3;
+    easing = 0;
+    maxEasing = 0;
 
     bounds: CameraBounds = {
         min: new Point(),
         max: new Point(),
     };
 
+    constructor() {
+        super();
+
+        this.setDefaultEasing();
+    }
+
     follow(target: Entity) {
         this.target = target;
         return this; // enable chaining
+    }
+
+    setDefaultEasing() {
+        this.easing = 100;
+        this.maxEasing = 200;
     }
 
     setBounds(bounds: CameraBounds) {
@@ -35,6 +44,24 @@ export class Camera extends Component {
         return this; // enable chaining
     }
 
+    getTargetPosition(): Point {
+        if (!this.target) {
+            return this.entity.position.copy();
+        }
+
+        const pos = new Point(
+            this.target.position.x + this.target.width / 2 - Game.size.x / 2,
+            this.target.position.y - (Game.size.y - 59)
+        );
+        pos.x = Math.max(Math.min(pos.x, this.bounds.max.x - Game.size.x), this.bounds.min.x);
+        pos.y = Math.max(Math.min(pos.y, this.bounds.max.y - Game.size.y), this.bounds.min.y);
+        return pos;
+    }
+
+    snapCamera() {
+        this.entity.position = this.getTargetPosition();
+    }
+
     update(dt: number) {
         if (!this.target) {
             return;
@@ -42,12 +69,32 @@ export class Camera extends Component {
 
         // There's probably some cool camera work to do here but WHATEVER
 
-        this.targetX = this.target.position.x - Game.size.x / 2;
-        this.targetY = this.target.position.y - (Game.size.y - 59);
+        const { x, y } = this.getTargetPosition();
 
-        this.entity.position.x = this.targetX;
-        this.entity.position.y = this.targetY;
-        this.entity.position.x = Math.max(Math.min(this.entity.position.x, this.bounds.max.x - Game.size.x), this.bounds.min.x);
-        this.entity.position.y = Math.max(Math.min(this.entity.position.y, this.bounds.max.y - Game.size.y), this.bounds.min.y);
+        const dx = x - this.entity.position.x;
+        const dy = y - this.entity.position.y;
+
+        let easeX = this.easing;
+        let easeY = this.easing;
+
+        if (Math.abs(dx) > 10) {
+            easeX = this.easing + (this.maxEasing - this.easing) * Math.min(1, (Math.abs(dx) - 10) / 10);
+        }
+
+        if (dy < -20 || dy > 10) {
+            let lerped = 0;
+            if (dy < 0) {
+                lerped = (-20 - dy) / 10;
+            }
+            else {
+                lerped = (dy - 10) / 5;
+            }
+            easeY = this.easing + (this.maxEasing - this.easing) * Math.min(1, lerped);
+        }
+
+        let moveX = Math.sign(dx) * Math.min(easeX * dt, Math.abs(dx));
+        let moveY = Math.sign(dy) * Math.min(easeY * dt, Math.abs(dy));
+
+        this.entity.position.add(moveX, moveY);
     }
 }

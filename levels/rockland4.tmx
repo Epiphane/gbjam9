@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="16" height="20" tilewidth="16" tileheight="12" infinite="0" nextlayerid="8" nextobjectid="82">
+ <tileset firstgid="1" source="tiles.tsx"/>
+ <layer id="1" name="Tile Layer 1" width="16" height="20">
+  <data encoding="csv">
+2,25,2,31,31,24,2,2,2,2,2,2,2,2,2,2,
+2,25,2,31,31,24,2,31,31,31,31,31,31,31,31,2,
+2,24,2,31,31,24,2,31,31,31,31,31,31,31,31,2,
+2,25,2,31,31,25,2,31,31,31,31,31,31,31,31,2,
+2,24,2,31,31,25,2,31,31,31,31,31,31,31,31,2,
+2,24,2,31,31,24,2,31,31,31,31,31,31,31,31,2,
+2,24,2,31,31,24,2,31,31,31,31,31,31,31,31,2,
+2,25,2,31,31,25,2,31,31,31,31,31,31,31,31,2,
+2,24,2,31,31,25,2,31,31,31,31,31,31,31,31,2,
+2,25,2,31,31,25,2,31,31,31,31,31,31,31,31,2,
+2,24,2,31,31,25,2,31,31,31,2,2,31,31,31,2,
+2,25,2,31,31,25,2,31,31,31,31,31,31,31,31,2,
+2,25,2,31,31,2,2,2,2,31,31,31,31,31,31,2,
+2,24,2,31,31,31,31,31,31,31,31,31,31,31,31,2,
+2,24,2,31,31,31,31,31,31,31,31,31,31,31,31,2,
+2,25,2,31,31,31,31,31,31,31,31,31,31,31,31,2,
+2,25,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+2,24,25,25,25,24,25,25,25,25,24,25,24,25,25,25,
+2,25,25,25,24,25,24,25,25,25,24,24,25,25,25,25,
+2,2,2,2,2,2,2,2,2,2,24,2,2,2,2,2
+</data>
+ </layer>
+ <objectgroup id="7" name="Triggers">
+  <object id="80" name="FrogBoss" x="144" y="157" width="96" height="35"/>
+ </objectgroup>
+ <objectgroup id="2" name="Spawners">
+  <object id="15" name="Default" x="61" y="0" width="5" height="19"/>
+  <object id="79" x="60" y="0" width="5" height="19">
+   <properties>
+    <property name="source" value="rockland3"/>
+    <property name="twoWay" type="bool" value="false"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="3" name="Teleporters">
+  <object id="78" x="160" y="237" width="15" height="4">
+   <properties>
+    <property name="destination" value="rockland2"/>
+    <property name="twoWay" type="bool" value="false"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="4" name="EnemySpawner">
+  <object id="81" x="100" y="156" width="8" height="36">
+   <properties>
+    <property name="EnemyType" value="SpikeWall"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

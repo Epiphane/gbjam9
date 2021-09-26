@@ -35,6 +35,11 @@ class SaveGame {
 
         this.persist();
     }
+
+    clear() {
+        this.props = {};
+        this.persist();
+    }
 }
 
 class SaveManager {
@@ -46,6 +51,10 @@ class SaveManager {
 
     set(name: string, value: any) {
         this.currentSave.set(name, value);
+    }
+
+    clear() {
+        this.currentSave.clear();
     }
 };
 

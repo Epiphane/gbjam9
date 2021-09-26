@@ -17,7 +17,6 @@ import { AttackForm } from "../components/forms/attack";
 import { Transitioner } from "../components/transitioner";
 import { MapTraveller } from "../components/map-traveller";
 import { Teleporter } from "../helpers/map-loader";
-import { Follower } from "../components/follower";
 import { ParticleManagerComponent } from "../components/particle-manager"
 import { SaveManager } from "../helpers/save-manager";
 import { PowerupAnimations } from "../helpers/powerup";
@@ -26,6 +25,8 @@ import { Drowner } from "../components/drowner";
 import { Health } from "../components/health";
 import { PlayerHealthRender } from "../components/player-health-render";
 import { __HITBOXES__ } from "../helpers/debug";
+import { Birb, BirbDetectionRadius, BirbDistance } from "../components/birb";
+import { PlayerEvents } from "../components/player-events";
 
 const PlayerForms = [
     AttackForm
@@ -34,8 +35,9 @@ const PlayerForms = [
 export class VaniaScreen extends State {
     map: MapComponent;
     player: Entity;
+    birbs: Entity[] = [];
     enemies: Entity[] = [];
-    camera: Entity;
+    camera: Camera;
     particles: Entity;
     ui: Entity;
     currentFormFrame: SpriteComponent;
@@ -57,6 +59,7 @@ export class VaniaScreen extends State {
             PlayerPhysics,
             PlayerAnimation,
             Drowner,
+            PlayerEvents,
         ], 'player');
         this.player.position.x = 46;
         this.player.position.y = 9 * 12;
@@ -65,8 +68,8 @@ export class VaniaScreen extends State {
         hitbox.setOffset(13, 5);
         hitbox.setSize(6, 19);
 
-        this.camera = new Entity(this, [Camera]);
-        this.camera.get(Camera)?.follow(this.player);
+        const camera = new Entity(this, [], 'camera');
+        this.camera = camera.add(Camera).follow(this.player);
 
         // Player forms!
         this.player.add(AttackForm).setActive(false);
@@ -129,6 +132,10 @@ export class VaniaScreen extends State {
     init() {
     }
 
+    get(name: string) {
+        return super.get(name) ?? this.map.get(name);
+    }
+
     playerDied() {
         this.player.get(Transitioner)?.disableInteraction();
 
@@ -155,6 +162,8 @@ export class VaniaScreen extends State {
     }
 
     respawn() {
+        this.player.get(Transitioner)?.enableInteraction();
+
         const health = this.player.get(Health);
         health?.setCurrentHealth(health.maxHealth);
     }
@@ -215,7 +224,7 @@ export class VaniaScreen extends State {
             .load(name)
             .then((map) => {
                 this.ready = true;
-                this.camera.get(Camera)?.setBounds({
+                this.camera.setBounds({
                     min: new Point(),
                     max: new Point(map.entity.width, map.entity.height)
                 });
@@ -235,8 +244,8 @@ export class VaniaScreen extends State {
                                 repeat: true
                             })
 
-                        enemy.add(Follower).target = this.player
-                        this.enemies.push(enemy);
+                        enemy.add(Birb).target = this.player
+                        this.birbs.push(enemy);
                     }
                     else if (spawner.enemyType === 'egg') {
                         enemy.add(SpriteComponent)
@@ -250,38 +259,59 @@ export class VaniaScreen extends State {
                             });
                         map.addToBackground(enemy);
                     }
-                    else if (spawner.enemyType === 'nail') {
-                        if (!this.hasForm(AttackForm)) {
-                            const sprite = enemy
-                                .add(SpriteComponent)
-                                .setImage('./images/powerup.png')
-                                .setSize(11, 11)
-                                .runAnimation(PowerupAnimations.Float);
-                            enemy.add(Hitbox)
-                                .onCollide = (other: Hitbox) => {
-                                    enemy.remove(Hitbox);
-                                    if (other.entity === this.player) {
-                                        this.player.get(Transitioner)?.transition({
-                                            type: 'GetForm',
-                                            powerup: sprite,
-                                            time: 15,
-                                            onComplete: () => {
-                                                this.unlockForm(AttackForm);
-                                                Game.setState(new GainNailScreen(this))
-                                            }
-                                        });
-                                    }
-                                };
-                        }
-                        else {
-                            this.remove(enemy);
-                        }
+                    else if (spawner.enemyType === 'birb_mother' && !SaveManager.get('birb_bait')) {
+                        enemy.name = 'BirbMom';
+                        enemy.add(SpriteComponent)
+                            .setImage('./images/birb_mother.png')
+                            .setSize(50, 40)
+                            .runAnimation({
+                                name: 'Sit',
+                                sheet: [0],
+                                frameTime: 1,
+                                repeat: true
+                            });
+                        map.addToBackground(enemy);
+                    }
+                    else if (spawner.enemyType === 'nail' && !this.hasForm(AttackForm)) {
+                        const sprite = enemy
+                            .add(SpriteComponent)
+                            .setImage('./images/powerup.png')
+                            .setSize(11, 11)
+                            .runAnimation(PowerupAnimations.Float);
+                        enemy.add(Hitbox)
+                            .onCollide = (other: Hitbox) => {
+                                enemy.remove(Hitbox);
+                                if (other.entity === this.player) {
+                                    this.player.get(Transitioner)?.transition({
+                                        type: 'GetForm',
+                                        powerup: sprite,
+                                        time: 15,
+                                        onComplete: () => {
+                                            this.unlockForm(AttackForm);
+                                            Game.setState(new GainNailScreen(this))
+                                        }
+                                    });
+                                }
+                            };
+                    }
+                    else if (spawner.enemyType === 'SpikeWall') {
+                        enemy.name = 'SpikeWall';
+                        enemy.add(SpriteComponent)
+                            .setImage('./images/spikewall.png')
+                            .setSize(8, 36)
+                            .runAnimation({
+                                name: 'New wall not dropped',
+                                sheet: [0],
+                                frameTime: 0.05,
+                                repeat: false,
+                            });
                     }
                     else {
                         this.remove(enemy);
                     }
                 })
                 this.player.get(MapTraveller)?.spawn(map, from);
+                this.camera.snapCamera();
             })
             .catch((e) => {
                 console.error(`failed loading level ${name}`)
@@ -299,7 +329,11 @@ export class VaniaScreen extends State {
         this.enemies.forEach(element => {
             this.remove(element)
         });
-        this.enemies = []
+        this.enemies = [];
+        this.birbs.forEach(birb => {
+            this.remove(birb)
+        });
+        this.birbs = [];
         this.loadLevel(teleporter.destination, this.map.name);
     }
 
@@ -316,7 +350,8 @@ export class VaniaScreen extends State {
 
     render(ctx: CanvasRenderingContext2D) {
         ctx.save();
-        ctx.translate(Math.floor(-this.camera.position.x), Math.floor(-this.camera.position.y));
+        const { x, y } = this.camera.entity.position;
+        ctx.translate(Math.floor(-x), Math.floor(-y));
 
         super.render(ctx);
         ctx.restore();

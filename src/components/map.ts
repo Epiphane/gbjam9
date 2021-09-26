@@ -1,5 +1,5 @@
 import { Component, Entity, Game, Point } from "../../lib/juicy";
-import { EnemySpawner, LoadedMap, MapLoader, Spawner, Teleporter } from "../helpers/map-loader";
+import { EnemySpawner, LoadedMap, MapLoader, Spawner, Teleporter, MapObject } from "../helpers/map-loader";
 import { SaveManager } from "../helpers/save-manager";
 import { Tile, TileInfo } from "../helpers/tiles";
 
@@ -15,6 +15,7 @@ export class MapComponent extends Component {
     spawners: Spawner[] = [];
     teleporters: Teleporter[] = [];
     enemySpawners: EnemySpawner[] = [];
+    triggers: MapObject[] = [];
 
     private backdrop: Entity[] = [];
 
@@ -27,6 +28,7 @@ export class MapComponent extends Component {
                 this.spawners = data.spawners;
                 this.teleporters = data.teleporters;
                 this.enemySpawners = data.enemySpawners;
+                this.triggers = data.triggers;
                 this.entity.width = this.tiles[0]!.length * tileWidth;
                 this.entity.height = this.tiles.length * tileHeight;
 
@@ -41,9 +43,20 @@ export class MapComponent extends Component {
         this.tiles = new Array(height).fill(false).map(() => new Array(width).fill(Tile.None));
     }
 
+    get(name: string) {
+        return this.backdrop.find(e => e.name === name);
+    }
+
     addToBackground(e: Entity) {
         e.state.remove(e);
         this.backdrop.push(e);
+    }
+
+    removeFromBackground(e: Entity) {
+        const ndx = this.backdrop.indexOf(e);
+        if (ndx >= 0) {
+            this.backdrop.splice(ndx, 1);
+        }
     }
 
     getTileCoords(worldCoords: Point) {

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="10" height="30" tilewidth="16" tileheight="12" infinite="0" nextlayerid="7" nextobjectid="79">
+ <tileset firstgid="1" source="tiles.tsx"/>
+ <layer id="1" name="Tile Layer 1" width="10" height="30">
+  <data encoding="csv">
+2,2,2,25,31,31,24,2,2,2,
+2,2,2,25,31,31,24,2,2,2,
+2,2,2,25,31,31,24,2,2,2,
+2,2,2,24,31,31,24,2,2,2,
+2,2,2,25,31,31,24,2,2,2,
+2,2,2,24,31,31,24,2,2,2,
+2,2,2,24,31,31,24,2,2,2,
+2,2,2,24,31,31,24,2,2,2,
+2,2,2,25,31,31,24,2,2,2,
+2,2,2,24,31,31,2,2,2,2,
+2,2,2,24,31,31,31,31,31,31,
+2,2,2,24,31,31,31,31,31,31,
+2,2,2,25,31,31,14,14,14,14,
+2,2,2,24,31,31,25,2,2,2,
+2,2,2,25,31,31,25,2,2,2,
+2,2,2,25,31,31,24,2,2,2,
+2,2,2,25,31,31,24,2,2,2,
+2,2,2,24,31,31,25,2,2,2,
+2,2,2,24,31,31,25,2,2,2,
+2,2,2,25,31,31,25,2,2,2,
+2,2,2,25,31,31,25,2,2,2,
+2,2,2,24,31,31,25,2,2,2,
+2,2,2,25,31,31,24,2,2,2,
+2,2,2,25,31,31,24,2,2,2,
+2,2,2,24,31,31,24,2,2,2,
+2,2,2,25,31,31,25,2,2,2,
+2,2,2,25,31,31,24,2,2,2,
+2,2,2,24,31,31,24,2,2,2,
+2,2,2,24,31,31,24,2,2,2,
+2,2,2,24,31,31,25,2,2,2
+</data>
+ </layer>
+ <objectgroup id="2" name="Spawners">
+  <object id="15" name="Default" x="77" y="14" width="5" height="19"/>
+  <object id="78" x="64" y="0" width="31" height="4">
+   <properties>
+    <property name="source" value="rockland2"/>
+    <property name="twoWay" type="bool" value="false"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="3" name="Teleporters">
+  <object id="18" x="64" y="356" width="31" height="4">
+   <properties>
+    <property name="destination" value="rockland4"/>
+    <property name="twoWay" type="bool" value="true"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="4" name="EnemySpawner"/>
+</map>

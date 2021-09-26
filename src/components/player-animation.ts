@@ -114,8 +114,6 @@ export class PlayerAnimation extends Component {
                 (p, dt) => {
                     p.origin.x += p.velocity.x * dt;
                     p.velocity.x += dt * 800;
-                    p.lifespan -= dt;
-                    return p.lifespan > 0;
                 },
                 this.entity.position.copy().add(new Point((this.sprite?.spriteWidth ?? 0) / 2, (this.sprite?.spriteHeight ?? 0) - 2)),
                 new Point(-150, 0),
@@ -128,8 +126,6 @@ export class PlayerAnimation extends Component {
                 (p, dt) => {
                     p.origin.x += p.velocity.x * dt;
                     p.velocity.x -= dt * 800;
-                    p.lifespan -= dt;
-                    return p.lifespan > 0;
                 },
                 this.entity.position.copy().add(new Point((this.sprite?.spriteWidth ?? 0) / 2, (this.sprite?.spriteHeight ?? 0) - 2)),
                 new Point(150, 0),

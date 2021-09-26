@@ -31,7 +31,7 @@ interface Tileset {
     source: string;
 }
 
-interface Object {
+export interface MapObject {
     name: string;
     position: Point;
     size: Point;
@@ -40,7 +40,7 @@ interface Object {
 
 interface ObjectGroup {
     name: string;
-    objects: Object[];
+    objects: MapObject[];
 };
 
 interface LevelData {
@@ -89,6 +89,7 @@ export interface LoadedMap {
     spawners: Spawner[];
     teleporters: Teleporter[];
     enemySpawners: EnemySpawner[];
+    triggers: MapObject[];
 }
 
 const mapCache: { [key: string]: LoadedMap } = {};
@@ -168,7 +169,7 @@ class MapLoader {
         return properties;
     }
 
-    parseObject(node: Element): Object {
+    parseObject(node: Element): MapObject {
         const name = node.getAttribute('name') || '';
         const position = new Point(
             parseInt(node.getAttribute("x") || `0`),
@@ -197,7 +198,7 @@ class MapLoader {
 
     parseGroup(node: Element): ObjectGroup {
         const name = node.getAttribute('name') || '';
-        const objects: Object[] = [];
+        const objects: MapObject[] = [];
 
         for (const index in node.children) {
             const child = node.children[index]!;
@@ -268,7 +269,7 @@ class MapLoader {
         };
     }
 
-    makeSpawner(obj: Object): Spawner {
+    makeSpawner(obj: MapObject): Spawner {
         const { position, size, properties: { source, dir } } = obj;
         let action = SpawnerAction.None;
 
@@ -287,7 +288,7 @@ class MapLoader {
         };
     }
 
-    makeTeleporter(obj: Object): Teleporter {
+    makeTeleporter(obj: MapObject): Teleporter {
         const { position, size, properties: { type, destination } } = obj;
         return {
             position,
@@ -303,6 +304,7 @@ class MapLoader {
             spawners: [],
             teleporters: [],
             enemySpawners: [],
+            triggers: [],
         };
 
         data.tileLayers.forEach(layer => {
@@ -343,6 +345,9 @@ class MapLoader {
                         enemyType: obj.properties['EnemyType'],
                     }
                 })
+            }
+            else if (group.name === "Triggers") {
+                result.triggers = group.objects.map(obj => { return { ...obj }; });
             }
         })
 

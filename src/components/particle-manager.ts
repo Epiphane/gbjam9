@@ -1,4 +1,4 @@
-import { Component, Game, Point } from "../../lib/juicy";
+import { Component, FillStyle, Game, Point } from "../../lib/juicy";
 import { ColorFromType, ColorType } from "../helpers/palette";
 
 // Return FALSE to kill this particle
@@ -40,12 +40,28 @@ export class CircleParticle extends Particle {
     }
 }
 
+export class PixelParticle extends Particle {
+    value: number;
+
+    constructor(lifespan: number, update: ParticleUpdateFunction, origin: Point, velocity: Point = new Point(0, 0), value: number) {
+        super(lifespan, update, origin, velocity);
+        this.value = value;
+    }
+
+    render(ctx: CanvasRenderingContext2D) {
+        ctx.fillStyle = `rgb(${this.value}, ${this.value}, ${this.value})`;
+        ctx.fillRect(Math.round(this.origin.x), Math.round(this.origin.y), 1, 1);
+    }
+}
+
 export class ParticleManagerComponent extends Component {
     private particles: Particle[] = [];
 
     update(dt: number, game: typeof Game) {
         this.particles = this.particles.filter((p) => {
-            return p.update(p, dt) ?? true;
+            p.lifespan -= dt;
+            const alive = p.update(p, dt) ?? true;
+            return alive && p.lifespan > 0;
         });
     }
 

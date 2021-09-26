@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="16" height="20" tilewidth="16" tileheight="12" infinite="0" nextlayerid="7" nextobjectid="19">
+<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="24" height="20" tilewidth="16" tileheight="12" infinite="0" nextlayerid="9" nextobjectid="47">
  <tileset firstgid="1" source="tiles.tsx"/>
- <layer id="1" name="Tile Layer 1" width="16" height="20">
+ <layer id="1" name="Tile Layer 1" width="24" height="20">
   <data encoding="csv">
-2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
-2,31,31,31,31,31,31,31,31,31,31,31,31,31,31,2,
-2,31,31,31,31,31,31,31,31,31,31,31,31,31,31,2,
-2,31,31,31,31,31,31,31,31,31,31,31,31,31,31,2,
-2,31,31,31,31,31,31,31,31,31,31,31,31,31,31,2,
-2,31,31,31,31,31,31,31,31,31,31,31,31,31,31,2,
-2,31,31,31,31,31,31,31,31,31,31,31,31,31,31,2,
-31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,2,
-31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,2,
-2,2,2,2,2,2,15,14,2,2,2,2,2,2,2,2,
-2,2,2,2,2,2,24,24,2,2,2,2,2,2,2,2,
-2,2,2,2,2,2,25,25,2,2,2,2,2,2,2,2,
-2,2,2,2,2,2,25,25,2,2,2,2,2,2,2,2,
-2,2,2,2,2,2,24,25,25,25,25,24,24,24,25,24,
-2,2,2,2,2,2,25,25,24,24,24,24,24,24,24,24,
-2,2,2,2,2,2,25,24,2,2,2,2,2,2,2,2,
-2,2,2,2,2,2,25,24,2,2,2,2,2,2,2,2,
-2,2,2,2,2,2,24,24,2,2,2,2,2,2,2,2,
-2,2,2,2,2,2,24,25,2,2,2,2,2,2,2,2,
-2,2,2,2,2,2,24,25,2,2,2,2,2,2,2,2
+2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+2,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,2,
+2,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,2,
+2,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,2,
+2,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,2,
+2,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,2,
+2,31,31,31,31,31,31,31,2,2,2,2,2,2,2,2,2,2,31,31,31,31,31,2,
+31,31,31,31,31,31,31,31,2,2,2,2,2,2,2,2,31,31,31,31,31,31,31,2,
+31,31,31,31,31,31,31,31,2,2,2,2,2,2,2,2,31,31,31,31,31,31,31,2,
+2,2,2,2,2,2,15,14,2,2,2,2,2,2,2,2,31,31,31,31,31,2,2,2,
+2,2,2,2,2,2,24,24,2,2,2,2,2,2,2,2,31,31,31,31,31,31,31,4,
+2,2,2,2,2,2,25,25,2,2,2,2,2,2,2,2,31,31,31,31,31,31,31,4,
+2,2,2,2,2,2,25,25,2,2,2,2,2,2,2,2,2,2,31,31,31,31,31,2,
+2,2,2,2,2,2,24,25,25,25,25,24,24,24,25,24,14,2,31,31,31,31,31,2,
+2,2,2,2,2,2,25,25,24,24,24,24,24,24,24,24,24,2,31,31,31,31,31,2,
+2,2,2,2,2,2,25,24,2,2,2,2,2,2,2,2,24,2,31,31,31,31,31,2,
+2,2,2,2,2,2,25,24,2,2,2,2,2,2,2,2,24,2,2,2,2,2,2,2,
+2,2,2,2,2,2,24,24,2,2,2,2,2,2,2,2,24,24,24,24,24,24,24,24,
+2,2,2,2,2,2,24,25,2,2,2,2,2,2,2,2,24,24,24,24,24,24,24,24,
+2,2,2,2,2,2,24,25,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2
 </data>
  </layer>
  <objectgroup id="2" name="Spawners">
@@ -36,19 +36,86 @@
     <property name="twoWay" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="18" x="96" y="236" width="48" height="4">
+  <object id="18" x="96" y="236" width="31" height="4">
    <properties>
     <property name="destination" value="mudland0"/>
     <property name="dir" value="swim_up"/>
     <property name="twoWay" type="bool" value="true"/>
    </properties>
   </object>
+  <object id="34" x="380" y="204" width="4" height="24">
+   <properties>
+    <property name="destination" value="mudland1"/>
+    <property name="dir" value="right"/>
+    <property name="twoWay" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="44" x="380" y="120" width="4" height="24">
+   <properties>
+    <property name="destination" value="rockland2"/>
+    <property name="dir" value="left"/>
+    <property name="twoWay" type="bool" value="true"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup id="4" name="EnemySpawner">
-  <object id="16" x="108" y="80" width="8" height="8">
+  <object id="16" x="309" y="159" width="8" height="8">
    <properties>
     <property name="EnemyType" value="birb"/>
    </properties>
   </object>
+  <object id="20" x="298" y="163" width="8" height="8">
+   <properties>
+    <property name="EnemyType" value="birb"/>
+   </properties>
+  </object>
+  <object id="21" x="321" y="162" width="8" height="8">
+   <properties>
+    <property name="EnemyType" value="birb"/>
+   </properties>
+  </object>
+  <object id="35" x="311" y="170" width="8" height="8">
+   <properties>
+    <property name="EnemyType" value="birb"/>
+   </properties>
+  </object>
+  <object id="36" x="295" y="176" width="8" height="8">
+   <properties>
+    <property name="EnemyType" value="birb"/>
+   </properties>
+  </object>
+  <object id="38" x="318" y="152" width="50" height="40">
+   <properties>
+    <property name="EnemyType" value="birb_mother"/>
+   </properties>
+  </object>
+  <object id="39" x="154" y="39" width="8" height="8">
+   <properties>
+    <property name="EnemyType" value="birb"/>
+   </properties>
+  </object>
+  <object id="40" x="200" y="45" width="8" height="8">
+   <properties>
+    <property name="EnemyType" value="birb"/>
+   </properties>
+  </object>
+  <object id="41" x="256" y="42" width="8" height="8">
+   <properties>
+    <property name="EnemyType" value="birb"/>
+   </properties>
+  </object>
+  <object id="42" x="350" y="78" width="8" height="8">
+   <properties>
+    <property name="EnemyType" value="birb"/>
+   </properties>
+  </object>
+  <object id="43" x="267" y="106" width="8" height="8">
+   <properties>
+    <property name="EnemyType" value="birb"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="8" name="Triggers">
+  <object id="46" name="BirbMom" x="287" y="157" width="81" height="35"/>
  </objectgroup>
 </map>

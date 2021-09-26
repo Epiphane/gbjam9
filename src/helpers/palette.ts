@@ -35,6 +35,15 @@ export const ColorFromType = (type?: ColorType, backup?: FillStyle): FillStyle =
     return backup || LightColor;
 }
 
+export const ColorTypeFromValue = (rValue: number) => {
+    let pindex = 3;
+    if (rValue >= 75) pindex --;
+    if (rValue >= 160) pindex --;
+    if (rValue >= 245) pindex --;
+
+    return pindex as ColorType;
+};
+
 class PaletteManager {
     private palettes: Palette[] = [
         [[224, 248, 208, 255], [136, 192, 112, 255], [52, 104, 86, 255], [8, 24, 32, 255]],
@@ -179,13 +188,7 @@ class PaletteManager {
         for (let i = 0; i < colored.data.length; i += 4) {
             if (templateData[i + 3] === 0) continue;
 
-            let pindex = 3;
-
-            // Based on the red value, pick which of the 4 colors this means.
-            const rValue = templateData[i]!;
-            if (rValue >= 75) pindex --;
-            if (rValue >= 160) pindex --;
-            if (rValue >= 245) pindex --;
+            let pindex = ColorTypeFromValue(templateData[i]!);
             const color = palette[pindex]!;
 
             colored.data[i+0] = color[0];

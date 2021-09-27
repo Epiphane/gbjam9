@@ -12,15 +12,73 @@ export class PlayerPhysics extends PhysicsBody {
     upWasPressed = false;
     cancelNextJump = false;
 
-    update(dt: number, game: typeof Game) {
-        this.velocity.x = 0;
-        if (game.keyDown(Keys.LEFT)) {
-            this.entity.get(SpriteComponent)?.setFlip(true);
-            this.velocity.x = -90;
+    maxDashTime = 0.3;
+    dashTime = 0;
+    dashDir = 0;
+
+    maxKnockTime = 0.3;
+    knockTime = 0;
+    knockDir = 0;
+
+    isDashing() {
+        return this.dashTime > 0;
+    }
+
+    dash() {
+        this.dashTime = this.maxDashTime;
+
+        if (Game.keyDown(Keys.LEFT)) {
+            this.dashDir = -1;
         }
-        if (game.keyDown(Keys.RIGHT)) {
-            this.entity.get(SpriteComponent)?.setFlip(false);
-            this.velocity.x = 90;
+        else if (Game.keyDown(Keys.RIGHT)) {
+            this.dashDir = 1;
+        }
+        else {
+            this.dashDir = this.entity.get(SpriteComponent)?.flip ? -1 : 1;
+        }
+    }
+
+    isKnockedBack() {
+        return this.knockTime > 0;
+    }
+
+    knockBack(dx: number) {
+        this.knockDir = dx;
+        this.knockTime = this.maxKnockTime;
+        this.entity.get(SpriteComponent)?.setFlip(dx > 0);
+    }
+
+    update(dt: number, game: typeof Game) {
+        if (this.dashTime > 0) {
+            const progress = this.dashTime / this.maxDashTime;
+            const speed = 250 * Math.pow(progress, 0.25);
+
+            this.velocity.x = this.dashDir * speed;
+            this.velocity.y = 0;
+
+            this.dashTime -= dt;
+            this.hover = true;
+        }
+        else if (this.knockTime > 0) {
+            const progress = this.knockTime / this.maxKnockTime;
+            const speed = Math.pow(progress, 0.25);
+
+            this.velocity.x = this.knockDir * speed;
+            this.velocity.y = 0;
+
+            this.knockTime -= dt;
+        }
+        else {
+            this.velocity.x = 0;
+            if (game.keyDown(Keys.LEFT)) {
+                this.entity.get(SpriteComponent)?.setFlip(true);
+                this.velocity.x = -90;
+            }
+            if (game.keyDown(Keys.RIGHT)) {
+                this.entity.get(SpriteComponent)?.setFlip(false);
+                this.velocity.x = 90;
+            }
+            this.hover = false;
         }
 
         if (this.blocked[2]![1]) {

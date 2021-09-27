@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="10" height="30" tilewidth="16" tileheight="12" infinite="0" nextlayerid="7" nextobjectid="79">
+<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="10" height="30" tilewidth="16" tileheight="12" infinite="0" nextlayerid="7" nextobjectid="81">
  <tileset firstgid="1" source="tiles.tsx"/>
  <layer id="1" name="Tile Layer 1" width="10" height="30">
   <data encoding="csv">
@@ -12,10 +12,10 @@
 2,2,2,24,31,31,24,2,2,2,
 2,2,2,24,31,31,24,2,2,2,
 2,2,2,25,31,31,24,2,2,2,
-2,2,2,24,31,31,2,2,2,2,
-2,2,2,24,31,31,31,31,31,31,
-2,2,2,24,31,31,31,31,31,31,
-2,2,2,25,31,31,14,14,14,14,
+2,2,2,2,31,31,2,2,2,2,
+31,31,31,31,31,31,31,31,31,31,
+31,31,31,31,31,31,31,31,31,31,
+14,15,14,14,31,31,14,14,14,14,
 2,2,2,24,31,31,25,2,2,2,
 2,2,2,25,31,31,25,2,2,2,
 2,2,2,25,31,31,24,2,2,2,
@@ -48,6 +48,20 @@
   <object id="18" x="64" y="356" width="31" height="4">
    <properties>
     <property name="destination" value="rockland4"/>
+    <property name="twoWay" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="79" x="155" y="120" width="5" height="36">
+   <properties>
+    <property name="destination" value="froghome"/>
+    <property name="dir" value="left"/>
+    <property name="twoWay" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="80" x="0" y="120" width="5" height="36">
+   <properties>
+    <property name="destination" value="mudland1"/>
+    <property name="dir" value="right"/>
     <property name="twoWay" type="bool" value="true"/>
    </properties>
   </object>

@@ -33,6 +33,7 @@ export class SpriteComponent extends Component {
     current: string = '';
     sheet: number[] = [0];
     sprite: number = 0;
+    loaded = false;
 
     onload?: ((img: SpriteComponent) => void);
     canvas?: HTMLCanvasElement;
@@ -46,6 +47,7 @@ export class SpriteComponent extends Component {
 
         this.sheetWidth = this.image.width / this.spriteWidth;
         this.sheetHeight = this.image.height / this.spriteHeight;
+        this.loaded = true;
 
         if (this.entity) {
             this.entity.state.updated = true;
@@ -60,6 +62,7 @@ export class SpriteComponent extends Component {
         const image = new Image();
         image.src = url;
         image.onload = this.onImageLoad.bind(this, image);
+        this.loaded = false;
 
         return this; // Enable chaining
     }
@@ -174,10 +177,14 @@ export class SpriteComponent extends Component {
 
     render(context: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
         if (this.flickerTime > 0) {
-            const n = this.flickerTime % 0.1;
+            const n = Math.floor(this.flickerTime / 0.1);
             if (n % 2 === 0) {
                 return;
             }
+        }
+
+        if (!this.loaded) {
+            return;
         }
 
         context.imageSmoothingEnabled = false;

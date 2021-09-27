@@ -146,10 +146,11 @@ export class PlayerEvents extends Component {
 
         this.transitioner?.transition({
             type: 'Pause',
-            time: 5,
+            time: 2.5,
             onComplete: () => {
                 camera.easing = 100;
                 camera.maxEasing = 200;
+                physics.setActive(true);
             }
         });
 
@@ -165,7 +166,7 @@ export class PlayerEvents extends Component {
 
         const frogman = new Entity(this.entity.state);
         frogman.position.x = obj.position.x + obj.size.x - 60;
-        frogman.position.y = -400;
+        frogman.position.y = 10;
         frogman.add(SpriteComponent)
             .setImage('./images/frogman.png')
             .setSize(60, 60)
@@ -176,7 +177,8 @@ export class PlayerEvents extends Component {
                 repeat: true
             });
 
-        frogman.add(PhysicsBody);
+        const physics = frogman.add(PhysicsBody);
+        physics.setActive(false);
         frogman.add(Hitbox).setSize(50, 36).setOffset(2, 14);
         frogman.add(Health)
             .setHealth(20, 20)

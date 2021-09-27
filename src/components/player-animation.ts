@@ -25,9 +25,19 @@ export const PlayerAnimations = {
         frameTime: 0.15,
         repeat: true,
     },
+    KnockBack: {
+        name: 'KnockBack',
+        sheet: [0],
+        frameTime: 0.15,
+    },
     Attack: {
         name: 'Attack',
         sheet: [8],
+        frameTime: 0.15,
+    },
+    Dash: {
+        name: 'Dash',
+        sheet: [14],
         frameTime: 0.15,
     },
     Jumping: {
@@ -60,7 +70,7 @@ export enum PlayerAnimationEvent {
 
 export class PlayerAnimation extends Component {
     sprite!: SpriteComponent;
-    physics?: PhysicsBody;
+    physics?: PlayerPhysics;
 
     moving = false;
     jumping = false;
@@ -80,7 +90,7 @@ export class PlayerAnimation extends Component {
             .setSize(32, 24)
             .runAnimation(PlayerAnimations.Idle);
         this.sprite.oncompleteanimation = this.onAnimationComplete.bind(this);
-        this.physics = e.get(PlayerPhysics) || e.get(PhysicsBody);
+        this.physics = e.get(PlayerPhysics);
     }
 
     onAnimationComplete() {
@@ -141,7 +151,15 @@ export class PlayerAnimation extends Component {
             return;
         }
 
-        if (this.jumping) {
+        if (this.physics?.isDashing()) {
+            this.sprite.runAnimation(PlayerAnimations.Dash);
+            this.sprite.setFlip(this.physics.dashDir < 0);
+        }
+        else if (this.physics?.isKnockedBack()) {
+            this.sprite.runAnimation(PlayerAnimations.KnockBack);
+            this.sprite.setFlip(this.physics.dashDir < 0);
+        }
+        else if (this.jumping) {
             this.sprite.runAnimation(PlayerAnimations.Jumping);
         }
         else if (this.falling) {

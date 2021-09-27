@@ -1,16 +1,31 @@
-import { Component, Entity, Point, Sound } from "../../lib/juicy";
+import { BehaviorComponent, Component, Entity, Game, Point, Sound } from "../../lib/juicy";
 import { SaveManager } from "../helpers/save-manager";
 import { Camera } from "./camera";
 import { Health } from "./health";
 import { Obstacle } from "./obstacle";
 import { PhysicsBody } from "./physics";
+import { PlayerPhysics } from "./player-physics";
 import { SpriteComponent } from "./sprite";
 import { Hitbox } from "./stupid-hitbox";
+
+Sound.Load('Rumble', {
+    src: './audio/rumble.wav',
+    isSFX: true,
+    loop: false,
+    volume: 0.05
+});
 
 export class Frogman extends Component {
     hasLanded = false;
     player?: Entity;
     fighting = false;
+
+    // Stolen from froggy
+    jumpCooldown = Math.random() * 1;
+    jumpDir = 0;
+    windup = 0;
+    jumping = false;
+    falling = false;
 
     init(entity: Entity) {
         const sprite = entity.get(SpriteComponent);
@@ -34,7 +49,7 @@ export class Frogman extends Component {
             obstacle.blockDirections.Right = false;
             obstacle.blockDirections.Left = false;
 
-            hitbox?.setSize(40, hitbox.getSize().y);
+            // hitbox?.setSize(40, hitbox.getSize().y);
             entity.get(PhysicsBody)?.setActive(false);
 
             SaveManager.set('frogman_dead', entity.position);
@@ -92,6 +107,42 @@ export class Frogman extends Component {
                 Sound.Play('Rumble');
                 this.entity.state.get('camera')?.get(Camera)?.shake(0.3);
                 this.hasLanded = true;
+
+                Sound.Play('Rumble');
+
+                this.player?.get(PlayerPhysics)?.knockBack(-100);
+
+                const title = new Entity(this.entity.state);
+                const sprite = title.add(SpriteComponent)
+                    .setImage('./images/leaper.png')
+                    .setSize(140, 37)
+                    .runAnimation({ name: 'idk', sheet: [0], frameTime: 0 });
+                sprite.opacity = 0;
+                title.position.x = (Game.size.x - title.width) / 2
+                title.position.y = 20;
+
+                let titleTime = 6;
+                title.add(BehaviorComponent)
+                    .setCallback((dt: number) => {
+                        titleTime -= dt;
+                        if (titleTime < 2) {
+                            sprite.opacity = titleTime / 2;
+                        }
+                        else if (titleTime < 3.5) {
+                            // 1 isn't working and i'm feeling lazy
+                            sprite.opacity = 1.1;
+                        }
+                        else if (titleTime < 4.5) {
+                            sprite.opacity = (4.5 - titleTime);
+                        }
+                        else {
+                            sprite.opacity = 0;
+                        }
+
+                        if (titleTime < 0) {
+                            this.entity.state.remove(title);
+                        }
+                    })
             }
         }
         else {

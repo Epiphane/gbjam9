@@ -64,8 +64,8 @@ export class AttackForm extends PlayerForm {
                 continue;
             }
 
-            const otherHealth = e.get(Health);
-            const otherHitbox = e.get(Hitbox);
+            const otherHealth = e!.get(Health);
+            const otherHitbox = e!.get(Hitbox);
             if (otherHealth?.isActive() && otherHitbox?.isActive()) {
                 if (otherHitbox.test({ position: min, size: max.copy().sub(min) })) {
                     otherHealth.takeDamage(1);

@@ -29,9 +29,14 @@ import { Birb, BirbDetectionRadius, BirbDistance } from "../components/birb";
 import { PlayerEvents } from "../components/player-events";
 import { Obstacle } from "../components/obstacle";
 import { Frogman } from "../components/frogman";
+import { DashForm } from "../components/forms/dash";
+import { GainDashScreen } from "./gain-dash";
+import { PhysicsBody } from "../components/physics";
+import { Froggy } from "../components/froggy";
 
-const PlayerForms = [
-    AttackForm
+const PlayerForms: (new () => PlayerForm)[] = [
+    AttackForm,
+    DashForm,
 ];
 
 export class VaniaScreen extends State {
@@ -44,6 +49,7 @@ export class VaniaScreen extends State {
     ui: Entity;
     currentFormFrame: SpriteComponent;
     currentForm: SpriteComponent;
+    currentFormNdx = SaveManager.get('current_form') ?? -1;
     ready = false;
     blackout?: Entity;
 
@@ -76,14 +82,12 @@ export class VaniaScreen extends State {
         camera.priority = this.player.priority + 1;
 
         // Player forms!
-        this.player.add(AttackForm).setActive(false);
-
-        let hasAnyForms = false;
-        PlayerForms.forEach(Form => {
-            const hasForm = this.hasForm(Form);
-            // Set active to true if this is the first form we have
-            this.player.add(Form).setActive(hasForm && !hasAnyForms);
-            hasAnyForms ||= this.hasForm(Form);
+        let defaultForm : (new () => PlayerForm) | null = null;
+        PlayerForms.forEach((Form, ndx) => {
+            if (this.hasForm(Form) && !defaultForm) {
+                defaultForm = Form;
+            }
+            this.player.add(Form).setActive(false);
         });
 
         // Teleportation
@@ -116,7 +120,7 @@ export class VaniaScreen extends State {
             .setImage('./images/forms.png')
             .setSize(20, 20)
             .runAnimation({ name: 'Frame', frameTime: 0, repeat: true, sheet: [0] })
-            .setActive(hasAnyForms);
+            .setActive(defaultForm !== null);
 
         const formType = this.ui.addChild(new Entity(this, [SpriteComponent]));
         formType.position = formFrame.position.copy();
@@ -124,13 +128,21 @@ export class VaniaScreen extends State {
             .setImage('./images/forms.png')
             .setSize(20, 20)
             .runAnimation({ name: 'Frame', frameTime: 0, repeat: true, sheet: [1] })
-            .setActive(hasAnyForms);
+            .setActive(defaultForm !== null);
 
         // Add player health to UI
         const playerHealth = this.ui.addChild(new Entity(this));
         playerHealth.position.x = 4;
         playerHealth.position.y = 4;
         playerHealth.add(PlayerHealthRender).health = this.player.get(Health);
+
+        // Pick form
+        if (this.currentFormNdx >= 0) {
+            this.setForm(PlayerForms[this.currentFormNdx]!)
+        }
+        else if (defaultForm) {
+            this.setForm(defaultForm);
+        }
     }
 
     init() {
@@ -184,11 +196,19 @@ export class VaniaScreen extends State {
     }
 
     setForm<Form extends PlayerForm>(form: (new () => Form)) {
+        this.currentFormNdx = PlayerForms.indexOf(form);
         this.player.components.forEach(c => {
             if (c instanceof PlayerForm) {
                 c.setActive(c instanceof form);
             }
         });
+        SaveManager.set('current_form', this.currentFormNdx);
+
+        this.currentForm?.runAnimation({
+            name: `Form ${this.currentFormNdx}`,
+            sheet: [this.currentFormNdx + 1],
+            frameTime: 1,
+        })
     }
 
     key_SELECT() {
@@ -223,6 +243,14 @@ export class VaniaScreen extends State {
     }
 
     key_B() {
+        let nextFormNdx = (this.currentFormNdx + 1) % PlayerForms.length;
+        while (nextFormNdx !== this.currentFormNdx) {
+            if (this.hasForm(PlayerForms[nextFormNdx]!)) {
+                this.setForm(PlayerForms[nextFormNdx]!);
+                return;
+            }
+            nextFormNdx = (nextFormNdx + 1) % PlayerForms.length;;
+        }
     }
 
     key_UP() { }
@@ -259,6 +287,42 @@ export class VaniaScreen extends State {
                         enemy.add(Birb).target = this.player
                         this.birbs.push(enemy);
                     }
+                    else if (spawner.enemyType === "froggy") {
+                        const sprite = enemy.add(SpriteComponent)
+                            .setImage('./images/froggy.png')
+                            .setSize(10, 10)
+                            .runAnimation({
+                                name: 'Idle',
+                                sheet: [0],
+                                frameTime: 0.15,
+                                repeat: true
+                            })
+                        enemy.add(Hitbox).setSize(10, 8).setOffset(0, 2);
+
+                        const id = this.enemies.length;
+                        const froggy = enemy.add(Froggy);
+                        const physics = enemy.add(PhysicsBody);
+                        const health = enemy.add(Health).setHealth(1, 1).onDie(() => {
+                            sprite.runAnimation({
+                                name: 'Die',
+                                sheet: [4, 5],
+                                frameTime: 0.5,
+                            })
+
+                            froggy.setActive(false);
+                            physics.velocity.x = 0;
+                            SaveManager.set(`${name}_frog_${id}`, enemy.position);
+                        })
+
+                        const deathSpot = SaveManager.get(`${name}_frog_${id}`);
+                        if (deathSpot) {
+                            enemy.position = new Point(deathSpot.x, deathSpot.y);
+                            health.takeDamage(1);
+                            sprite.sheet = [5];
+                        }
+
+                        this.enemies.push(enemy);
+                    }
                     else if (spawner.enemyType === 'egg') {
                         enemy.add(SpriteComponent)
                             .setImage('./images/home.png')
@@ -290,6 +354,7 @@ export class VaniaScreen extends State {
                             .setImage('./images/powerup.png')
                             .setSize(11, 11)
                             .runAnimation(PowerupAnimations.Float);
+                        enemy.priority = this.player.priority + 1;
                         enemy.add(Hitbox)
                             .onCollide = (other: Hitbox) => {
                                 enemy.remove(Hitbox);
@@ -301,6 +366,29 @@ export class VaniaScreen extends State {
                                         onComplete: () => {
                                             this.unlockForm(AttackForm);
                                             Game.setState(new GainNailScreen(this))
+                                        }
+                                    });
+                                }
+                            };
+                    }
+                    else if (spawner.enemyType === 'dash' && !this.hasForm(DashForm)) {
+                        const sprite = enemy
+                            .add(SpriteComponent)
+                            .setImage('./images/powerup.png')
+                            .setSize(11, 11)
+                            .runAnimation(PowerupAnimations.Float);
+                        enemy.priority = this.player.priority + 1;
+                        enemy.add(Hitbox)
+                            .onCollide = (other: Hitbox) => {
+                                enemy.remove(Hitbox);
+                                if (other.entity === this.player) {
+                                    this.player.get(Transitioner)?.transition({
+                                        type: 'GetForm',
+                                        powerup: sprite,
+                                        time: 15,
+                                        onComplete: () => {
+                                            this.unlockForm(DashForm);
+                                            Game.setState(new GainDashScreen(this))
                                         }
                                     });
                                 }

@@ -8,6 +8,7 @@ import { Direction, Obstacle } from "./obstacle";
 export class PhysicsBody extends Component {
     velocity = new Point();
     terminalVelocity = 200;
+    hover = false;
 
     // Each flag is whether or not you can move in the specified direction.
     // blocked[1][1] is unused, as it's the player's current location.
@@ -50,8 +51,8 @@ export class PhysicsBody extends Component {
 
         for (let i = 0; i < this.entity.state.entities.length; ++i) {
             const e = this.entity.state.entities[i];
-            const obstacle = e.get(Obstacle);
-            const obstacleHitbox = e.get(Hitbox);
+            const obstacle = e!.get(Obstacle);
+            const obstacleHitbox = e!.get(Hitbox);
             if (obstacle?.isActive() && obstacleHitbox?.isActive()) {
                 if (!obstacleHitbox.test(box)) {
                     continue;
@@ -105,8 +106,8 @@ export class PhysicsBody extends Component {
 
         for (let i = 0; i < this.entity.state.entities.length; ++i) {
             const e = this.entity.state.entities[i];
-            const obstacle = e.get(Obstacle);
-            const obstacleHitbox = e.get(Hitbox);
+            const obstacle = e!.get(Obstacle);
+            const obstacleHitbox = e!.get(Hitbox);
             if (obstacle?.isActive() && obstacleHitbox?.isActive()) {
                 if (!obstacleHitbox.test(box) || !obstacle.isAFunnyBouncyBoy) {
                     continue;
@@ -158,7 +159,7 @@ export class PhysicsBody extends Component {
         }
 
         this.computeBlockages(map, hitbox);
-        if (!this.blocked[2]![1]) {
+        if (!this.blocked[2]![1] && !this.hover) {
             this.velocity.y += dt * 800;
 
             this.velocity.y = Math.min(this.terminalVelocity, this.velocity.y);

@@ -2,6 +2,7 @@ import { Entity, Component, Point, Game, Sound } from "../../lib/juicy";
 import { MapObject } from "../helpers/map-loader";
 import { getMapFromComponent } from "../helpers/quick-get";
 import { SaveManager } from "../helpers/save-manager";
+import { VaniaScreen } from "../states/vania";
 import { Birb, BirbDetectionRadius } from "./birb";
 import { Camera } from "./camera";
 import { Frogman } from "./frogman";
@@ -14,6 +15,12 @@ import { PlayerPhysics } from "./player-physics";
 import { SpriteComponent } from "./sprite";
 import { Hitbox } from "./stupid-hitbox";
 import { Transitioner } from "./transitioner";
+
+Sound.Load('RIP', {
+    src: './audio/birbmom_ded.wav',
+    isSFX: true,
+    volume: 0.3
+});
 
 export class PlayerEvents extends Component {
     map?: MapComponent;
@@ -103,11 +110,6 @@ export class PlayerEvents extends Component {
             repeat: false,
         });
         sprite.oncompleteanimation = () => {
-            Sound.Load('RIP', {
-                src: './audio/birbmom_ded.wav',
-                isSFX: true,
-                volume: 0.3
-            });
             Sound.Play('RIP');
             sprite.dissolve();
             getMapFromComponent(this)?.removeFromBackground(mom);
@@ -186,5 +188,9 @@ export class PlayerEvents extends Component {
                 camera.setBounds({ min, max });
             });
         frogman.add(Frogman);
+
+        if (this.entity.state instanceof VaniaScreen) {
+            this.entity.state.enemies.push(frogman);
+        }
     }
 }

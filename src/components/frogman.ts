@@ -7,6 +7,7 @@ import { PhysicsBody } from "./physics";
 import { PlayerPhysics } from "./player-physics";
 import { SpriteComponent } from "./sprite";
 import { Hitbox } from "./stupid-hitbox";
+import { Transitioner } from "./transitioner";
 
 Sound.Load('Rumble', {
     src: './audio/rumble.wav',
@@ -75,7 +76,10 @@ export class Frogman extends Component {
         const physics = this.entity.get(PhysicsBody);
         if (physics) {
             physics.velocity.y = -350;
-            physics.velocity.x = this.player!.position.x - this.entity.position.x;
+
+            if (this.fighting) {
+                physics.velocity.x = this.player!.position.x - this.entity.position.x;
+            }
         }
 
         sprite?.setFlip(physics!.velocity.x > 0);
@@ -85,6 +89,7 @@ export class Frogman extends Component {
 
     update(dt: number) {
         this.player = this.entity.state.get('player');
+        const transitioner = this.player?.get(Transitioner);
         const playerHealth = this.player?.get(Health)!;
         const playerHitbox = this.player?.get(Hitbox)!;
         const playerSprite = this.player?.get(SpriteComponent)!;
@@ -96,6 +101,10 @@ export class Frogman extends Component {
 
         if (!health?.isAlive()) {
             return;
+        }
+
+        if (!this.fighting) {
+            transitioner?.disableInteraction();
         }
 
         if (this.fighting && hitbox?.test(playerHitbox) && playerSprite.flickerTime <= 0) {
@@ -158,7 +167,9 @@ export class Frogman extends Component {
 
                             if (titleTime < 0) {
                                 this.entity.state.remove(title);
+                                this.jump();
                                 this.fighting = true;
+                                transitioner?.enableInteraction();
                             }
                         })
                 }

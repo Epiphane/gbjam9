@@ -1,3 +1,4 @@
+import { Game } from "../../lib/juicy";
 import { SaveManager } from "../helpers/save-manager";
 import { VaniaScreen } from "./vania";
 
@@ -18,6 +19,8 @@ export class GameScreen extends VaniaScreen {
             SaveManager.get('levelName') ?? 'egg0',
             SaveManager.get('levelFrom')
         );
+
+        Game.setState(new GameScreen());
     }
 
     loadLevel(name: string, from?: string) {

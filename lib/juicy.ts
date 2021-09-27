@@ -10,13 +10,13 @@ window.requestAnimationFrame = (function () {
         };
 })();
 
+import { SoundManager } from './juicy.sound';
 import * as Box2D_ from './Box2D.js';
 export * as Box2D from './Box2D.js';
 
 /* Passthrough exports */
 import { Point } from './juicy.point';
 export * from './juicy.point';
-export * as Sound from './juicy.sound';
 
 const PIXEL_RATIO = window.devicePixelRatio;
 
@@ -936,3 +936,6 @@ export function rand(min: number, max: number) {
         return Math.floor(Math.random() * min);
     }
 };
+
+const sounds = game.singleton(SoundManager);
+export { sounds as Sound };

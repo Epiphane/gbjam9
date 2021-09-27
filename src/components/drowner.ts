@@ -11,12 +11,6 @@ export class Drowner extends Component {
     callback?: (lastSafePosition: Point) => void;
 
     onDrown(callback: (lastSafePosition: Point) => void) {
-        Sound.Load('Drown',
-            {
-                src: './audio/drown.wav',
-                isSFX: true,
-                volume: 0.2
-            })
         this.callback = callback;
     }
 
@@ -64,6 +58,12 @@ export class Drowner extends Component {
 
         if (drown && !this.drowning) {
             this.drowning = true;
+            Sound.Load('Drown',
+                {
+                    src: './audio/drown.wav',
+                    isSFX: true,
+                    volume: 0.2
+                })
             Sound.Play('Drown')
             if (transitioner) {
                 transitioner.transition({

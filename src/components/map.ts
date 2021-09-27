@@ -28,7 +28,12 @@ export class MapComponent extends Component {
                 this.spawners = data.spawners;
                 this.teleporters = data.teleporters;
                 this.enemySpawners = data.enemySpawners;
-                this.triggers = data.triggers;
+                this.triggers = data.triggers.map(t => {
+                    return {
+                        ...t,
+                        properties: { ...t.properties }
+                    }
+                });
                 this.entity.width = this.tiles[0]!.length * tileWidth;
                 this.entity.height = this.tiles.length * tileHeight;
 

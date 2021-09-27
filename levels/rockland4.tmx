@@ -53,7 +53,7 @@
   </object>
  </objectgroup>
  <objectgroup id="4" name="EnemySpawner">
-  <object id="81" x="356" y="156" width="8" height="36">
+  <object id="81" x="356" y="156" width="11" height="36">
    <properties>
     <property name="EnemyType" value="SpikeWall"/>
    </properties>

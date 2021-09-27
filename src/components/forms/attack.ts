@@ -8,7 +8,6 @@ import { PlayerAnimation, PlayerAnimationEvent } from "../player-animation";
 import { SpriteComponent } from "../sprite";
 import { Hitbox } from "../stupid-hitbox";
 import { PlayerForm } from "./player-form";
-import { Play } from "juicy.sound";
 import { PlayerPhysics } from "../player-physics";
 
 Sound.Load('Slash', {

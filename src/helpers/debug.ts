@@ -45,16 +45,26 @@ new Button({
 });
 
 new Button({
-    content: () => 'Mute Music',
+    content: () => Sound.BGMMuted ? 'Unmute Music' : 'Mute Music',
     onclick: () => {
-        Sound.MuteMusic();
+        if (Sound.BGMMuted) {
+            Sound.UnmuteMusic();
+        }
+        else {
+            Sound.MuteMusic();
+        }
     }
 });
 
 new Button({
-    content: () => 'Mute SFX',
+    content: () => Sound.SFXMuted ? 'Unmute SFX' : 'Mute SFX',
     onclick: () => {
-        Sound.MuteSfx();
+        if (Sound.SFXMuted) {
+            Sound.UnmuteSfx();
+        }
+        else {
+            Sound.MuteSfx();
+        }
     }
 });
 

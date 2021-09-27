@@ -130,7 +130,7 @@ export class GainDashScreen extends State {
 
     key_B() {
         Sound.Load('Back', {
-            src: '../audio/menu_back.mp3',
+            src: '../audio/menu_back.ogg',
             isSFX: true,
             loop: false,
             volume: 0.2

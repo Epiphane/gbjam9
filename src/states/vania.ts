@@ -42,7 +42,6 @@ const PlayerForms: (new () => PlayerForm)[] = [
 export class VaniaScreen extends State {
     map: MapComponent;
     player: Entity;
-    birbs: Entity[] = [];
     enemies: Entity[] = [];
     camera: Camera;
     particles: Entity;
@@ -286,7 +285,7 @@ export class VaniaScreen extends State {
                             })
 
                         enemy.add(Birb).target = this.player
-                        this.birbs.push(enemy);
+                        this.enemies.push(enemy);
                     }
                     else if (spawner.enemyType === "froggy") {
                         const sprite = enemy.add(SpriteComponent)
@@ -408,6 +407,7 @@ export class VaniaScreen extends State {
                             });
                         enemy.add(Obstacle).setActive(false);
                         enemy.add(Hitbox).setSize(8, 36);
+                        this.enemies.push(enemy);
                     }
                     else {
                         this.remove(enemy);
@@ -427,6 +427,7 @@ export class VaniaScreen extends State {
                         frogman.add(Hitbox).setSize(50, 36).setOffset(2, 14);
                         frogman.add(Health).setHealth(1, 1);
                         frogman.add(Frogman);
+                        this.enemies.push(frogman);
                     }
                 }
             })
@@ -447,10 +448,6 @@ export class VaniaScreen extends State {
             this.remove(element)
         });
         this.enemies = [];
-        this.birbs.forEach(birb => {
-            this.remove(birb)
-        });
-        this.birbs = [];
         this.loadLevel(teleporter.destination, this.map.name);
     }
 

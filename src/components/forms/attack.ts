@@ -8,6 +8,14 @@ import { PlayerAnimation, PlayerAnimationEvent } from "../player-animation";
 import { SpriteComponent } from "../sprite";
 import { Hitbox } from "../stupid-hitbox";
 import { PlayerForm } from "./player-form";
+import { Play } from "juicy.sound";
+import { PlayerPhysics } from "../player-physics";
+
+Sound.Load('Slash', {
+    src: './audio/slash.wav',
+    isSFX: true,
+    volume: 0.07,
+});
 
 export class AttackForm extends PlayerForm {
     box?: {
@@ -15,7 +23,14 @@ export class AttackForm extends PlayerForm {
         max: Point;
     };
 
+    cooldown = 0;
+
     startAction() {
+        if (this.cooldown > 0) {
+            return;
+        }
+
+        this.cooldown = 0.25;
         this.entity.get(PlayerAnimation)?.trigger(PlayerAnimationEvent.Attack);
 
         const facingRight = !this.entity.get(SpriteComponent)?.flip;
@@ -51,11 +66,6 @@ export class AttackForm extends PlayerForm {
             }
         }
 
-        Sound.Load('Slash', {
-            src: './audio/slash.wav',
-            isSFX: true,
-            volume: 0.1,
-        });
         Sound.Play('Slash');
 
         for (let i = 0; i < this.entity.state.entities.length; ++i) {
@@ -69,9 +79,14 @@ export class AttackForm extends PlayerForm {
             if (otherHealth?.isActive() && otherHitbox?.isActive()) {
                 if (otherHitbox.test({ position: min, size: max.copy().sub(min) })) {
                     otherHealth.takeDamage(1);
+                    this.entity.get(PlayerPhysics)?.knockBack(facingRight ? -100 : 100, 0, 0.2)
                 }
             }
         }
+    }
+
+    update(dt: number) {
+        this.cooldown -= dt;
     }
 
     render(ctx: CanvasRenderingContext2D) {

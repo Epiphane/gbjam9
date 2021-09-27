@@ -50,6 +50,10 @@ export class Health extends Component {
     }
 
     takeDamage(damage: number) {
+        if (!this.isAlive()) {
+            return;
+        }
+
         this.health -= damage;
         if (!this.isAlive()) {
             this.die();
@@ -57,6 +61,10 @@ export class Health extends Component {
     }
 
     heal(amount: number) {
+        if (!this.isAlive()) {
+            return;
+        }
+
         this.health = Math.min(this.health + amount, this.maxHealth);
     }
 }

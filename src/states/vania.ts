@@ -156,6 +156,7 @@ export class VaniaScreen extends State {
         this.player.get(Transitioner)?.disableInteraction();
 
         this.blackout = new Entity(this);
+        this.blackout.priority = this.player.priority + 100;
         this.remove(this.blackout);
         const sprite = this.blackout.add(SpriteComponent);
         sprite.setSize(this.game.size.x, this.game.size.y);

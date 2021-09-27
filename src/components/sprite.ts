@@ -33,7 +33,7 @@ export class SpriteComponent extends Component {
     current: string = '';
     sheet: number[] = [0];
     sprite: number = 0;
-    loaded = false;
+    loaded = true;
 
     onload?: ((img: SpriteComponent) => void);
     canvas?: HTMLCanvasElement;

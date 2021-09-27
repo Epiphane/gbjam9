@@ -42,10 +42,11 @@ export class PlayerPhysics extends PhysicsBody {
         return this.knockTime > 0;
     }
 
-    knockBack(dx: number) {
+    knockBack(dx: number, dy?: number, time?: number) {
         this.knockDir = dx;
-        this.knockTime = this.maxKnockTime;
+        this.knockTime = time ?? this.maxKnockTime;
         this.entity.get(SpriteComponent)?.setFlip(dx > 0);
+        this.velocity.y = dy ?? 0;
     }
 
     update(dt: number, game: typeof Game) {
@@ -64,8 +65,6 @@ export class PlayerPhysics extends PhysicsBody {
             const speed = Math.pow(progress, 0.25);
 
             this.velocity.x = this.knockDir * speed;
-            this.velocity.y = 0;
-
             this.knockTime -= dt;
         }
         else {

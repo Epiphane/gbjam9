@@ -4,6 +4,13 @@ import { PlayerAnimations } from "../components/player-animation";
 import { SpriteComponent } from "../components/sprite";
 import { ColorType } from "../helpers/palette";
 
+Sound.Load('Powerup', {
+    src: './audio/powerup.wav',
+    isSFX: true,
+    loop: false,
+    volume: 0.3
+});
+
 export class GainNailScreen extends State {
     prevState: State;
     sprite: SpriteComponent;
@@ -18,12 +25,6 @@ export class GainNailScreen extends State {
         super();
 
         // Play powerup effect immediately idk
-        Sound.Load('Powerup', {
-            src: './audio/powerup.wav',
-            isSFX: true,
-            loop: false,
-            volume: 0.5
-        });
         Sound.Play('Powerup');
 
         const canvas = document.createElement('canvas');

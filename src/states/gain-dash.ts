@@ -8,7 +8,7 @@ Sound.Load('Powerup', {
     src: './audio/powerup.wav',
     isSFX: true,
     loop: false,
-    volume: 0.5
+    volume: 0.3
 });
 
 export class GainDashScreen extends State {

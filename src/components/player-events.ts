@@ -181,7 +181,7 @@ export class PlayerEvents extends Component {
         physics.setActive(false);
         frogman.add(Hitbox).setSize(50, 36).setOffset(2, 14);
         frogman.add(Health)
-            .setHealth(20, 20)
+            .setHealth(50, 50)
             .onDie(() => {
                 camera.setBounds({ min, max });
             });

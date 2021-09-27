@@ -27,6 +27,7 @@ import { PlayerHealthRender } from "../components/player-health-render";
 import { __HITBOXES__ } from "../helpers/debug";
 import { Birb, BirbDetectionRadius, BirbDistance } from "../components/birb";
 import { PlayerEvents } from "../components/player-events";
+import { Obstacle } from "../components/obstacle";
 
 const PlayerForms = [
     AttackForm
@@ -63,6 +64,7 @@ export class VaniaScreen extends State {
         ], 'player');
         this.player.position.x = 46;
         this.player.position.y = 9 * 12;
+        this.player.priority = 100;
 
         const hitbox = this.player.get(Hitbox)!;
         hitbox.setOffset(13, 5);
@@ -70,6 +72,7 @@ export class VaniaScreen extends State {
 
         const camera = new Entity(this, [], 'camera');
         this.camera = camera.add(Camera).follow(this.player);
+        camera.priority = this.player.priority + 1;
 
         // Player forms!
         this.player.add(AttackForm).setActive(false);
@@ -195,6 +198,10 @@ export class VaniaScreen extends State {
     }
 
     key_A() {
+        if (this.player.get(Transitioner)?.currentTransition) {
+            return;
+        }
+
         this.player.components.forEach(c => {
             if (c instanceof PlayerForm && c.isActive()) {
                 c.endAction();
@@ -203,6 +210,10 @@ export class VaniaScreen extends State {
     }
 
     keyDown_A() {
+        if (this.player.get(Transitioner)?.currentTransition) {
+            return;
+        }
+
         this.player.components.forEach(c => {
             if (c instanceof PlayerForm && c.isActive()) {
                 c.startAction();
@@ -305,6 +316,8 @@ export class VaniaScreen extends State {
                                 frameTime: 0.05,
                                 repeat: false,
                             });
+                        enemy.add(Obstacle).setActive(false);
+                        enemy.add(Hitbox).setSize(8, 36);
                     }
                     else {
                         this.remove(enemy);

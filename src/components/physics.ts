@@ -3,10 +3,11 @@ import { TileInfo } from "../helpers/tiles";
 import { MapComponent } from "./map";
 import { Hitbox } from "./stupid-hitbox";
 import { getMapFromComponent } from '../helpers/quick-get';
+import { Direction, Obstacle } from "./obstacle";
 
 export class PhysicsBody extends Component {
     velocity = new Point();
-    terminalVelocity = 100;
+    terminalVelocity = 200;
 
     // Each flag is whether or not you can move in the specified direction.
     // blocked[1][1] is unused, as it's the player's current location.
@@ -19,13 +20,13 @@ export class PhysicsBody extends Component {
     isValidMove(dx: number, dy: number, map: MapComponent, hitbox: Hitbox) {
         this.entity.position.x += dx;
         this.entity.position.y += dy;
-        const result = this.isValidPosition(map, hitbox);
+        const result = this.isValidPosition(map, hitbox, dx, dy);
         this.entity.position.x -= dx;
         this.entity.position.y -= dy;
         return result;
     }
 
-    isValidPosition(map: MapComponent, hitbox: Hitbox) {
+    isValidPosition(map: MapComponent, hitbox: Hitbox, dx: number, dy: number) {
         // Test map collision
         const { min, max } = hitbox.getBounds();
         const tileMin = map.getTileCoords(min);
@@ -42,7 +43,84 @@ export class PhysicsBody extends Component {
             }
         }
 
+        const box = {
+            position: min,
+            size: max.copy().sub(min),
+        };
+
+        for (let i = 0; i < this.entity.state.entities.length; ++i) {
+            const e = this.entity.state.entities[i];
+            const obstacle = e.get(Obstacle);
+            const obstacleHitbox = e.get(Hitbox);
+            if (obstacle?.isActive() && obstacleHitbox?.isActive()) {
+                if (!obstacleHitbox.test(box)) {
+                    continue;
+                }
+
+                // You have to be entering the obstacle
+                if (dx > 0 && !obstacle.canPass(Direction.Right)) {
+                    box.position.x -= dx * 1.2;
+                    if (!obstacleHitbox.test(box)) {
+                        return false;
+                    }
+                    box.position.x += dx * 1.2;
+                }
+
+                if (dx < 0 && !obstacle.canPass(Direction.Left)) {
+                    box.position.x -= dx * 1.2;
+                    if (!obstacleHitbox.test(box)) {
+                        return false;
+                    }
+                    box.position.x += dx * 1.2;
+                }
+
+                if (dy > 0 && !obstacle.canPass(Direction.Down)) {
+                    box.position.y -= dy * 1.2;
+                    if (!obstacleHitbox.test(box)) {
+                        return false;
+                    }
+                    box.position.y += dy * 1.2;
+                }
+
+                if (dy < 0 && !obstacle.canPass(Direction.Up)) {
+                    box.position.y -= dy * 1.2;
+                    if (!obstacleHitbox.test(box)) {
+                        return false;
+                    }
+                    box.position.y += dy * 1.2;
+                }
+            }
+        }
+
         return true;
+    }
+
+    isBouncyTime(hitbox: Hitbox) {
+        // Test map collision
+        const { min, max } = hitbox.getBounds();
+        const box = {
+            position: new Point(min.x, min.y + 1),
+            size: max.copy().sub(min),
+        };
+
+        for (let i = 0; i < this.entity.state.entities.length; ++i) {
+            const e = this.entity.state.entities[i];
+            const obstacle = e.get(Obstacle);
+            const obstacleHitbox = e.get(Hitbox);
+            if (obstacle?.isActive() && obstacleHitbox?.isActive()) {
+                if (!obstacleHitbox.test(box) || !obstacle.isAFunnyBouncyBoy) {
+                    continue;
+                }
+
+                if (!obstacle.canPass(Direction.Down)) {
+                    if (obstacleHitbox.test(box)) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     computeBlockages(map: MapComponent, hitbox: Hitbox) {
@@ -84,6 +162,10 @@ export class PhysicsBody extends Component {
             this.velocity.y += dt * 800;
 
             this.velocity.y = Math.min(this.terminalVelocity, this.velocity.y);
+        }
+        else if (this.isBouncyTime(hitbox)) {
+            // Funny funny bouncy time
+            this.velocity.y = -2 * this.terminalVelocity;
         }
 
         const { x: dx, y: dy } = this.velocity;

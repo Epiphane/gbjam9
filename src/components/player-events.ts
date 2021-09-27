@@ -4,7 +4,11 @@ import { getMapFromComponent } from "../helpers/quick-get";
 import { SaveManager } from "../helpers/save-manager";
 import { Birb, BirbDetectionRadius } from "./birb";
 import { Camera } from "./camera";
+import { Frogman } from "./frogman";
+import { Health } from "./health";
 import { MapComponent } from "./map";
+import { Obstacle } from "./obstacle";
+import { PhysicsBody } from "./physics";
 import { PlayerAnimations } from "./player-animation";
 import { PlayerPhysics } from "./player-physics";
 import { SpriteComponent } from "./sprite";
@@ -62,16 +66,16 @@ export class PlayerEvents extends Component {
 
         const onGround = this.entity.get(PlayerPhysics)?.isBlocked(0, 1);
         if (obj.name === 'FrogBoss' && onGround) {
-            this.frogBossFight();
+            this.frogBossFight(obj);
             obj.properties.inactive = true;
         }
         else if (obj.name === 'BirbMom' && onGround) {
-            this.birbMomNoSpoilers();
+            this.birbMomNoSpoilers(obj);
             obj.properties.inactive = true;
         }
     }
 
-    birbMomNoSpoilers() {
+    birbMomNoSpoilers(obj: MapObject) {
         if (SaveManager.get('birb_bait')) {
             return;
         }
@@ -120,20 +124,18 @@ export class PlayerEvents extends Component {
         }
     }
 
-    frogBossFight() {
+    frogBossFight(obj: MapObject) {
         const camera = this.entity.state.get('camera')?.get(Camera)!;
         const { min, max } = camera.bounds;
         camera.setBounds({
-            min: new Point(6 * 16, min.y),
-            max,
+            min: new Point(22 * 16, min.y),
+            max: new Point(max.x, 17 * 12),
         });
-        camera.easing = 30;
-        camera.maxEasing = 30;
+        camera.easing = 15;
+        camera.maxEasing = 15;
 
         this.transitioner?.transition({
-            type: 'FrogIntro',
-            camera,
-            cameraPos: new Point(6 * 16, 7 * 12),
+            type: 'Pause',
             time: 5,
             onComplete: () => {
                 camera.easing = 100;
@@ -142,11 +144,35 @@ export class PlayerEvents extends Component {
         });
 
         this.entity.get(SpriteComponent)?.runAnimation(PlayerAnimations.GainingForm);
-        this.entity.state.get('SpikeWall')?.get(SpriteComponent)?.runAnimation({
+        const wall = this.entity.state.get('SpikeWall');
+        wall?.get(Obstacle)?.setActive(true);
+        wall?.get(SpriteComponent)?.runAnimation({
             name: 'New wall just dropped',
             sheet: [1, 2, 3, 4, 5, 6, 7, 8],
             frameTime: 0.05,
             repeat: false,
         });
+
+        const frogman = new Entity(this.entity.state);
+        frogman.position.x = obj.position.x + obj.size.x - 60;
+        frogman.position.y = -400;
+        frogman.add(SpriteComponent)
+            .setImage('./images/frogman.png')
+            .setSize(60, 60)
+            .runAnimation({
+                name: 'Stand',
+                sheet: [2],
+                frameTime: 0.2,
+                repeat: true
+            });
+
+        frogman.add(PhysicsBody);
+        frogman.add(Hitbox).setSize(50, 36).setOffset(2, 14);
+        frogman.add(Health)
+            .setHealth(20, 20)
+            .onDie(() => {
+                camera.setBounds({ min, max });
+            });
+        frogman.add(Frogman);
     }
 }

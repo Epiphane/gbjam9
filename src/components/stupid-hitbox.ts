@@ -29,14 +29,17 @@ export class Hitbox extends Component {
 
     setOffset(x: number, y: number) {
         this.offset = new Point(x, y);
+        return this; // enable chaining
     }
 
     setSize(width: number, height: number) {
         this.size = new Point(width, height);
+        return this; // enable chaining
     }
 
     setVisible(visible: boolean) {
         this.visible = visible;
+        return this; // enable chaining
     }
 
     getBounds() {

@@ -3,6 +3,7 @@ import { Point } from "juicy.point";
 import { __HITBOXES__ } from "../../helpers/debug";
 import { getMapFromComponent } from "../../helpers/quick-get";
 import { TileInfo } from "../../helpers/tiles";
+import { Health } from "../health";
 import { PlayerAnimation, PlayerAnimationEvent } from "../player-animation";
 import { SpriteComponent } from "../sprite";
 import { Hitbox } from "../stupid-hitbox";
@@ -56,6 +57,21 @@ export class AttackForm extends PlayerForm {
             volume: 0.1,
         });
         Sound.Play('Slash');
+
+        for (let i = 0; i < this.entity.state.entities.length; ++i) {
+            const e = this.entity.state.entities[i];
+            if (e === this.entity) {
+                continue;
+            }
+
+            const otherHealth = e.get(Health);
+            const otherHitbox = e.get(Hitbox);
+            if (otherHealth?.isActive() && otherHitbox?.isActive()) {
+                if (otherHitbox.test({ position: min, size: max.copy().sub(min) })) {
+                    otherHealth.takeDamage(1);
+                }
+            }
+        }
     }
 
     render(ctx: CanvasRenderingContext2D) {

@@ -12,12 +12,6 @@ export class PlayerPhysics extends PhysicsBody {
     upWasPressed = false;
     cancelNextJump = false;
 
-    constructor() {
-        super();
-
-        this.terminalVelocity = 200;
-    }
-
     update(dt: number, game: typeof Game) {
         this.velocity.x = 0;
         if (game.keyDown(Keys.LEFT)) {

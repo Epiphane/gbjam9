@@ -11,6 +11,7 @@ export class Camera extends Component {
     target?: Entity;
     easing = 0;
     maxEasing = 0;
+    shakeTime = 0;
 
     bounds: CameraBounds = {
         min: new Point(),
@@ -28,9 +29,13 @@ export class Camera extends Component {
         return this; // enable chaining
     }
 
+    shake(time: number) {
+        this.shakeTime = time;
+    }
+
     setDefaultEasing() {
         this.easing = 100;
-        this.maxEasing = 200;
+        this.maxEasing = 300;
     }
 
     setBounds(bounds: CameraBounds) {
@@ -71,8 +76,12 @@ export class Camera extends Component {
 
         const { x, y } = this.getTargetPosition();
 
-        const dx = x - this.entity.position.x;
-        const dy = y - this.entity.position.y;
+        if (this.shakeTime > 0) {
+            this.shakeTime = Math.max(this.shakeTime - dt, 0);
+        }
+
+        const dx = x - this.entity.position.x + 3 * Math.sin(this.shakeTime * 75);
+        const dy = y - this.entity.position.y;// + Math.sin(this.shakeTime);
 
         let easeX = this.easing;
         let easeY = this.easing;

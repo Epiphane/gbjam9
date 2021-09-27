@@ -28,6 +28,7 @@ export class SpriteComponent extends Component {
     repeat = false;
     flip = false;
     opacity = 1;
+    flickerTime = 0;
 
     current: string = '';
     sheet: number[] = [0];
@@ -82,6 +83,11 @@ export class SpriteComponent extends Component {
         return this; // Enable 2chainz
     }
 
+    setFlickering(time: number) {
+        this.flickerTime = time;
+        return this; // Enable true chainz
+    }
+
     runAnimation({ name, sheet, frameTime, repeat }: Animation) {
         this.frameTime = frameTime;
         if (this.current !== name) {
@@ -119,16 +125,6 @@ export class SpriteComponent extends Component {
         }
     }
 
-    update(dt: number) {
-        if (this.animating()) {
-            this.timeLeft -= dt;
-
-            if (this.timeLeft <= 0) {
-                this.goNextFrame();
-            }
-        }
-    }
-
     computeSprite() {
         const index = this.sheet[this.sprite < this.sheet.length ? this.sprite : this.sheet.length - 1]!;
         var sx = (index % this.sheetWidth) * this.spriteWidth;
@@ -162,9 +158,29 @@ export class SpriteComponent extends Component {
         }
     }
 
-    render(context: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
-        context.imageSmoothingEnabled = false;
+    update(dt: number) {
+        if (this.animating()) {
+            this.timeLeft -= dt;
 
+            if (this.timeLeft <= 0) {
+                this.goNextFrame();
+            }
+        }
+
+        if (this.flickerTime > 0) {
+            this.flickerTime -= dt;
+        }
+    }
+
+    render(context: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
+        if (this.flickerTime > 0) {
+            const n = this.flickerTime % 0.1;
+            if (n % 2 === 0) {
+                return;
+            }
+        }
+
+        context.imageSmoothingEnabled = false;
         context.save();
 
         const { sx, sy } = this.computeSprite();

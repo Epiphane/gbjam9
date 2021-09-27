@@ -425,6 +425,7 @@ export class State {
     init() {}
 
     update(dt: number): boolean | void {
+        this.entities.sort((a, b) => a.priority - b.priority);
         this.entities.forEach(e => {
             if (!e.parent) {
                 e.update(dt);
@@ -435,6 +436,7 @@ export class State {
     }
 
     render(context: CanvasRenderingContext2D) {
+        this.entities.sort((a, b) => a.priority - b.priority);
         this.entities.forEach(e => {
             if (!e.parent) {
                 e.render(context);
@@ -502,6 +504,7 @@ export class Entity {
 
     position: Point = new Point();
     scale: Point = new Point(1);
+    priority: number = 0;
     width: number = 0;
     height: number = 0;
     active: boolean = false;

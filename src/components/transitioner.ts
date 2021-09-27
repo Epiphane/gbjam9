@@ -22,14 +22,12 @@ export interface DrownTransition {
     type: 'Drown';
 }
 
-export interface FrogIntroTransition {
-    type: 'FrogIntro';
-    camera: Camera;
-    cameraPos: Point;
+export interface PauseTransition {
+    type: 'Pause';
 }
 
 export type Transition = (
-    MoveTransition | GetFormTransition | DrownTransition | FrogIntroTransition
+    MoveTransition | GetFormTransition | DrownTransition | PauseTransition
 ) & {
     time: number;
     onComplete?: () => void;
@@ -82,7 +80,7 @@ export class Transitioner extends Component {
             break;
         case 'Drown':
             break;
-        case 'FrogIntro':
+        case 'Pause':
             break;
         }
     }
@@ -187,14 +185,6 @@ export class Transitioner extends Component {
         }
     }
 
-    updateFrogIntro() {
-        if (this.currentTransition?.type !== 'FrogIntro') {
-            return;
-        }
-
-
-    }
-
     update(dt: number) {
         if (this.currentTransition) {
             this.transitionTime += dt;
@@ -216,8 +206,7 @@ export class Transitioner extends Component {
             case 'Drown':
                 this.entity.get(SpriteComponent)?.runAnimation(PlayerAnimations.Drowning);
                 break;
-            case 'FrogIntro':
-                this.updateFrogIntro();
+            case 'Pause':
                 break;
             }
 

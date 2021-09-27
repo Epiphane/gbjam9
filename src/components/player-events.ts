@@ -1,4 +1,4 @@
-import { Entity, Component, Point, Game } from "../../lib/juicy";
+import { Entity, Component, Point, Game, Sound } from "../../lib/juicy";
 import { MapObject } from "../helpers/map-loader";
 import { getMapFromComponent } from "../helpers/quick-get";
 import { SaveManager } from "../helpers/save-manager";
@@ -103,6 +103,12 @@ export class PlayerEvents extends Component {
             repeat: false,
         });
         sprite.oncompleteanimation = () => {
+            Sound.Load('RIP', {
+                src: './audio/birbmom_ded.wav',
+                isSFX: true,
+                volume: 0.3
+            });
+            Sound.Play('RIP');
             sprite.dissolve();
             getMapFromComponent(this)?.removeFromBackground(mom);
 

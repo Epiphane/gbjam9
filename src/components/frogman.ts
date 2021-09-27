@@ -1,4 +1,4 @@
-import { Component, Entity, Point } from "../../lib/juicy";
+import { Component, Entity, Point, Sound } from "../../lib/juicy";
 import { SaveManager } from "../helpers/save-manager";
 import { Camera } from "./camera";
 import { Health } from "./health";
@@ -17,6 +17,10 @@ export class Frogman extends Component {
         const health = entity.get(Health);
         const hitbox = entity.get(Hitbox);
         health?.onDie(() => {
+            // Since onDie gets called even if something's already dead
+            // the sound will keep playing if player keeps beating up frog.
+            // Not sure if bug or feature
+            Sound.Play('FrogDie');
             sprite?.runAnimation({
                 name: 'Dead',
                 sheet: [12],
@@ -40,6 +44,14 @@ export class Frogman extends Component {
         if (deathSpot) {
             entity.position = new Point(deathSpot.x, deathSpot.y);
             health?.takeDamage(health.maxHealth);
+        } else {
+            // Only load frog death sound if it's not already dead from savefile
+            Sound.Load('FrogDie',
+                {
+                    src: './audio/frog_die.wav',
+                    isSFX: true,
+                    volume: 0.3
+                });
         }
     }
 
@@ -71,6 +83,13 @@ export class Frogman extends Component {
             });
 
             if (!this.hasLanded) {
+                Sound.Load('Rumble',
+                    {
+                        src: './audio/rumble.wav',
+                        isSFX: true,
+                        volume: 0.2
+                    });
+                Sound.Play('Rumble');
                 this.entity.state.get('camera')?.get(Camera)?.shake(0.3);
                 this.hasLanded = true;
             }

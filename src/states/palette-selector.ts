@@ -2,6 +2,7 @@ import {
     Entity,
     State,
     Game,
+    Sound,
 } from "../../lib/juicy";
 import { CoolText, FontFace } from "../components/cool-text";
 import { ColorType, DarkColor, LightColor, PaletteManager } from "../helpers/palette";
@@ -52,26 +53,53 @@ export class PaletteSelectionScreen extends State {
         });
         cont.position.x = Math.floor((Game.size.x - 2 * this.padding - cont.width) / 2);
         cont.position.y = 100;
+
+        // Load sounds
+        Sound.Load('Menu_Move',
+            {
+                src: './audio/menu_move.ogg',
+                isSFX: true,
+                volume: 0.2
+            });
+
+        Sound.Load('Menu_Select',
+            {
+                src: './audio/menu_back.ogg',
+                isSFX: true,
+                volume: 0.2
+            });
+
+        Sound.Load('Menu_Appear',
+            {
+                src: './audio/menu_select.ogg',
+                isSFX: true,
+                volume: 0.2
+            });
+        Sound.Play('Menu_Appear');
     }
 
     key_UP() {
         const newPalette = PaletteManager.getCurrentId() - this.palettesPerLine;
         PaletteManager.setCurrent(newPalette);
+        Sound.Play('Menu_Move');
     }
 
     key_LEFT() {
         const newPalette = PaletteManager.getCurrentId() - 1;
         PaletteManager.setCurrent(newPalette);
+        Sound.Play('Menu_Move');
     }
 
     key_DOWN() {
         const newPalette = PaletteManager.getCurrentId() + this.palettesPerLine;
         PaletteManager.setCurrent(newPalette);
+        Sound.Play('Menu_Move');
     }
 
     key_RIGHT() {
         const newPalette = PaletteManager.getCurrentId() + 1;
         PaletteManager.setCurrent(newPalette);
+        Sound.Play('Menu_Move');
     }
 
     key_A() {
@@ -83,6 +111,7 @@ export class PaletteSelectionScreen extends State {
     }
 
     close() {
+        Sound.Play('Menu_Select');
         if (this.prevState) {
             this.game.setState(this.prevState);
         }

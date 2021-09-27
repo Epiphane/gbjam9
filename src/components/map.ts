@@ -1,4 +1,4 @@
-import { Component, Entity, Game, Point } from "../../lib/juicy";
+import { Component, Entity, Game, Point, Sound } from "../../lib/juicy";
 import { EnemySpawner, LoadedMap, MapLoader, Spawner, Teleporter, MapObject } from "../helpers/map-loader";
 import { SaveManager } from "../helpers/save-manager";
 import { Tile, TileInfo } from "../helpers/tiles";
@@ -88,12 +88,20 @@ export class MapComponent extends Component {
             return;
         }
 
+        Sound.Load('Break',
+            {
+                src: './audio/destroy_block.wav',
+                isSFX: true,
+                volume: 0.2
+            });
+
         const current = this.tiles[y]![x]!;
         const { breaksInto } = TileInfo[current];
         if (breaksInto) {
             const breaks = SaveManager.get(`${this.name}_breaks`) ?? [];
-            breaks.push({x, y});
+            breaks.push({ x, y });
             SaveManager.set(`${this.name}_breaks`, breaks);
+            Sound.Play('Break');
 
             this.tiles[y]![x]! = breaksInto;
         }

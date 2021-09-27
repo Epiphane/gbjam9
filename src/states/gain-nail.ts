@@ -128,12 +128,6 @@ export class GainNailScreen extends State {
     }
 
     key_B() {
-        Sound.Load('Back', {
-            src: '../audio/menu_back.mp3',
-            isSFX: true,
-            loop: false,
-            volume: 0.2
-        })
         Sound.Play('Back')
         this.game.setState(this.prevState);
     }

@@ -1,4 +1,4 @@
-import { Component, Entity, Point } from "../../lib/juicy";
+import { Component, Entity, Point, Sound } from "../../lib/juicy";
 import { getMapFromComponent } from "../helpers/quick-get";
 import { TileInfo } from "../helpers/tiles";
 import { PlayerPhysics } from "./player-physics";
@@ -11,6 +11,12 @@ export class Drowner extends Component {
     callback?: (lastSafePosition: Point) => void;
 
     onDrown(callback: (lastSafePosition: Point) => void) {
+        Sound.Load('Drown',
+            {
+                src: './audio/drown.wav',
+                isSFX: true,
+                volume: 0.2
+            })
         this.callback = callback;
     }
 
@@ -58,6 +64,7 @@ export class Drowner extends Component {
 
         if (drown && !this.drowning) {
             this.drowning = true;
+            Sound.Play('Drown')
             if (transitioner) {
                 transitioner.transition({
                     type: 'Drown',

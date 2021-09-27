@@ -1,4 +1,4 @@
-import { Game, Point } from "../../lib/juicy";
+import { Game, Point, Sound } from "../../lib/juicy";
 import { Keys } from "../helpers/constants";
 import { TileInfo } from "../helpers/tiles";
 import { MapComponent } from "./map";
@@ -33,6 +33,13 @@ export class PlayerPhysics extends PhysicsBody {
         if (!this.cancelNextJump && game.keyDown(Keys.UP)) {
             // Start jump
             if (this.coyote > 0 && !this.upWasPressed) {
+                Sound.Load('Jump',
+                    {
+                        src: './audio/jump.wav',
+                        isSFX: true,
+                        volume: 0.2
+                    });
+                Sound.Play('Jump');
                 this.velocity.y = -150;
                 this.jumpTail = 0.3;
                 this.coyote = 0;

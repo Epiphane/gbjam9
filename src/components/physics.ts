@@ -1,4 +1,4 @@
-import { Component, Game, Point } from "../../lib/juicy";
+import { Component, Game, Point, Sound } from "../../lib/juicy";
 import { TileInfo } from "../helpers/tiles";
 import { MapComponent } from "./map";
 import { Hitbox } from "./stupid-hitbox";
@@ -128,7 +128,7 @@ export class PhysicsBody extends Component {
             for (let j = 0; j <= 2; j++) {
                 if (i === 1 && j === 1) continue;
 
-                this.blocked[j]![i]  = !this.isValidMove(i - 1, j - 1, map, hitbox);
+                this.blocked[j]![i] = !this.isValidMove(i - 1, j - 1, map, hitbox);
             }
         }
     }
@@ -166,6 +166,13 @@ export class PhysicsBody extends Component {
         else if (this.isBouncyTime(hitbox)) {
             // Funny funny bouncy time
             this.velocity.y = -2 * this.terminalVelocity;
+            Sound.Load('Bounce',
+                {
+                    src: './audio/bounce.wav',
+                    isSFX: true,
+                    volume: 0.2
+                });
+            Sound.Play('Bounce');
         }
 
         const { x: dx, y: dy } = this.velocity;

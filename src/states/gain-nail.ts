@@ -1,4 +1,4 @@
-import { Entity, Game, State, TextComponent } from "../../lib/juicy";
+import { Entity, Game, Sound, State, TextComponent } from "../../lib/juicy";
 import { CoolText, FontFace } from "../components/cool-text";
 import { PlayerAnimations } from "../components/player-animation";
 import { SpriteComponent } from "../components/sprite";
@@ -16,6 +16,15 @@ export class GainNailScreen extends State {
 
     constructor(prevState: State) {
         super();
+
+        // Play powerup effect immediately idk
+        Sound.Load('Powerup', {
+            src: './audio/powerup.wav',
+            isSFX: true,
+            loop: false,
+            volume: 0.5
+        });
+        Sound.Play('Powerup');
 
         const canvas = document.createElement('canvas');
         this.faderCtx = canvas.getContext('2d')!;
@@ -119,6 +128,13 @@ export class GainNailScreen extends State {
     }
 
     key_B() {
+        Sound.Load('Back', {
+            src: '../audio/menu_back.mp3',
+            isSFX: true,
+            loop: false,
+            volume: 0.2
+        })
+        Sound.Play('Back')
         this.game.setState(this.prevState);
     }
 

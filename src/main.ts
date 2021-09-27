@@ -69,13 +69,14 @@ document.addEventListener('mousewheel', Game.trigger.bind(Game, 'mousewheel'));
 window.onresize = () => Game.resize();
 
 // Music
-Sound.Load('FubSong', {
-    src: './audio/FubSong.mp3',
+Sound.Load('BGM', {
+    src: './audio/bgm.mp3',
+    isSFX: false,
     loop: true,
-    volume: 0.01
+    volume: 0.10
 });
 
-// Sound.Play('FubSong');
+Sound.Play('BGM');
 
 if (__TEST_LEVEL__) {
     Game.setState(new TestScreen()).run();

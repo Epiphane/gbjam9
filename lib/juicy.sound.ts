@@ -1,7 +1,9 @@
-var Sounds: { [key: string]: MultiSampleSound } = {};
+var SFX: { [key: string]: MultiSampleSound } = {};
+var BGM: { [key: string]: MultiSampleSound } = {};
 
 type SoundProperties = {
     src: string;
+    isSFX: boolean;
     loop?: boolean;
     samples?: number;
     volume?: number;
@@ -48,33 +50,35 @@ class MultiSampleSound {
 }
 
 export function MuteMusic() {
-    for (const key in Sounds) {
-        Sounds[key]?.elements.forEach(function (element) {
-            if (element.loop) {
-                element.volume = 0;
-            }
+    for (const key in BGM) {
+        BGM[key]?.elements.forEach(function (element) {
+            element.volume = 0;
         });
     }
 }
 
 export function MuteSfx() {
-    for (const key in Sounds) {
-        Sounds[key]?.elements.forEach(function (element) {
-            if (!element.loop) {
-                element.volume = 0;
-            }
+    for (const key in SFX) {
+        SFX[key]?.elements.forEach(function (element) {
+            element.volume = 0;
         });
     }
 }
 
 export function Play(name: string) {
-    Sounds[name]?.play();
+    let sound = SFX[name] ?? BGM[name];
+    sound?.play();
 }
 
 export function Pause(name: string) {
-    Sounds[name]?.pause();
+    let sound = SFX[name] ?? BGM[name];
+    sound?.pause()
 }
 
 export function Load(name: string, properties: SoundProperties) {
-    Sounds[name] = new MultiSampleSound(properties);
+    if (properties.isSFX) {
+        SFX[name] = new MultiSampleSound(properties);
+    } else {
+        BGM[name] = new MultiSampleSound(properties);
+    }
 }

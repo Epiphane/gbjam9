@@ -1,3 +1,4 @@
+import { Sound } from "../../../lib/juicy";
 import { Point } from "juicy.point";
 import { __HITBOXES__ } from "../../helpers/debug";
 import { getMapFromComponent } from "../../helpers/quick-get";
@@ -48,6 +49,13 @@ export class AttackForm extends PlayerForm {
                 }
             }
         }
+
+        Sound.Load('Slash', {
+            src: './audio/slash.wav',
+            isSFX: true,
+            volume: 0.1,
+        });
+        Sound.Play('Slash');
     }
 
     render(ctx: CanvasRenderingContext2D) {

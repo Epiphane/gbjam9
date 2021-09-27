@@ -1,4 +1,4 @@
-import { Game } from "../../lib/juicy";
+import { Game, Sound } from "../../lib/juicy";
 import { Hitbox } from "../components/stupid-hitbox";
 import { LoadingScreen } from "../states/loading";
 import { TestScreen } from "../states/test";
@@ -41,6 +41,20 @@ new Button({
     onclick: () => {
         localStorage.setItem('__DEV__', !__DEV__ ? 'on' : 'off');
         location.reload();
+    }
+});
+
+new Button({
+    content: () => 'Mute Music',
+    onclick: () => {
+        Sound.MuteMusic();
+    }
+});
+
+new Button({
+    content: () => 'Mute SFX',
+    onclick: () => {
+        Sound.MuteSfx();
     }
 });
 

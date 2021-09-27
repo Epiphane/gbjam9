@@ -1,5 +1,5 @@
-import { Component, Entity } from "../../lib/juicy";
-import { __HITBOXES__ } from "../helpers/debug";
+import { Component, Entity, Point } from "../../lib/juicy";
+import { SaveManager } from "../helpers/save-manager";
 import { Camera } from "./camera";
 import { Health } from "./health";
 import { Obstacle } from "./obstacle";
@@ -31,8 +31,16 @@ export class Frogman extends Component {
             obstacle.blockDirections.Left = false;
 
             hitbox?.setSize(40, hitbox.getSize().y);
-            this.entity.get(PhysicsBody)?.setActive(false);
+            entity.get(PhysicsBody)?.setActive(false);
+
+            SaveManager.set('frogman_dead', entity.position);
         });
+
+        const deathSpot = SaveManager.get('frogman_dead');
+        if (deathSpot) {
+            entity.position = new Point(deathSpot.x, deathSpot.y);
+            health?.takeDamage(health.maxHealth);
+        }
     }
 
     jump() {

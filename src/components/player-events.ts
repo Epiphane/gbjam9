@@ -125,6 +125,10 @@ export class PlayerEvents extends Component {
     }
 
     frogBossFight(obj: MapObject) {
+        if (SaveManager.get('frogman_dead')) {
+            return;
+        }
+
         const camera = this.entity.state.get('camera')?.get(Camera)!;
         const { min, max } = camera.bounds;
         camera.setBounds({

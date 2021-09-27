@@ -28,6 +28,7 @@ import { __HITBOXES__ } from "../helpers/debug";
 import { Birb, BirbDetectionRadius, BirbDistance } from "../components/birb";
 import { PlayerEvents } from "../components/player-events";
 import { Obstacle } from "../components/obstacle";
+import { Frogman } from "../components/frogman";
 
 const PlayerForms = [
     AttackForm
@@ -325,6 +326,20 @@ export class VaniaScreen extends State {
                 })
                 this.player.get(MapTraveller)?.spawn(map, from);
                 this.camera.snapCamera();
+
+                if (map.triggers.filter(t => t.name === 'FrogBoss').length > 0) {
+                    const deathSpot = SaveManager.get('frogman_dead');
+                    if (deathSpot) {
+                        const frogman = new Entity(this);
+                        frogman.add(SpriteComponent)
+                            .setImage('./images/frogman.png')
+                            .setSize(60, 60);
+
+                        frogman.add(Hitbox).setSize(50, 36).setOffset(2, 14);
+                        frogman.add(Health).setHealth(1, 1);
+                        frogman.add(Frogman);
+                    }
+                }
             })
             .catch((e) => {
                 console.error(`failed loading level ${name}`)

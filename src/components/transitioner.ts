@@ -22,12 +22,16 @@ export interface DrownTransition {
     type: 'Drown';
 }
 
+export interface SpikedTransition {
+    type: 'Spiked';
+}
+
 export interface PauseTransition {
     type: 'Pause';
 }
 
 export type Transition = (
-    MoveTransition | GetFormTransition | DrownTransition | PauseTransition
+    MoveTransition | GetFormTransition | DrownTransition | SpikedTransition | PauseTransition
 ) & {
     time: number;
     onComplete?: () => void;
@@ -79,8 +83,11 @@ export class Transitioner extends Component {
             };
             break;
         case 'Drown':
-            break;
         case 'Pause':
+            break;
+        case 'Spiked':
+            this.entity.get(SpriteComponent)?.dissolve(3);
+            this.entity.get(SpriteComponent)?.setActive(false);
             break;
         }
     }
@@ -205,6 +212,11 @@ export class Transitioner extends Component {
                 break;
             case 'Drown':
                 this.entity.get(SpriteComponent)?.runAnimation(PlayerAnimations.Drowning);
+                break;
+            case 'Spiked':
+                if (this.transitionTime >= this.currentTransition.time) {
+                    this.entity.get(SpriteComponent)?.setActive(true);
+                }
                 break;
             case 'Pause':
                 break;

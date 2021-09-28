@@ -12,14 +12,12 @@
 2,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,2,
 2,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,2,
 2,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,2,
-31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,4,
-31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,4,
+31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,
+31,31,31,31,31,31,31,31,31,31,31,31,31,31,42,42,42,43,31,31,
 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2
 </data>
  </layer>
- <objectgroup id="2" name="Spawners" locked="1">
-  <object id="15" x="156" y="106" width="5" height="19"/>
- </objectgroup>
+ <objectgroup id="2" name="Spawners"/>
  <objectgroup id="3" name="Teleporters">
   <object id="12" x="0" y="108" width="4" height="24">
    <properties>
@@ -30,26 +28,16 @@
   </object>
   <object id="14" x="316" y="108" width="4" height="24">
    <properties>
-    <property name="destination" value="rockland1"/>
+    <property name="destination" value="crossroad0"/>
     <property name="dir" value="left"/>
     <property name="twoWay" type="bool" value="true"/>
    </properties>
   </object>
  </objectgroup>
  <objectgroup id="4" name="EnemySpawner">
-  <object id="16" x="211" y="111" width="8" height="8">
+  <object id="16" x="127" y="67" width="8" height="8">
    <properties>
-    <property name="EnemyType" value="nail"/>
-   </properties>
-  </object>
-  <object id="18" x="57" y="104" width="8" height="8">
-   <properties>
-    <property name="EnemyType" value="birb"/>
-   </properties>
-  </object>
-  <object id="19" x="109" y="108" width="8" height="8">
-   <properties>
-    <property name="EnemyType" value="birb"/>
+    <property name="EnemyType" value="upshot"/>
    </properties>
   </object>
  </objectgroup>

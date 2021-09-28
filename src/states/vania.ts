@@ -33,6 +33,7 @@ import { DashForm } from "../components/forms/dash";
 import { GainDashScreen } from "./gain-dash";
 import { PhysicsBody } from "../components/physics";
 import { Froggy } from "../components/froggy";
+import { SensitiveFeet } from "../components/sensitive-feet";
 
 const PlayerForms: (new () => PlayerForm)[] = [
     AttackForm,
@@ -66,6 +67,7 @@ export class VaniaScreen extends State {
             PlayerPhysics,
             PlayerAnimation,
             Drowner,
+            SensitiveFeet,
             PlayerEvents,
         ], 'player');
         this.player.position.x = 46;
@@ -100,6 +102,14 @@ export class VaniaScreen extends State {
 
         // Drowning
         this.player.get(Drowner)?.onDrown((lastPos: Point) => {
+            health?.takeDamage(1);
+            if (health?.isAlive()) {
+                this.player.position = lastPos.copy();
+            }
+        });
+
+        // Spikes
+        this.player.get(SensitiveFeet)?.onPoke((lastPos: Point) => {
             health?.takeDamage(1);
             if (health?.isAlive()) {
                 this.player.position = lastPos.copy();

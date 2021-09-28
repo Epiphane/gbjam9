@@ -19,6 +19,8 @@ export enum Tile {
     Water2,
     Water3,
     Water4,
+    SpikesUp,
+    SpikesUpTail,
 };
 
 interface TileInfo {
@@ -29,6 +31,7 @@ interface TileInfo {
     offsetAnimTime?: number;
     background?: boolean;
     breaksInto?: Tile;
+    killer?: boolean;
 }
 
 export const TileInfo: { [key in Tile]: TileInfo } = {
@@ -130,4 +133,13 @@ export const TileInfo: { [key in Tile]: TileInfo } = {
         offset: new Point(4, 3),
         background: true,
     },
+    [Tile.SpikesUp]: {
+        walkable: true,
+        killer: true,
+        offset: new Point(1, 4),
+    },
+    [Tile.SpikesUpTail]: {
+        walkable: true,
+        offset: new Point(2, 4),
+    }
 };

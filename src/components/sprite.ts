@@ -28,6 +28,7 @@ export class SpriteComponent extends Component {
     repeat = false;
     flip = false;
     opacity = 1;
+    fadeDir = 0;
     flickerTime = 0;
 
     current: string = '';
@@ -105,6 +106,13 @@ export class SpriteComponent extends Component {
         return this; // Enable chaining
     }
 
+    fade(dir: number, from?: number) {
+        this.fadeDir = dir;
+        if (from) {
+            this.opacity = from;
+        }
+    }
+
     animating() {
         return (this.frameTime >= 0 && (this.repeat || this.sprite < this.sheet.length));
     }
@@ -135,7 +143,7 @@ export class SpriteComponent extends Component {
         return { sx, sy };
     }
 
-    dissolve() {
+    dissolve(speed?: number) {
         const particles = getParticlesFromComponent(this);
         if (!particles) {
             return;
@@ -146,12 +154,13 @@ export class SpriteComponent extends Component {
 
         for (let i = 0; i < imageData.length; i += 4) {
             if (imageData[i + 3] !== 0) {
+                const life = (1.5 + Math.random() * 2) / (speed ?? 1);
                 const x = (i / 4) % this.spriteWidth;
                 const y = Math.floor((i / 4) / this.spriteWidth);
-                const speedX = 5 + (Math.random() - 0.5) * 20;
-                const speedY = 5 + Math.random() * 5;
+                const speedX = (5 + (Math.random() - 0.5) * 20) * (speed ?? 1);
+                const speedY = (5 + Math.random() * 5) * (speed ?? 1);
                 particles.addParticle(new PixelParticle(
-                    1.5 + Math.random() * 2,
+                    life,
                     DissolvingParticleUpdate,
                     new Point(this.flip ? this.spriteWidth - x : x, y).add(this.entity.position),
                     new Point(this.flip ? -speedX : speedX, -speedY),
@@ -172,6 +181,10 @@ export class SpriteComponent extends Component {
 
         if (this.flickerTime > 0) {
             this.flickerTime -= dt;
+        }
+
+        if (this.fadeDir !== 0) {
+            this.opacity += this.fadeDir * dt;
         }
     }
 
@@ -195,6 +208,7 @@ export class SpriteComponent extends Component {
             context.translate(this.spriteWidth, 0);
             context.scale(-1, 1);
         }
+
         if (this.opacity === 1) {
             context.drawImage(this.image, sx, sy, this.spriteWidth, this.spriteHeight, x, y, w, h);
         }

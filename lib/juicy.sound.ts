@@ -129,10 +129,10 @@ export class SoundManager {
     Load(name: string, properties: SoundProperties) {
         if (properties.isSFX) {
             this.SFX[name] = new MultiSampleSound(properties);
-            this.SFX[name].setVolumeModifier(this.SFXMuted ? 0 : this.SFXVolume);
+            this.SFX[name]?.setVolumeModifier(this.SFXMuted ? 0 : this.SFXVolume);
         } else {
             this.BGM[name] = new MultiSampleSound(properties);
-            this.BGM[name].setVolumeModifier(this.BGMMuted ? 0 : this.BGMVolume);
+            this.BGM[name]?.setVolumeModifier(this.BGMMuted ? 0 : this.BGMVolume);
         }
     }
 }

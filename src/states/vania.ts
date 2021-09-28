@@ -37,6 +37,7 @@ import { SensitiveFeet } from "../components/sensitive-feet";
 import { GainDoubleJumpScreen } from "./gain-double-jump";
 import { UpshotForm } from "../components/forms/upshot";
 import { GainUpshotScreen } from "./gain-upshot";
+import { GameOverScreen } from "./game-over";
 
 const PlayerForms: (new () => PlayerForm)[] = [
     AttackForm,
@@ -273,6 +274,7 @@ export class VaniaScreen extends State {
     key_RIGHT() { }
 
     loadWait = 0;
+    currentMap = "";
 
     loadLevel(name: string, from?: string) {
         if (this.loadWait > 0) {
@@ -280,6 +282,8 @@ export class VaniaScreen extends State {
         }
         this.loadWait = 0.5;
 
+        this.freedomClock = 0;
+        this.currentMap = name;
         this.ready = false;
         this.map
             .load(name)
@@ -519,6 +523,101 @@ export class VaniaScreen extends State {
         this.loadLevel(teleporter.destination, this.map.name);
     }
 
+    freedomInit = false;
+    freedomClock = 0;
+    freedomParticles: Entity[] = [];
+
+    doFreedom() {
+        if (!this.freedomInit) {
+            this.freedomParticles = [];
+            for (let i = 0; i < 4; i++) {
+                const particle = new Entity(this);
+                particle.add(SpriteComponent)
+                    .setImage('./images/powerup.png')
+                    .setSize(11, 11)
+                    .runAnimation(PowerupAnimations.FlyUp)
+                    // .setActive(false);
+                // particle.priority = this.player.priority + 1;
+                particle.position.x = this.player.position.x;
+                particle.position.y = this.player.position.y;
+                this.freedomParticles.push(particle);
+            }
+            this.freedomInit = true;
+        }
+
+        let angle = 0;
+        if (this.freedomClock > 45) {
+            const x = this.freedomClock - 45;
+            angle = Math.pow(x / 5, 3) * 2 * Math.PI;
+        }
+
+        let dist = 45;
+
+        if (this.freedomClock > 55) {
+            dist -= Math.pow(5 * (this.freedomClock - 55), 2);
+        }
+
+        if (this.freedomClock > 60) {
+            this.camera.target = undefined;
+        }
+
+        if (this.freedomClock > 65 && !this.blackout) {
+            this.blackout = new Entity(this);
+            this.blackout.priority = this.player.priority + 100;
+            this.remove(this.blackout);
+            const sprite = this.blackout.add(SpriteComponent);
+            sprite.setSize(this.game.size.x, this.game.size.y);
+            sprite.image.width = this.game.size.x;
+            sprite.image.height = this.game.size.y;
+            sprite.opacity = 0;
+
+            const ctx = sprite.image.getContext('2d')!;
+            ctx.fillStyle = 'black';
+            ctx.fillRect(0, 0, sprite.image.width, sprite.image.height);
+
+            this.blackout.add(BehaviorComponent).setCallback((dt: number) => {
+                sprite.opacity += 0.25 * dt;
+
+                if (sprite.opacity > 2) {
+                    Game.setState(new GameOverScreen())
+                }
+            });
+        }
+
+        this.freedomParticles.forEach((e, i) => {
+            let start = this.player.position.copy()
+                .add(this.player.width / 2 - 5, this.player.height / 2 - 5);
+            let dir = new Point();
+            if (i === 0) {
+                dir.add(Math.cos(angle - 3 * Math.PI / 4), Math.sin(angle - 3 * Math.PI / 4));
+            }
+            else if (i === 1) {
+                dir.add(Math.cos(angle - Math.PI / 4), Math.sin(angle - Math.PI / 4));
+            }
+            else if (i === 2) {
+                dir.add(Math.cos(angle + 3 * Math.PI / 4), Math.sin(angle + 3 * Math.PI / 4));
+            }
+            else if (i === 3) {
+                dir.add(Math.cos(angle + Math.PI / 4), Math.sin(angle + Math.PI / 4));
+            }
+
+            dir.mult(dist);
+
+            const timeToStartMoving = (i + 1) * 8;
+            const timeToEndMoving = timeToStartMoving + 4;
+            if (this.freedomClock >= timeToEndMoving) {
+                e.position = start.add(dir);
+            }
+            else if (this.freedomClock < timeToStartMoving) {
+                e.position = start;
+            }
+            else {
+                const progress = (this.freedomClock - timeToStartMoving) / (timeToEndMoving - timeToStartMoving);
+                e.position = start.add(dir.mult(progress));
+            }
+        })
+    }
+
     update(dt: number) {
         if (!this.ready) {
             return;
@@ -531,6 +630,16 @@ export class VaniaScreen extends State {
 
         if (this.loadWait > 0) {
             this.loadWait -= dt;
+        }
+
+        if (this.currentMap === 'freedom' && this.player.position.y < 200 && this.loadWait <= 0 && this.camera.target) {
+            this.player.position.y += 144;
+            this.camera.entity.position.y += 144;
+        }
+
+        if (this.currentMap === 'freedom') {
+            this.freedomClock += dt;
+            this.doFreedom();
         }
     }
 

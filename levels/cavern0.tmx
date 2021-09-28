@@ -1,32 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="20" height="12" tilewidth="16" tileheight="12" infinite="0" nextlayerid="7" nextobjectid="20">
+<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="10" height="12" tilewidth="16" tileheight="12" infinite="0" nextlayerid="8" nextobjectid="31">
  <tileset firstgid="1" source="tiles.tsx"/>
- <layer id="1" name="Tile Layer 1" width="20" height="12">
+ <layer id="1" name="Tile Layer 1" width="10" height="12">
   <data encoding="csv">
-2,2,2,2,2,2,2,2,31,31,31,31,2,2,2,2,2,2,2,2,
-2,2,2,2,31,31,31,31,31,31,31,31,31,31,31,31,2,2,2,2,
-2,2,2,31,31,31,31,31,31,31,31,31,31,31,31,31,31,2,2,2,
-2,2,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,2,2,
-2,2,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,2,2,
-2,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,2,
-2,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,2,
-2,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,2,
-2,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,2,
-31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,31,
-31,31,31,31,31,31,31,31,31,31,31,31,31,31,42,42,42,43,31,31,
-2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2
+2,2,2,2,2,2,2,2,2,2,
+31,31,31,31,31,31,31,31,31,2,
+31,31,31,31,31,31,31,31,31,2,
+2,31,31,31,31,31,31,31,31,2,
+2,31,31,31,31,31,31,31,31,2,
+2,31,31,31,31,31,31,31,31,2,
+2,31,31,31,31,31,31,31,31,2,
+2,31,31,31,31,31,31,31,31,2,
+2,31,31,31,31,31,31,31,31,2,
+2,31,31,31,31,31,31,31,31,31,
+2,31,31,31,42,42,42,43,31,31,
+2,2,2,2,2,2,2,2,2,2
 </data>
  </layer>
- <objectgroup id="2" name="Spawners"/>
+ <objectgroup id="2" name="Spawners">
+  <object id="30" name="Default" x="129" y="104" width="7" height="21"/>
+ </objectgroup>
  <objectgroup id="3" name="Teleporters">
-  <object id="12" x="0" y="108" width="4" height="24">
+  <object id="14" x="0" y="12" width="4" height="24">
    <properties>
-    <property name="destination" value="crossroad0"/>
+    <property name="destination" value="cavern1"/>
     <property name="dir" value="right"/>
     <property name="twoWay" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="14" x="316" y="108" width="4" height="24">
+  <object id="28" x="156" y="108" width="4" height="24">
    <properties>
     <property name="destination" value="crossroad0"/>
     <property name="dir" value="left"/>
@@ -35,10 +37,13 @@
   </object>
  </objectgroup>
  <objectgroup id="4" name="EnemySpawner">
-  <object id="16" x="127" y="67" width="8" height="8">
+  <object id="27" x="83" y="73" width="10" height="10">
    <properties>
-    <property name="EnemyType" value="upshot"/>
+    <property name="EnemyType" value="doublejump"/>
    </properties>
   </object>
+ </objectgroup>
+ <objectgroup id="7" name="Triggers">
+  <object id="20" name="Ouchie" x="64" y="124" width="48" height="8"/>
  </objectgroup>
 </map>

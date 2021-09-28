@@ -40,21 +40,12 @@ export class SensitiveFeet extends Component {
         const { min, max } = hitbox.getBounds();
 
         // Little bit of grace
-        max.y -= 8;
-        const tileMin = map.getTileCoords(min);
-        const tileMax = map.getTileCoords(max);
-
-        // Check every tile we overlap with.
         let ouch = false;
-        for (let tx = tileMin.x; tx <= tileMax.x; tx++) {
-            for (let ty = tileMin.y; ty <= tileMax.y; ty++) {
-                const tile = map.getTile(tx, ty);
-
-                if (TileInfo[tile].killer) {
-                    ouch = true;
-                }
+        map.triggers.forEach(trigger => {
+            if (trigger.name === 'Ouchie' && hitbox.test(trigger)) {
+                ouch = true;
             }
-        }
+        });
 
         if (ouch && !this.ouching) {
             this.ouching = true;

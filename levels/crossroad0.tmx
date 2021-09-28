@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="10" height="36" tilewidth="16" tileheight="12" infinite="0" nextlayerid="6" nextobjectid="14">
+<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="10" height="36" tilewidth="16" tileheight="12" infinite="0" nextlayerid="6" nextobjectid="17">
  <tileset firstgid="1" source="tiles.tsx"/>
  <layer id="1" name="Tile Layer 1" width="10" height="36">
   <data encoding="csv">
-2,2,2,2,2,2,2,2,2,2,
+2,31,31,31,31,31,31,31,31,2,
 2,31,31,31,31,31,31,31,31,2,
 2,31,31,31,31,31,31,31,31,2,
 2,31,31,31,31,31,31,31,31,2,
@@ -44,12 +44,17 @@
  <imagelayer id="5" name="Home" offsetx="30" offsety="337">
   <image source="../images/home.png" width="204" height="83"/>
  </imagelayer>
- <objectgroup id="2" name="Spawners" locked="1">
+ <objectgroup id="2" name="Spawners">
   <object id="1" x="76" y="401" width="6" height="19"/>
   <object id="7" name="Start" x="76" y="401" width="6" height="19">
    <properties>
     <property name="dir" value="right"/>
     <property name="source" value="egg0"/>
+   </properties>
+  </object>
+  <object id="16" x="82" y="16" width="23" height="9">
+   <properties>
+    <property name="source" value="freedom"/>
    </properties>
   </object>
  </objectgroup>
@@ -67,11 +72,16 @@
     <property name="twoWay" type="bool" value="true"/>
    </properties>
   </object>
-  <object id="13" x="0" y="144" width="8" height="24">
+  <object id="13" x="0" y="144" width="5" height="24">
    <properties>
     <property name="destination" value="cavern0"/>
     <property name="dir" value="right"/>
     <property name="twoWay" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="14" x="17" y="-2" width="127" height="9">
+   <properties>
+    <property name="destination" value="freedom"/>
    </properties>
   </object>
  </objectgroup>

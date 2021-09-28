@@ -105,6 +105,12 @@ export class Transitioner extends Component {
                 component.setActive(false);
             }
         });
+
+        const physics = this.entity.get(PlayerPhysics);
+        if (physics) {
+            physics.knockTime = 0;
+            physics.dashTime = 0;
+        }
     }
 
     updateFormAnimation() {

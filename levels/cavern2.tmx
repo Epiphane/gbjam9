@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="10" height="12" tilewidth="16" tileheight="12" infinite="0" nextlayerid="8" nextobjectid="48">
+ <tileset firstgid="1" source="tiles.tsx"/>
+ <layer id="1" name="Tile Layer 1" width="10" height="12">
+  <data encoding="csv">
+2,2,2,2,2,2,2,2,2,2,
+2,31,31,31,31,31,31,31,31,2,
+2,31,31,31,31,31,31,31,31,2,
+2,31,31,31,31,31,31,31,31,2,
+2,31,31,31,31,31,31,31,31,2,
+2,31,31,31,31,31,31,31,31,2,
+2,31,31,31,31,31,31,31,31,2,
+2,31,31,31,31,31,31,31,31,2,
+2,31,31,31,31,31,31,31,31,2,
+2,31,31,31,31,31,31,31,31,4,
+2,31,31,31,31,31,31,31,31,4,
+2,2,2,2,31,31,2,2,2,2
+</data>
+ </layer>
+ <objectgroup id="2" name="Spawners">
+  <object id="44" name="Default" x="103" y="108" width="16" height="3">
+   <properties>
+    <property name="source" value="cavern1"/>
+   </properties>
+  </object>
+  <object id="45" x="72" y="141" width="16" height="3">
+   <properties>
+    <property name="source" value="cavern1"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="3" name="Teleporters">
+  <object id="46" x="64" y="161" width="32" height="4">
+   <properties>
+    <property name="destination" value="cavern1"/>
+   </properties>
+  </object>
+  <object id="47" x="157" y="108" width="3" height="24">
+   <properties>
+    <property name="destination" value="egg0"/>
+    <property name="dir" value="left"/>
+    <property name="twoWay" type="bool" value="true"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="4" name="EnemySpawner"/>
+ <objectgroup id="7" name="Triggers"/>
+</map>

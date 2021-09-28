@@ -34,10 +34,14 @@ import { GainDashScreen } from "./gain-dash";
 import { PhysicsBody } from "../components/physics";
 import { Froggy } from "../components/froggy";
 import { SensitiveFeet } from "../components/sensitive-feet";
+import { GainDoubleJumpScreen } from "./gain-double-jump";
+import { UpshotForm } from "../components/forms/upshot";
+import { GainUpshotScreen } from "./gain-upshot";
 
 const PlayerForms: (new () => PlayerForm)[] = [
     AttackForm,
     DashForm,
+    UpshotForm,
 ];
 
 export class VaniaScreen extends State {
@@ -268,12 +272,18 @@ export class VaniaScreen extends State {
     key_LEFT() { }
     key_RIGHT() { }
 
+    loadWait = 0;
+
     loadLevel(name: string, from?: string) {
+        if (this.loadWait > 0) {
+            return;
+        }
+        this.loadWait = 0.5;
+
         this.ready = false;
         this.map
             .load(name)
             .then((map) => {
-                this.ready = true;
                 this.camera.setBounds({
                     min: new Point(),
                     max: new Point(map.entity.width, map.entity.height)
@@ -381,6 +391,53 @@ export class VaniaScreen extends State {
                                 }
                             };
                     }
+                    else if (spawner.enemyType === 'doublejump' && !SaveManager.get('DoubleJump')) {
+                        const sprite = enemy
+                            .add(SpriteComponent)
+                            .setImage('./images/powerup.png')
+                            .setSize(11, 11)
+                            .runAnimation(PowerupAnimations.Float);
+                        enemy.priority = this.player.priority + 1;
+                        enemy.add(Hitbox)
+                            .onCollide = (other: Hitbox) => {
+                                enemy.remove(Hitbox);
+                                if (other.entity === this.player) {
+                                    this.player.get(Transitioner)?.transition({
+                                        type: 'GetForm',
+                                        powerup: sprite,
+                                        time: 15,
+                                        onComplete: () => {
+                                            Game.setState(new GainDoubleJumpScreen(this))
+                                            SaveManager.set('DoubleJump', true)
+                                            this.player.get(PlayerPhysics)!.doubleJumpPower = true;
+                                        }
+                                    });
+                                }
+                            };
+                    }
+                    else if (spawner.enemyType === 'upshot' && !this.hasForm(UpshotForm)) {
+                        const sprite = enemy
+                            .add(SpriteComponent)
+                            .setImage('./images/powerup.png')
+                            .setSize(11, 11)
+                            .runAnimation(PowerupAnimations.Float);
+                        enemy.priority = this.player.priority + 1;
+                        enemy.add(Hitbox)
+                            .onCollide = (other: Hitbox) => {
+                                enemy.remove(Hitbox);
+                                if (other.entity === this.player) {
+                                    this.player.get(Transitioner)?.transition({
+                                        type: 'GetForm',
+                                        powerup: sprite,
+                                        time: 15,
+                                        onComplete: () => {
+                                            this.unlockForm(UpshotForm);
+                                            Game.setState(new GainUpshotScreen(this))
+                                        }
+                                    });
+                                }
+                            };
+                    }
                     else if (spawner.enemyType === 'dash' && !this.hasForm(DashForm)) {
                         const sprite = enemy
                             .add(SpriteComponent)
@@ -425,6 +482,7 @@ export class VaniaScreen extends State {
                 })
                 this.player.get(MapTraveller)?.spawn(map, from);
                 this.camera.snapCamera();
+                this.ready = true;
 
                 if (map.triggers.filter(t => t.name === 'FrogBoss').length > 0) {
                     const deathSpot = SaveManager.get('frogman_dead');
@@ -470,6 +528,10 @@ export class VaniaScreen extends State {
 
         this.ui.update(dt);
         this.blackout?.update(dt);
+
+        if (this.loadWait > 0) {
+            this.loadWait -= dt;
+        }
     }
 
     render(ctx: CanvasRenderingContext2D) {

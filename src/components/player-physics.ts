@@ -1,5 +1,6 @@
 import { Game, Point, Sound } from "../../lib/juicy";
 import { Keys } from "../helpers/constants";
+import { SaveManager } from "../helpers/save-manager";
 import { TileInfo } from "../helpers/tiles";
 import { MapComponent } from "./map";
 import { PhysicsBody } from "./physics";
@@ -19,6 +20,9 @@ export class PlayerPhysics extends PhysicsBody {
     maxKnockTime = 0.3;
     knockTime = 0;
     knockDir = 0;
+
+    doubleJumpPower = SaveManager.get('DoubleJump') ?? false;
+    canDoubleJump = true;
 
     isDashing() {
         return this.dashTime > 0;
@@ -82,6 +86,7 @@ export class PlayerPhysics extends PhysicsBody {
 
         if (this.blocked[2]![1]) {
             this.coyote = 0.05;
+            this.canDoubleJump = true;
         }
         else {
             this.coyote -= dt;
@@ -89,7 +94,12 @@ export class PlayerPhysics extends PhysicsBody {
 
         if (!this.cancelNextJump && game.keyDown(Keys.UP)) {
             // Start jump
-            if (this.coyote > 0 && !this.upWasPressed) {
+            const doubleJump = (this.canDoubleJump && this.doubleJumpPower);
+            if ((this.coyote > 0 || doubleJump) && !this.upWasPressed) {
+                if (this.coyote <= 0) {
+                    this.canDoubleJump = false;
+                }
+
                 Sound.Load('Jump',
                     {
                         src: './audio/jump.wav',

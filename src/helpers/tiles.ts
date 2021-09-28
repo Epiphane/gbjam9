@@ -21,6 +21,14 @@ export enum Tile {
     Water4,
     SpikesUp,
     SpikesUpTail,
+    SpikesDown,
+    SpikesDownTail,
+    SpikesLeft,
+    SpikesLeftTail,
+    SpikesRight,
+    SpikesRightTail,
+    SpikesLR,
+    SpikesLRTail,
 };
 
 interface TileInfo {
@@ -31,7 +39,6 @@ interface TileInfo {
     offsetAnimTime?: number;
     background?: boolean;
     breaksInto?: Tile;
-    killer?: boolean;
 }
 
 export const TileInfo: { [key in Tile]: TileInfo } = {
@@ -135,11 +142,42 @@ export const TileInfo: { [key in Tile]: TileInfo } = {
     },
     [Tile.SpikesUp]: {
         walkable: true,
-        killer: true,
         offset: new Point(1, 4),
     },
     [Tile.SpikesUpTail]: {
         walkable: true,
         offset: new Point(2, 4),
-    }
+    },
+    [Tile.SpikesLeft]: {
+        walkable: true,
+        offset: new Point(2, 5),
+    },
+    [Tile.SpikesLeftTail]: {
+        walkable: true,
+        offset: new Point(2, 6),
+    },
+    [Tile.SpikesRight]: {
+        walkable: true,
+        offset: new Point(1, 5),
+    },
+    [Tile.SpikesRightTail]: {
+        walkable: true,
+        offset: new Point(1, 6),
+    },
+    [Tile.SpikesLR]: {
+        walkable: true,
+        offset: new Point(3, 5),
+    },
+    [Tile.SpikesLRTail]: {
+        walkable: true,
+        offset: new Point(3, 6),
+    },
+    [Tile.SpikesDown]: {
+        walkable: true,
+        offset: new Point(1, 7),
+    },
+    [Tile.SpikesDownTail]: {
+        walkable: true,
+        offset: new Point(2, 7),
+    },
 };

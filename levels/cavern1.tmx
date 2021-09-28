@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="20" height="22" tilewidth="16" tileheight="12" infinite="0" nextlayerid="8" nextobjectid="45">
+ <tileset firstgid="1" source="tiles.tsx"/>
+ <layer id="1" name="Tile Layer 1" width="20" height="22">
+  <data encoding="csv">
+2,31,31,31,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+2,31,31,31,2,31,31,31,31,31,31,31,31,31,31,31,31,31,31,2,
+2,31,31,31,2,31,31,31,31,31,31,31,31,31,31,31,31,31,31,2,
+2,31,31,31,2,31,42,52,31,31,31,31,31,31,31,31,31,31,31,2,
+2,31,31,31,2,31,2,52,31,42,43,31,42,42,43,42,42,42,43,2,
+2,31,31,31,2,31,2,2,2,2,2,2,2,2,2,2,2,2,31,2,
+2,31,31,31,2,31,72,72,72,72,72,72,2,31,31,31,31,31,31,2,
+2,31,31,31,2,31,31,31,31,31,31,53,2,31,31,31,31,31,31,2,
+2,31,31,31,2,31,31,31,31,31,31,53,3,31,31,2,2,2,2,2,
+2,31,31,31,2,31,31,42,42,43,31,53,3,3,31,72,72,72,72,2,
+2,31,31,31,2,31,53,2,2,52,31,53,2,31,31,31,31,31,31,2,
+2,31,31,31,2,2,2,2,2,52,31,53,2,31,31,31,31,31,31,2,
+2,31,31,31,31,31,31,31,31,31,31,53,2,31,31,3,52,31,31,2,
+2,31,31,31,31,31,31,31,31,31,31,53,2,2,2,2,52,31,2,2,
+2,31,31,31,2,42,42,2,2,31,31,53,2,72,72,72,73,31,53,2,
+2,31,31,31,2,2,2,2,2,52,31,53,2,31,31,31,31,31,53,2,
+2,31,31,31,2,52,31,31,31,31,31,53,2,31,31,31,31,31,53,2,
+2,31,31,31,2,52,31,31,31,31,31,53,2,31,2,2,2,2,54,2,
+2,31,31,31,2,52,31,2,2,31,31,53,2,31,31,31,31,31,53,2,
+2,31,31,31,2,52,31,2,31,31,31,53,2,31,31,31,31,31,63,31,
+2,31,31,31,2,42,42,2,42,42,42,2,2,31,42,42,42,43,31,31,
+2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2
+</data>
+ </layer>
+ <objectgroup id="2" name="Spawners">
+  <object id="43" name="Default" x="304" y="235" width="9" height="13"/>
+  <object id="44" name="Default" x="32" y="16" width="16" height="3">
+   <properties>
+    <property name="source" value="cavern2"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="3" name="Teleporters">
+  <object id="12" x="16" y="0" width="48" height="4">
+   <properties>
+    <property name="destination" value="cavern2"/>
+    <property name="twoWay" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="14" x="317" y="228" width="3" height="24">
+   <properties>
+    <property name="destination" value="cavern0"/>
+    <property name="dir" value="left"/>
+    <property name="twoWay" type="bool" value="true"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="4" name="EnemySpawner">
+  <object id="16" x="35" y="220" width="8" height="8">
+   <properties>
+    <property name="EnemyType" value="upshot"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="7" name="Triggers">
+  <object id="20" name="Ouchie" x="224" y="244" width="48" height="8"/>
+  <object id="21" name="Ouchie" x="208" y="168" width="48" height="8"/>
+  <object id="22" name="Ouchie" x="296" y="168" width="8" height="59"/>
+  <object id="23" name="Ouchie" x="256" y="144" width="8" height="24"/>
+  <object id="24" name="Ouchie" x="240" y="108" width="64" height="8"/>
+  <object id="25" name="Ouchie" x="288" y="204" width="8" height="12"/>
+  <object id="26" name="Ouchie" x="192" y="52" width="32" height="8"/>
+  <object id="27" name="Ouchie" x="144" y="52" width="16" height="8"/>
+  <object id="28" name="Ouchie" x="112" y="36" width="8" height="24"/>
+  <object id="29" name="Ouchie" x="240" y="52" width="48" height="8"/>
+  <object id="30" name="Ouchie" x="96" y="40" width="16" height="8"/>
+  <object id="31" name="Ouchie" x="104" y="120" width="8" height="12"/>
+  <object id="32" name="Ouchie" x="96" y="72" width="96" height="8"/>
+  <object id="33" name="Ouchie" x="144" y="120" width="8" height="24"/>
+  <object id="34" name="Ouchie" x="184" y="84" width="8" height="156"/>
+  <object id="35" name="Ouchie" x="128" y="244" width="48" height="8"/>
+  <object id="38" name="Ouchie" x="80" y="192" width="8" height="48"/>
+  <object id="39" name="Ouchie" x="80" y="244" width="32" height="8"/>
+  <object id="40" name="Ouchie" x="112" y="112" width="32" height="8"/>
+  <object id="41" name="Ouchie" x="144" y="180" width="7" height="12"/>
+  <object id="42" name="Ouchie" x="80" y="172" width="32" height="8"/>
+ </objectgroup>
+</map>

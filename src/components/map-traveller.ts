@@ -33,6 +33,8 @@ export class MapTraveller extends Component {
             });
         }
 
+        // debugger;
+
         if (match) {
             const hitbox = this.entity.get(Hitbox);
             if (!hitbox) {

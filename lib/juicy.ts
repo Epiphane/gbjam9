@@ -11,8 +11,6 @@ window.requestAnimationFrame = (function () {
 })();
 
 import { SoundManager } from './juicy.sound';
-import * as Box2D_ from './Box2D.js';
-export * as Box2D from './Box2D.js';
 
 /* Passthrough exports */
 import { Point } from './juicy.point';

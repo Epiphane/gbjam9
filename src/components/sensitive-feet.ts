@@ -49,13 +49,13 @@ export class SensitiveFeet extends Component {
 
         if (ouch && !this.ouching) {
             this.ouching = true;
-            // Sound.Load('Drown',
-            //     {
-            //         src: './audio/drown.wav',
-            //         isSFX: true,
-            //         volume: 0.2
-            //     })
-            // Sound.Play('Drown')
+            Sound.Load('Hurt',
+                {
+                    src: './audio/hurt.wav',
+                    isSFX: true,
+                    volume: 0.2
+                })
+            Sound.Play('Hurt')
             if (transitioner) {
                 transitioner.transition({
                     type: 'Spiked',

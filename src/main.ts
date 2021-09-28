@@ -4,6 +4,7 @@ import { LoadingScreen } from './states/loading';
 import { Keys } from './helpers/constants';
 import { TestScreen } from './states/test';
 import { __DEV__, __PALETTE__, __TEST_LEVEL__ } from './helpers/debug';
+import { GameOverScreen } from './states/game-over';
 
 // const keys = {
 //     LEFT: 37,

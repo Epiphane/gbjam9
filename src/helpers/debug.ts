@@ -7,7 +7,9 @@ import { SaveManager } from "./save-manager";
 import { KeyCodes } from "../main";
 
 const debugElement = document.createElement('div');
-document.body.appendChild(debugElement);
+debugElement.id = 'debug';
+debugElement.classList.add('desktop-only');
+document.body.prepend(debugElement);
 
 class Button {
     content: () => string;

@@ -3,6 +3,7 @@ import { CoolText, FontFace } from "../components/cool-text";
 import { PlayerAnimations } from "../components/player-animation";
 import { SpriteComponent } from "../components/sprite";
 import { ColorType } from "../helpers/palette";
+import { ISMOBILE } from "../main";
 
 Sound.Load('Powerup', {
     src: './audio/powerup.wav',
@@ -90,7 +91,7 @@ export class GainUpshotScreen extends State {
         {
             const text = new Entity(this, [CoolText]);
             text.get(CoolText)?.set({
-                text: `Press A to shoot upwards`,
+                text: `Press ${ISMOBILE ? 'B' : 'A'} to shoot upwards`,
                 fontFace: FontFace.Big,
                 brightness: ColorType.Light,
             });
@@ -102,7 +103,7 @@ export class GainUpshotScreen extends State {
         {
             const text = new Entity(this, [CoolText]);
             text.get(CoolText)?.set({
-                text: `Press B to cycle forms`,
+                text: `Press ${ISMOBILE ? 'UP' : 'B'} to cycle forms`,
                 fontFace: FontFace.Big,
                 brightness: ColorType.Light,
             });

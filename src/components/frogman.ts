@@ -107,13 +107,19 @@ export class Frogman extends Component {
             transitioner?.disableInteraction();
         }
 
-        if (this.fighting && hitbox?.test(playerHitbox) && playerSprite.flickerTime <= 0) {
+        const { min, max } = hitbox!.getBounds();
+        const position = new Point(min.x + 2, min.y);
+        const size = new Point(max.x - min.x - 10, max.y - min.y);
+        if (sprite?.flip) {
+            position.x += 6;
+        }
+        if (this.fighting && playerHitbox?.test({ position, size }) && playerSprite.flickerTime <= 0) {
             const playerX = this.player!.position.x + this.player!.width / 2;
             const myX = this.entity.position.x + this.entity.width / 2;
 
             const dx = (playerX < myX) ? -75 : 75;
             this.player?.get(PlayerPhysics)?.knockBack(dx, -150, 0.5);
-            playerSprite.setFlickering(1);
+            playerSprite.setFlickering(1.5);
             playerHealth.takeDamage(1);
         }
 

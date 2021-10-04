@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>GBJam 9</title>
+    <title>Vessel</title>
     <link rel="icon" type="image/GIF" href="favicon.ico"/>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="full-screen" content="yes" />
@@ -13,6 +13,7 @@
 
     <link href='./css/poiret-one.css' rel='stylesheet' type='text/css'>
     <link href='./css/VT323.css' rel='stylesheet' type='text/css'>
+    <link href='./css/gameboy.css' rel='stylesheet' type='text/css'>
     <style>
         /* following code make sure user won't see selection in the app */
         body,
@@ -30,6 +31,7 @@
             background: #666;
             width: 100%;
             text-align: center;
+            overflow: hidden;
         }
 
         canvas,
@@ -39,6 +41,7 @@
             image-rendering: -webkit-crisp-edges;
             image-rendering: pixelated;
             image-rendering: crisp-edges;
+            margin: 0 auto;
         }
 
         #update {
@@ -52,6 +55,14 @@
             border: 2px solid black;
             display: none;
         }
+
+        .desktop .mobile-only {
+            display: none;
+        }
+
+        .mobile .desktop-only {
+            display: none;
+        }
     </style>
 </head>
 
@@ -60,7 +71,25 @@
         Update available!
     </a>
 
-    <canvas id="game-canvas" width=160 height=144></canvas>
+    <span id="deeeebug" style="font-size:72px"></span>
+     <div id="gameboy">
+        <div id="gameboy-screenpad">
+            <canvas id="game-canvas" width=160 height=144></canvas>
+        </div>
+
+        <div id="gameboy-controls" class="mobile-only">
+            <div id="gameboy-dpad">
+                <button id="gameboy-left"><div class="inner"></div></button>
+                <button id="gameboy-right"><div class="inner"></div></button>
+                <button id="gameboy-up"><div class="inner"></div></button>
+                <button id="gameboy-down"><div class="inner"></div></button>
+            </div>
+            <button id="gameboy-a"><div class="inner">A</div></button>
+            <button id="gameboy-b"><div class="inner">B</div></button>
+            <button id="gameboy-start"><div class="inner"></div></button>
+            <button id="gameboy-select"><div class="inner"></div></button>
+        </div>
+    </div>
 
     <!-- Scripts -->
     <script src="version.js"></script>

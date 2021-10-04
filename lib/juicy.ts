@@ -19,9 +19,9 @@ export * from './juicy.point';
 const PIXEL_RATIO = window.devicePixelRatio;
 
 function SetCanvasSize(canvas: HTMLCanvasElement, width: number, height: number) {
-    canvas.width = width * PIXEL_RATIO;
-    canvas.height = height * PIXEL_RATIO;
-    canvas.getContext('2d')?.scale(PIXEL_RATIO, PIXEL_RATIO);
+    canvas.width = width;
+    canvas.height = height;
+    // canvas.getContext('2d')?.scale(PIXEL_RATIO, PIXEL_RATIO);
 }
 
 interface KeyNameToCodeMap {

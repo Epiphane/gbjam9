@@ -3,6 +3,7 @@ import { CoolText, FontFace } from "../components/cool-text";
 import { PlayerAnimations } from "../components/player-animation";
 import { SpriteComponent } from "../components/sprite";
 import { ColorType } from "../helpers/palette";
+import { ISMOBILE } from "../main";
 
 Sound.Load('Powerup', {
     src: './audio/powerup.wav',
@@ -90,7 +91,7 @@ export class GainNailScreen extends State {
         {
             const text = new Entity(this, [CoolText]);
             text.get(CoolText)?.set({
-                text: `Press A to strike`,
+                text: `Press ${ISMOBILE ? 'B' : 'A'} to strike`,
                 fontFace: FontFace.Big,
                 brightness: ColorType.Light,
             });

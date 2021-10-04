@@ -2,6 +2,7 @@ import { Game, Point, Sound } from "../../lib/juicy";
 import { Keys } from "../helpers/constants";
 import { SaveManager } from "../helpers/save-manager";
 import { TileInfo } from "../helpers/tiles";
+import { ISMOBILE } from "../main";
 import { MapComponent } from "./map";
 import { PhysicsBody } from "./physics";
 import { SpriteComponent } from "./sprite";
@@ -92,7 +93,8 @@ export class PlayerPhysics extends PhysicsBody {
             this.coyote -= dt;
         }
 
-        if (!this.cancelNextJump && game.keyDown(Keys.UP)) {
+        const shouldJump = ISMOBILE ? game.keyDown(Keys.A) : game.keyDown(Keys.UP);
+        if (!this.cancelNextJump && shouldJump) {
             // Start jump
             const doubleJump = (this.canDoubleJump && this.doubleJumpPower);
             if ((this.coyote > 0 || doubleJump) && !this.upWasPressed) {
@@ -108,7 +110,7 @@ export class PlayerPhysics extends PhysicsBody {
                     });
                 Sound.Play('Jump');
                 this.velocity.y = -150;
-                this.jumpTail = 0.3;
+                this.jumpTail = 0.335;
                 this.coyote = 0;
             }
             else if (this.jumpTail > 0 && this.velocity.y < 0) {
@@ -128,7 +130,7 @@ export class PlayerPhysics extends PhysicsBody {
 
         super.update(dt, game);
 
-        if (!game.keyDown(Keys.UP) && this.blocked[2]![1]) {
+        if (!shouldJump && this.blocked[2]![1]) {
             this.jumpTail = 0;
         }
         this.cancelNextJump = false;

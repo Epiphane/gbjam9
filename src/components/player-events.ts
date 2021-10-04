@@ -2,6 +2,7 @@ import { Entity, Component, Point, Game, Sound } from "../../lib/juicy";
 import { MapObject } from "../helpers/map-loader";
 import { getMapFromComponent } from "../helpers/quick-get";
 import { SaveManager } from "../helpers/save-manager";
+import { ISMOBILE } from "../main";
 import { VaniaScreen } from "../states/vania";
 import { Birb, BirbDetectionRadius } from "./birb";
 import { Camera } from "./camera";
@@ -179,11 +180,12 @@ export class PlayerEvents extends Component {
                 repeat: true
             });
 
+        const health = ISMOBILE ? 25 : 40;
         const physics = frogman.add(PhysicsBody);
         physics.setActive(false);
         frogman.add(Hitbox).setSize(50, 36).setOffset(2, 14);
         frogman.add(Health)
-            .setHealth(50, 50)
+            .setHealth(health, health)
             .onDie(() => {
                 camera.setBounds({ min, max });
             });

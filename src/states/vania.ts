@@ -38,6 +38,7 @@ import { GainDoubleJumpScreen } from "./gain-double-jump";
 import { UpshotForm } from "../components/forms/upshot";
 import { GainUpshotScreen } from "./gain-upshot";
 import { GameOverScreen } from "./game-over";
+import { ISMOBILE } from "../main";
 
 const PlayerForms: (new () => PlayerForm)[] = [
     AttackForm,
@@ -231,21 +232,10 @@ export class VaniaScreen extends State {
     }
 
     key_START() {
+        this.game.setState(new PaletteSelectionScreen(this));
     }
 
-    key_A() {
-        if (this.player.get(Transitioner)?.currentTransition) {
-            return;
-        }
-
-        this.player.components.forEach(c => {
-            if (c instanceof PlayerForm && c.isActive()) {
-                c.endAction();
-            }
-        })
-    }
-
-    keyDown_A() {
+    startAction() {
         if (this.player.get(Transitioner)?.currentTransition) {
             return;
         }
@@ -257,7 +247,34 @@ export class VaniaScreen extends State {
         })
     }
 
-    key_B() {
+    endAction() {
+        if (this.player.get(Transitioner)?.currentTransition) {
+            return;
+        }
+
+        this.player.components.forEach(c => {
+            if (c instanceof PlayerForm && c.isActive()) {
+                c.endAction();
+            }
+        })
+    }
+
+    key_A() {
+        if (!ISMOBILE) {
+            this.endAction();
+        }
+    }
+
+    keyDown_A() {
+        if (!ISMOBILE) {
+            this.startAction();
+        }
+    }
+
+    cycleFormsUp() {
+        if (PlayerForms.filter(f => this.hasForm(f)).length === 0) {
+            return;
+        }
         let nextFormNdx = (this.currentFormNdx + 1) % PlayerForms.length;
         while (nextFormNdx !== this.currentFormNdx) {
             if (this.hasForm(PlayerForms[nextFormNdx]!)) {
@@ -268,8 +285,45 @@ export class VaniaScreen extends State {
         }
     }
 
-    key_UP() { }
-    key_DOWN() { }
+    cycleFormsDown() {
+        if (PlayerForms.filter(f => this.hasForm(f)).length === 0) {
+            return;
+        }
+        let nextFormNdx = (this.currentFormNdx + 1) % PlayerForms.length;
+        while (nextFormNdx !== this.currentFormNdx) {
+            if (this.hasForm(PlayerForms[nextFormNdx]!)) {
+                this.setForm(PlayerForms[nextFormNdx]!);
+                return;
+            }
+            nextFormNdx = (nextFormNdx + PlayerForms.length - 1) % PlayerForms.length;
+        }
+    }
+
+    key_B() {
+        if (!ISMOBILE) {
+            this.cycleFormsUp();
+        }
+        else {
+            this.endAction();
+        }
+    }
+
+    keyDown_B() {
+        if (ISMOBILE) {
+            this.startAction();
+        }
+    }
+
+    key_UP() {
+        if (ISMOBILE) {
+            this.cycleFormsUp();
+        }
+    }
+    key_DOWN() {
+        if (ISMOBILE) {
+            this.cycleFormsUp();
+        }
+    }
     key_LEFT() { }
     key_RIGHT() { }
 

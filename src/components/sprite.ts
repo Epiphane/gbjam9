@@ -238,6 +238,17 @@ export class SpriteComponent extends Component {
             }
 
             context.putImageData(colored, this.entity.position.x, this.entity.position.y);
+
+            // for (let i = 0; i < colored.data.length; i += 4) {
+            //     colored.data[i+0] = 0;
+            //     colored.data[i+1] = 0;
+            //     colored.data[i+2] = 0;
+            //     colored.data[i+3] = 255;
+            // }
+
+            // context.putImageData(colored, 0, 0);
+
+            // document.getElementById('deeeebug')!.textContent = `Size: ${colored.data.length}, w=${w} h=${h}`;
         }
         context.restore();
     }
